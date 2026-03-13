@@ -303,11 +303,14 @@ public class InfrmController implements ApplicationContextAware {
 	 */
 	@RequestMapping("/informer/editInformer.do")
 	public ModelAndView editUser(HttpServletRequest request, @ModelAttribute("ifmVO") InfrmVO ifmVO, RedirectAttributes redirectAttributes) throws Exception {
-		ModelAndView mv = new ModelAndView("/informer/informerNew");
+		/*ModelAndView mv = new ModelAndView("/informer/informerNew");*/
+		ModelAndView mv = new ModelAndView();
+		
 		InfrmVO thvo = new InfrmVO();
 		UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
 		OptInftVo iTypeVo = new OptInftVo();
 		OptAreaVo areaVo = new OptAreaVo();
+		
 		List<OptAreaVo> aList = new ArrayList<>();//소속방송국
 		List<OptInftVo> t1List = new ArrayList<>();//통신원유형
 		List<OptInftVo> t2List = new ArrayList<OptInftVo>();//기관
@@ -327,6 +330,8 @@ public class InfrmController implements ApplicationContextAware {
 		t1List = infrmOptService.selectInft1(new OptInftVo());
 		//상세 및 수정
 		if (request.getParameter("pr1")!=null&&!(request.getParameter("pr1").equals(""))) {//상세
+			mv.setViewName("/informer/informerNew");
+			
 			mv.addObject("pageDiv", "update");
 			thvo.setInformerId(request.getParameter("pr1"));
 			thvo=infrmService.detailInformer(thvo);
@@ -344,6 +349,8 @@ public class InfrmController implements ApplicationContextAware {
 			}
 			t3List=infrmOptService.selectInft3(iTypeVo);//세부기관
 		} else {//등록
+			mv.setViewName("/informer/informerNewInsert");
+			
 			mv.addObject("pageDiv", "new");
 			
 			iTypeVo.setIfmId1(t1List.get(0).getIfmId1());
@@ -419,11 +426,17 @@ public class InfrmController implements ApplicationContextAware {
 			,@ModelAttribute("ifmVO") InfrmVO ifmVO) throws Exception {
 		ModelAndView mv = new ModelAndView("jsonView");
 		
+		
+		// 신규 가입인 경우 => pageDiv : 신규/수정 구분 값
 		if(ifmVO.getPageDiv().equals("new")) {
+			
+			// 전화번호 중복인지 확인
 			if(infrmService.chkPhone(ifmVO)!=null) {
 				mv.addObject("msg","다른 통신원이 사용중인 전화번호입니다");
 				return mv;
 			}
+			
+			// 신규 가입인 경우 통신원 ID 생성(actId X)
 			ifmVO.setInformerId(infrmService.getNewId(ifmVO));
 		}
 		
@@ -454,6 +467,8 @@ public class InfrmController implements ApplicationContextAware {
 			}
 		}
 		
+		
+		// impl에서 insert, update 분기 처리함
 		int cnt = infrmService.saveInformer(ifmVO);
 		
 		if(ifmVO.getHistCode() != null && !ifmVO.getHistCode().equals("")){

@@ -187,8 +187,8 @@ public class ReceiptServiceImpl implements ReceiptService{
 	}
 	
 	@Override
-	public void insertAppStatus(List<ReceivedStatusVO> list) throws Exception {
-		receiptMapper.insertAppStatus(list);
+	public void insertAppStatus(List<ReceivedStatusVO> list, UserVO nlVo) throws Exception {
+		receiptMapper.insertAppStatus(list, nlVo);
 	}
 	
 	@Override

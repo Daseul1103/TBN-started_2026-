@@ -525,6 +525,9 @@ public class ReceiptController {
 		  
 		  List<ReceivedStatusVO> alist = new ArrayList<>();
 		  
+		  // 제보접수자  ID 및 이름 정보 가져오기
+		  UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+		  
 		  for (int i = 0; i < ids.size(); i++) { //ID 값 나누기
 			  ReceivedStatusVO awvo = new ReceivedStatusVO();
 			  awvo.setRECEIPT_ID(ids.get(i));
@@ -532,7 +535,7 @@ public class ReceiptController {
 		  }
 		  
 		  // today에 등록 시키기
-		  receiptService.insertAppStatus(alist);
+		  receiptService.insertAppStatus(alist,nlVo);
 		  
 		  // chk flag 업데이트 시키기 => Y
 		  receiptService.updateAppStatus(alist);

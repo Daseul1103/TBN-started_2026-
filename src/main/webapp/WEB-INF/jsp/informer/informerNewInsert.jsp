@@ -35,307 +35,251 @@
 	}
 	
 	
+		/* 버튼 그룹 */
+	.button-group {
+	    display: flex;
+	    gap: 12px;
+	}
 	
-	/* 26-02-24 : 통신원 관리 상세/수정/등록 화면 스타일 추가 및 변경 */
-
-/* 버튼 그룹 */
-.button-group {
-    display: flex;
-    gap: 12px;
-}
-
-/* 기본 버튼 공통 */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 38px;
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1px solid #e5e7eb;
-    background: #f9fafb;
-    color: #374151;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-/* 아이콘 */
-.btn-icon {
-    width: 16px;
-    height: 16px;
-    object-fit: contain;
-}
-
-/* ------------------ */
-/* Secondary (해촉, 취소 동일) */
-/* ------------------ */
-.btn-secondary {
-    background: white;
-    border: 1px solid #e5e7eb;
-    color: #374151;
-}
-
-.btn-secondary:hover {
-    background: #f3f4f6;
-    border-color: #d1d5db;
-}
-
-/* ------------------ */
-/* Danger (삭제) */
-/* ------------------ */
-.btn-danger {
-    background: #fff;
-    border: 1px solid #fca5a5;
-    color: #ef4444;
-}
-
-.btn-danger:hover {
-    background: #fee2e2;
-    border-color: #ef4444;
-}
-
-/* ------------------ */
-/* Primary (정보 수정) */
-/* ------------------ */
-.btn-primary {
-    background: #2563eb;
-    border: 1px solid #2563eb;
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background: #1e40af;
-    border-color: #1e40af;
-}
-
-/* 클릭 시 살짝 눌림 효과 */
-.btn:active {
-    transform: scale(0.97);
-}
-
-
-
-
-
-/* 상단 이름, 통신원 정보, 소속 등 */
-
-/* 이름 + 배지 한 줄 정렬 */
-.name-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap; /* 여러 개일 경우 줄바꿈 */
-    margin-top: 20px;
-    width : 486px;
-}
-
-.informer-name {
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0;
-    margin-left: 25px;
-    margin-right: 5px;
-}
-
-/* 공통 배지 */
-.badge {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 999px; /* pill */
-    display: inline-flex;
-    align-items: center;
-}
-
-/* 최고 통신원 - 초록 */
-.badge-best {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-/* 명예 통신원 - 파랑 */
-.badge-honor {
-    background: #dbeafe;
-    color: #1d4ed8;
-}
-
-/* 자원봉사 - 회색 */
-.badge-service {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-
-
-/* 전체 박스 */
-.date-info {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    margin-left: 120px;
-    margin-top: 10px;
-}
-
-/* 각 항목 */
-.date-item {
-    display: flex;
-    flex-direction: column;
-}
-
-/* 라벨 */
-.date-label {
-    font-size: 13px;
-    color: #6b7280; /* 연회색 */
-    margin: 0;
-}
-
-/* 값 */
-.date-value {
-    font-weight: 700;
-    font-size: 16px;
-    color: #111827;
-    margin-left: 6px;
-}
-
-/* 유효기간 (빨강 강조) */
-.date-expired {
-    font-weight: 700;
-    font-size: 16px;
-    color: #ef4444;
-}
-
-/* 가운데 세로 구분선 */
-.divider {
-    width: 1px;
-    height: 40px;
-    background: #e5e7eb;
-}
-
-
-/* 전체 정렬 */
-.status-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-left: 50px;
-}
-
-/* 라벨 */
-.status-label {
-    font-size: 16px;
-    color: #6b7280;
-    margin: 0;
-}
-
-/* 공통 배지 */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    border-radius: 999px;
-    margin-top :2px;
-}
-
-/* 상태 원 */
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-
-/* 위촉 (초록) */
-.status-active {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.status-active .status-dot {
-    background: #22c55e;
-}
-
-/* 해촉 (빨강 버전) */
-.status-inactive {
-    background: #fee2e2;
-    color: #b91c1c;
-}
-
-.status-inactive .status-dot {
-    background: #ef4444;
-}
-
-
-.ellipsis-text {
-    font-size: 16px;
-    max-width: 500px;     /* 원하는 너비로 조절 */
-    white-space: nowrap;  /* 한 줄 유지 */
-    overflow: hidden;     
-    text-overflow: ellipsis;
-    margin: 0;
-}
-
-
-/* 카드 */
-.activity-card {
-    width: 610px;              /* 최종 전체 너비 */
-    padding: 16px;             /* 기존 24 → 16으로 줄임 */
-    background: #f8fafc;
-    border-radius: 16px;
-    box-sizing: border-box;    /* padding 포함 */
-    margin-left: 20px;
-}
-
-/* 테이블 */
-.activity-table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: separate;
-    border-spacing: 8px 8px;   /* 기존 10 → 8로 줄임 */
-    text-align: center;
-    font-size: 14px;
-}
-
-/* 셀 공통 */
-.activity-table th,
-.activity-table td {
-    width: calc(100% / 8);
-}
-
-/* 월 제목 */
-.activity-table th {
-    font-weight: 600;
-    color: #475569;
-    font-size: 13px;          /* 살짝 줄임 */
-}
-
-/* 숫자 셀 */
-.activity-table td {
-    background: #ffffff;
-    border-radius: 8px;       /* 둥글기 약간 줄임 */
-    padding: 8px 0;           /* 높이 줄임 */
-    font-weight: 600;
-    color: #1e293b;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-/* 소계 */
-.subtotal {
-    background: #f1f5f9;
-    font-weight: 700;
-}
-
-/* 합계 */
-.total {
-    background: #e2e8f0;
-    font-weight: 800;
-}
-
-
+	/* 기본 버튼 공통 */
+	.btn {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 8px;
+	    height: 38px;
+	    padding: 0 16px;
+	    font-size: 14px;
+	    font-weight: 500;
+	    border-radius: 12px;
+	    cursor: pointer;
+	    transition: all 0.2s ease;
+	    border: 1px solid #e5e7eb;
+	    background: #f9fafb;
+	    color: #374151;
+	    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+	}
+	
+	/* 아이콘 */
+	.btn-icon {
+	    width: 16px;
+	    height: 16px;
+	    object-fit: contain;
+	}
+	
+	/* ------------------ */
+	/* Secondary (해촉, 취소 동일) */
+	/* ------------------ */
+	.btn-secondary {
+	    background: white;
+	    border: 1px solid #e5e7eb;
+	    color: #374151;
+	}
+	
+	.btn-secondary:hover {
+	    background: #f3f4f6;
+	    border-color: #d1d5db;
+	}
+	
+	/* ------------------ */
+	/* Danger (삭제) */
+	/* ------------------ */
+	.btn-danger {
+	    background: #fff;
+	    border: 1px solid #fca5a5;
+	    color: #ef4444;
+	}
+	
+	.btn-danger:hover {
+	    background: #fee2e2;
+	    border-color: #ef4444;
+	}
+	
+	/* ------------------ */
+	/* Primary (정보 수정) */
+	/* ------------------ */
+	.btn-primary {
+	    background: #2563eb;
+	    border: 1px solid #2563eb;
+	    color: #fff;
+	}
+	
+	.btn-primary:hover {
+	    background: #1e40af;
+	    border-color: #1e40af;
+	}
+	
+	/* 클릭 시 살짝 눌림 효과 */
+	.btn:active {
+	    transform: scale(0.97);
+	}
+	
+	
+	
+	
+	
+	/* 상단 이름, 통신원 정보, 소속 등 */
+	
+	/* 이름 + 배지 한 줄 정렬 */
+	.name-wrapper {
+	    display: flex;
+	    align-items: center;
+	    gap: 8px;
+	    flex-wrap: wrap; /* 여러 개일 경우 줄바꿈 */
+	    margin-top: 20px;
+	    width : 486px;
+	}
+	
+	.informer-name {
+	    font-size: 22px;
+	    font-weight: 700;
+	    margin: 0;
+	    margin-left: 25px;
+	    margin-right: 5px;
+	}
+	
+	/* 공통 배지 */
+	.badge {
+	    font-size: 12px;
+	    font-weight: 600;
+	    padding: 4px 10px;
+	    border-radius: 999px; /* pill */
+	    display: inline-flex;
+	    align-items: center;
+	}
+	
+	/* 최고 통신원 - 초록 */
+	.badge-best {
+	    background: #dcfce7;
+	    color: #15803d;
+	}
+	
+	/* 명예 통신원 - 파랑 */
+	.badge-honor {
+	    background: #dbeafe;
+	    color: #1d4ed8;
+	}
+	
+	/* 자원봉사 - 회색 */
+	.badge-service {
+	    background: #f3f4f6;
+	    color: #374151;
+	}
+	
+	
+	
+	/* 전체 박스 */
+	.date-info {
+	    display: flex;
+	    align-items: center;
+	    gap: 24px;
+	    margin-left: 120px;
+	    margin-top: 10px;
+	}
+	
+	/* 각 항목 */
+	.date-item {
+	    display: flex;
+	    flex-direction: column;
+	}
+	
+	/* 라벨 */
+	.date-label {
+	    font-size: 13px;
+	    color: #6b7280; /* 연회색 */
+	    margin: 0;
+	}
+	
+	/* 값 */
+	.date-value {
+	    font-weight: 700;
+	    font-size: 16px;
+	    color: #111827;
+	    margin-left: 6px;
+	}
+	
+	/* 유효기간 (빨강 강조) */
+	.date-expired {
+	    font-weight: 700;
+	    font-size: 16px;
+	    color: #ef4444;
+	}
+	
+	/* 가운데 세로 구분선 */
+	.divider {
+	    width: 1px;
+	    height: 40px;
+	    background: #e5e7eb;
+	}
+	
+	
+	/* 전체 정렬 */
+	.status-wrapper {
+	    display: flex;
+	    align-items: center;
+	    gap: 12px;
+	    margin-left: 50px;
+	}
+	
+	/* 라벨 */
+	.status-label {
+	    font-size: 16px;
+	    color: #6b7280;
+	    margin: 0;
+	}
+	
+	/* 공통 배지 */
+	.status-badge {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 6px;
+	    padding: 6px 14px;
+	    font-size: 13px;
+	    font-weight: 600;
+	    border-radius: 999px;
+	    margin-top :2px;
+	}
+	
+	/* 상태 원 */
+	.status-dot {
+	    width: 8px;
+	    height: 8px;
+	    border-radius: 50%;
+	}
+	
+	/* 위촉 (초록) */
+	.status-active {
+	    background: #dcfce7;
+	    color: #15803d;
+	}
+	
+	.status-active .status-dot {
+	    background: #22c55e;
+	}
+	
+	/* 해촉 (빨강 버전) */
+	.status-inactive {
+	    background: #fee2e2;
+	    color: #b91c1c;
+	}
+	
+	.status-inactive .status-dot {
+	    background: #ef4444;
+	}
+	
+	
+	.ellipsis-text {
+	    font-size: 16px;
+	    max-width: 500px;     /* 원하는 너비로 조절 */
+	    white-space: nowrap;  /* 한 줄 유지 */
+	    overflow: hidden;     
+	    text-overflow: ellipsis;
+	    margin: 0;
+	}
+	
+	
+	
+	
+	
 	.form-table{
     width:904px;
     border-collapse:collapse;
@@ -374,7 +318,6 @@
 .form-table label{
     margin-right:20px;
 }
-
 </style>
 <script>
 	$(document).ready(function(){
@@ -535,474 +478,30 @@
         <div id="bodyWrap" class="clfix" style="width:1100px;">
             <!-- contentWrap -->
             <div id="contentWrap" style="width:1050px;">
-            	
-            
-            
-            	<div style="display: flex; padding-left: 20px; padding-top: 20px; justify-content: space-between; align-items: center;">
-            		<div style="display: flex; align-items: baseline; border-left: 5px solid blue;">
-            			<h1 style="font-size: 28px; margin-right: 20px; margin-left: 5px;">통신원 상세정보</h1>
-            			<p style="font-size:15px;"><span style="color: rgba(47, 46, 47, 0.77);">통신원 관리 ></span> 상세 정보</p>
-            		</div>
-            		<div class="button-group">
-					    <button class="btn btn-secondary" onclick="changeAct('N');">
-					        <img src="/images/notuseInformer.svg" class="btn-icon"/>
-					        해촉
-					    </button>
-					
-					    <button class="btn btn-danger" onclick="delInformer();">
-					        <img src="/images/deleteInformer.svg" class="btn-icon"/>
-					        삭제
-					    </button>
-					                                
-					    <button class="btn btn-secondary" onclick="self.close();">
-					        <img src="/images/cancleInformer.svg" class="btn-icon"/>
-					        취소
-					    </button>
-					
-					    <button class="btn btn-primary" onclick="changeView('update');">
-					        <img src="/images/updateInformer.svg" class="btn-icon"/>
-					        정보 수정
-					    </button>
-					
-					</div>
-            	</div>
-            
-            	<div style="background-color: white;width: 1030px;height: 140px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex;">
-            		<div id="pictureDiv" style="margin-left: 25px;">
-            			 <c:choose>
-						    <c:when test="${empty informerInfo.localFilePath}">
-						        <img src="<c:url value='/images/noPicture.svg'/>"
-						             alt="사진"
-						             style="width: 95px; height: 110px; border: 1px solid #ddd; margin-top: 14.5px; border-radius: 5px;" />
-						    </c:when>
-						    <c:otherwise>
-						        <img src="<c:url value='/picture/${informerInfo.informerId}/${informerInfo.localFilePath}'/>"
-							     alt="사진"
-							     style="width:95px; height:110px; border: 1px solid #ddd; margin-top: 14.5px; border-radius: 5px;"
-							     onerror="this.onerror=null;  this.style.width='95px';
-              this.style.height='110px'; this.style.objectFit='contain'; this.src='<c:url value="/images/noRoadPicture.svg"/>';" />
-						    </c:otherwise>
-						</c:choose>
-	                </div>
-            		<div style="width :907px;">
-            			<div style="display:flex;">
-            				<div class="name-wrapper">
-							    <p class="informer-name">${informerInfo.informerName}</p>
-							
-							    <c:if test="${informerInfo.flagBest eq 'Y'}">
-							        <div class="badge badge-best">최고통신원</div>
-							    </c:if>
-							
-							    <c:if test="${informerInfo.honor eq 'Y'}">
-							        <div class="badge badge-honor">명예통신원</div>
-							    </c:if>
-							
-							    <c:if test="${informerInfo.flagService eq 'Y'}">
-							        <div class="badge badge-service">자원봉사</div>
-							    </c:if>
-							</div>
-							<div class="date-info">
-							
-							   <div class="date-item">
-								    <p class="date-label">
-								        가입일
-								        <span class="date-value">
-								            ${empty informerInfo.regDate ? '정보 미등록' : informerInfo.regDate}
-								        </span>
-								    </p>
-								</div>
-							
-							    <div class="divider"></div>
-							
-							    <div class="date-item">
-							        <p class="date-label">
-							            신분증 유효기간
-							            <br/>
-							            <c:choose>
-							                <c:when test="${empty informerInfo.identifiDate}">
-							                    <span class="date-expired">정보 미등록</span>
-							                </c:when>
-							                <c:otherwise>
-							                    <span class="date-expired">
-							                        ${informerInfo.identifiDate}
-							                    </span>
-							                </c:otherwise>
-							            </c:choose>
-							        </p>
-							    </div>
-							
-							</div>
-            			</div>
-            			<div style="height: 40px;">
-            				<div>
-            					<p style="color: gray; font-size: 16px; margin-left: 25px; margin-top: 20px;">
-								    ID 
-								    <span style="color: black; font-size: 18px;">
-								        &nbsp; ${empty informerInfo.actId ? '정보 없음' : informerInfo.actId}
-								    </span>
-								</p>
-            				</div>
-            				<div style="display:flex; align-items: baseline;">
-	            				<div>
-	            					<p style="color: gray; font-size: 16px; margin-left: 22px; margin-top: 12px;">소속
-		            					<span style="font-size: 16px; color: black;">&nbsp;${informerInfo.areaName}</span>
-		            					<span>&nbsp;></span>
-		            					<span style="font-size:16px; color:black;">
-										    &nbsp;${empty informerInfo.orgName ? '무소속' : informerInfo.orgName}
-										</span>
-	            					</p>
-	            				</div>
-								<div class="status-wrapper">
-								    <p class="status-label">활동 상태</p>
-								
-								    <span class="status-badge 
-								        ${informerInfo.flagAct eq 'Y' ? 'status-active' : 'status-inactive'}">
-								
-								        <span class="status-dot"></span>
-								        ${informerInfo.flagAct eq 'Y' ? '위촉' : '해촉'}
-								    </span>
-								</div>         					
-            				</div>	
-            			</div>
-            		</div>
-            	</div>
-            	
-				<div style="display:flex;">
-					 <!-- 기본 정보 -->
-	            	<div style="width :360px; height : 280px; background-color : white; margin-left : 20px; margin-top : 15px; border-radius:10px; display:flex; flex-direction: column;">
-	            		<!-- 기본정보 타이틀 -->
-	            		<div style="display: flex; width: 430px; height: 40px; align-items: center; margin-top: 5px; margin-bottom:5px;">
-	            			<!-- 기본정보 아이콘 -->
-	            			<div style="width: 35px; height: 35px; background-image: url(/images/standardInfo.svg); background-size: contain; margin-left: 20px; margin-right: 8px;"></div>
-	            			<p style="font-size : 18px; font-weight : 500;">기본 정보</p>
-	            		</div>
-	            		
-	            		<!-- 기본정보 내용 -->
-	            		<div style="width: 430px; height: 205px;">
-	            			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">생년월일</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.birthday ? '정보 없음' : informerInfo.birthday}</p>
-	            				</div>
-	            			</div>
-	 
-	             			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">최종학력</p>
-	            				</div>
-	            				<div>
-	            					<p style="font-size : 16px;">${empty informerInfo.lastSchool ? '정보 없음' : informerInfo.lastSchool}</p>
-	            				</div>
-	            			</div>  
-	            			
-	              			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">주민등록번호</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.residentNum ? '정보 없음' : informerInfo.residentNum}</p>
-	            				</div>
-	            			</div>
-	            			
-	            			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">통신원 직업</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.informerJob ? '정보 없음' : informerInfo.informerJob}</p>
-	            				</div>
-	            			</div>
-	            			
-							<div style="width:430px; height:30px; display:flex; align-items:center;">
-							    <div style="width:120px; margin-right:15px;">
-							        <p style="font-size:16px; color:gray; margin-left:20px;">
-							            통신원 종류
-							        </p>
-							    </div>
-							
-							    <div>
-							        <p style="font-size:16px;">
-							            <c:choose>
-							                <c:when test="${empty informerInfo.flagBroad}">
-							                    정보 없음
-							                </c:when>
-							                <c:when test="${informerInfo.flagBroad eq '0'}">
-							                    일반 통신원
-							                </c:when>
-							                <c:otherwise>
-							                    방송 통신원
-							                </c:otherwise>
-							            </c:choose>
-							        </p>
-							    </div>
-							</div>
-							
-							<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">통신원 유형</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.informerTypeName ? '정보 없음' : informerInfo.informerTypeName}</p>
-	            				</div>
-	            			</div>
-	            			
-	            			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">세부 소속 기관</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.orgSubName ? '정보 없음' : informerInfo.orgSubName}</p>
-	            				</div>
-	            			</div>
-	            			         			
-	            		</div>
-	            	</div>
-	            	
-	            	<!-- 연락처 / 주소 -->
-	            	<div style="width :760px; height : 280px; background-color : white; margin-left : 20px; margin-top : 15px; border-radius:10px; display:flex; flex-direction: column;">
-	            		<!-- 연락처/주소 -->
-	            		<div style="">
-	            			<div style="display: flex; width: 430px; height: 40px; align-items: center; margin-top: 5px; margin-bottom:5px;">
-		            			<!-- 연락처/주소 -->
-		            			<div style="width: 35px; height: 35px; background-image: url(/images/address.svg); background-size: contain; margin-left: 20px; margin-right: 8px;"></div>
-		            			<p style="font-size : 18px; font-weight : 500;">연락처/주소</p>
-	            			</div>
-
-	            			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">핸드폰 번호</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.phoneCell ? '정보 없음' : informerInfo.phoneCell}</p>
-	            				</div>
-	            			</div>
-	            			
-	            			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">집 전화번호</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.phoneHome ? '정보 없음' : informerInfo.phoneHome}</p>
-	            				</div>
-	            			</div>
-
-	            			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">회사 전화 번호</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.phoneOffice ? '정보 없음' : informerInfo.phoneOffice}</p>
-	            				</div>
-	            			</div>	
-	            			
-	            			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">TRS</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.trsNo ? '정보 없음' : informerInfo.trsNo}</p>
-	            				</div>
-	            			</div>	      
-	            			
-							<div style="width:650px; height:30px; display:flex; align-items:center;">
-							    <div style="width:120px; margin-right:15px;">
-							        <p style="font-size:16px; color:gray; margin-left:20px;">
-							            주소(개인)
-							        </p>
-							    </div>
-							
-							    <div style="flex:1;">
-							        <p class="ellipsis-text"
-							           title="${empty informerInfo.addressHome ? '정보 없음' : informerInfo.addressHome}">
-							            ${empty informerInfo.addressHome ? '정보 없음' : informerInfo.addressHome}
-							        </p>
-							    </div>
-							</div>   
-	            			
-							<div style="width:650px; height:30px; display:flex; align-items:center;">
-							    <div style="width:120px; margin-right:15px;">
-							        <p style="font-size:16px; color:gray; margin-left:20px;">
-							            주소(회사)
-							        </p>
-							    </div>
-							
-							    <div style="flex:1;">
-							        <p class="ellipsis-text"
-							           title="${empty informerInfo.addressOffice ? '정보 없음' : informerInfo.addressOffice}">
-							            ${empty informerInfo.addressOffice ? '정보 없음' : informerInfo.addressOffice}
-							        </p>
-							    </div>
-							</div>    							
-							
-							<div style="width:650px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">차량 종류</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px; width:175px;">${empty informerInfo.carType ? '정보 없음' : informerInfo.carType}</p>
-	            				</div>
-
-								<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">차량 번호</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px; width:175px;">${empty informerInfo.carNum ? '정보 없음' : informerInfo.carNum}</p>
-	            				</div>	            				
-	            			</div>	     			    			      			            			
-	            		</div>
-	            	</div>
-				
-				</div>
-	
-	
-				<!-- 두번째 줄 시작 -->
-				<div style="display:flex;">
-					<div style="width :375px; height : 305px; background-color : white; margin-left : 20px; margin-top : 15px; border-radius:10px; display:flex; flex-direction: column;">
-	            		<!-- 메모 타이틀 -->
-	            		<div style="display: flex; width: 375px; height: 40px; align-items: center; margin-top: 5px; margin-bottom:5px;">
-	            			<!-- 메모 아이콘 -->
-	            			<div style="width: 35px; height: 35px; background-image: url(/images/memoIcon.svg); background-size: contain; margin-left: 20px; margin-right: 8px;"></div>
-	            			<p style="font-size : 18px; font-weight : 500;">메모</p>
-	            		</div>
-	            		
-	            		<!-- 메모 내용 --> 
-						<div style="width:375px; height:305px; overflow-y:auto; overflow-x:hidden;">
-						
-						    <div style="width:375px; height:93px; display:flex; align-items:flex-start; margin-top:10px;">
-						        <div style="width:120px; margin-right:15px;">
-						            <p style="font-size:16px; color:gray; margin-left:20px;">전달 사항</p>
-						        </div>
-	            				<div> 
-	            					<textarea style="width:200px; height:88px; resize:none;" readonly>${informerInfo.memo}</textarea>
-	            				</div>
-	            			</div>
-	 
-	             			<div style="width:375px; height : 93px; display: flex; align-items: flex-start; margin-top: 10px;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">메모</p>
-	            				</div>
-	            				<div>
-	            					<textarea style="width:200px; height:88px; resize:none;" readonly>${informerInfo.memo1}</textarea>
-	            				</div>
-	            			</div>  
-	            			
-	              			<div style="width:375px; height : 93px; display: flex; align-items: flex-start; margin-top: 10px;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">추가 메모</p>
-	            				</div>
-	            				<div> 
-	            					<textarea style="width:200px; height:88px; resize:none;" readonly>${informerInfo.memo2}</textarea>
-	            				</div>
-	            			</div>
-	            			
-	            		</div>
-	            	</div>
-	            	
-	            	
-	            	<div style="width :760px; height : 305px; background-color : white; margin-left : 20px; margin-top : 15px; border-radius:10px; display:flex; flex-direction: column;">
-
-	            		<div>
-	            			<div style="display: flex; width: 430px; height: 40px; align-items: center; margin-top: 5px; margin-bottom:5px;">
-		            			<!-- 연락처/주소 -->
-		            			<div style="width: 35px; height: 35px; background-image: url(/images/yearReceiptTable.svg); background-size: contain; margin-left: 20px; margin-right: 8px;"></div>
-		            			<p style="font-size : 18px; font-weight : 500;">활동 상태</p>
-	            			</div>
-							<div style="display :flex; margin-top:25px; margin-bottom:10px;">
-								<div style="margin-left:20px;">
-									<p style="font-size:16px;">년도 선택</p>
-								</div>
-								<div>
-									<select id="selectYear" style="margin-left: 10px;">
-                        			
-                        			</select>
-								</div>
-							</div>
-	            			
-							<div class="activity-card">
-							    <table id="avgReport" class="activity-table">
-							
-							        <!-- 1~6월 -->
-							        <tr>
-							            <th>1월</th>
-							            <th>2월</th>
-							            <th>3월</th>
-							            <th>4월</th>
-							            <th>5월</th>
-							            <th>6월</th>
-							            <th>소계</th>
-							            <th>합계</th>
-							        </tr>
-							
-							        <tr>
-							            <td id="mon01">0</td>
-							            <td id="mon02">0</td>
-							            <td id="mon03">0</td>
-							            <td id="mon04">0</td>
-							            <td id="mon05">0</td>
-							            <td id="mon06">0</td>
-							            <td id="minSum" class="subtotal">0</td>
-							            <td id="sum" class="total">0</td>
-							        </tr>
-							
-							        <!-- 7~12월 -->
-							        <tr>
-							            <th>7월</th>
-							            <th>8월</th>
-							            <th>9월</th>
-							            <th>10월</th>
-							            <th>11월</th>
-							            <th>12월</th>
-							            <th>소계</th>
-							        </tr>
-							
-							        <tr>
-							            <td id="mon07">0</td>
-							            <td id="mon08">0</td>
-							            <td id="mon09">0</td>
-							            <td id="mon10">0</td>
-							            <td id="mon11">0</td>
-							            <td id="mon12">0</td>
-							            <td id="minSum2" class="subtotal">0</td>
-							        </tr>
-							
-							    </table>
-							</div> 			            			
-	            		</div>
-	            	</div>
-				
-				</div>
-            </div>
-            <!-- //contentWrap -->
-            
-            <!-- contentWrap2 -->
-            <div id="contentWrap2" style="width:1050px; display:none; margin-left:10px;">
   				<!-- 통신원 등록 시작 -->
   				<!-- 통신원 등록 상단 헤더(타이틀, 버튼) -->
             	<div style="display: flex; padding-left: 20px; padding-top: 20px; justify-content: space-between; align-items: center;">
             		<div style="display: flex; align-items: baseline; border-left: 5px solid blue;">
-            			<h1 style="font-size: 28px; margin-right: 20px; margin-left: 5px;">통신원 정보 수정</h1>
-            			<p style="font-size:15px;"><span style="color: rgba(47, 46, 47, 0.77);">통신원 관리 > 상세 정보 ></span>  정보 수정</p>
+            			<h1 style="font-size: 28px; margin-right: 20px; margin-left: 5px;">통신원 등록</h1>
+            			<p style="font-size:15px;"><span style="color: rgba(47, 46, 47, 0.77);">통신원 관리 ></span> 통신원 등록</p>
             		</div>
             		<div class="button-group">   
-					    <button class="btn btn-secondary" onclick="changeView('detail');">
+					    <button class="btn btn-secondary" onclick="self.close();">
 					        <img src="/images/cancleInformer.svg" class="btn-icon"/>
 					        취소
 					    </button>
 					
 					    <button class="btn btn-primary" onclick="saveInformer();" alt="등록" title="등록">
 					        <img src="/images/updateInformer.svg" class="btn-icon"/>
-					        정보 저장
+					        정보 등록
 					    </button>
 					
 					</div>
             	</div>
-            	<!-- 통신원 수정 상단 헤더(타이틀, 버튼) 끝 -->
+            	<!-- 통신원 등록 상단 헤더(타이틀, 버튼) 끝 -->
             	<!-- form 시작 -->
             	<form id="informerEditFrm" name="informerEditFrm" method="post" enctype="multipart/form-data">
             		<input type="hidden" id="pageDiv" name="pageDiv" value="${pageDiv}"></input>
-            		<input type="hidden" id="informerId" name="informerId" value="${informerInfo.informerId}"></input>
 	            	<!-- 통신원 등록 - 기본정보 입력란 -->
 	            	<div style="background-color: white;width: 1030px;height: 560px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
 	            		<!-- 기본정보 타이틀 -->
@@ -1018,23 +517,23 @@
 								    <th rowspan="2">통신원 종류</th>								
 								    <th>통신원 분류 1)</th>								
 								    <td>
-								        <input type="radio" name="flagBroad" id="flagBroad0" value="0" <c:if test="${informerInfo.flagBroad eq '0'}">checked</c:if>/>
+								        <input type="radio" name="flagBroad" id="flagBroad0" value="0"/>
 								        <label for="flagBroad0">일반통신원</label>
 								
-								        <input type="radio" name="flagBroad" id="flagBroad1" value="1" <c:if test="${informerInfo.flagBroad eq '1'}">checked</c:if>/>
+								        <input type="radio" name="flagBroad" id="flagBroad1" value="1"/>
 								        <label for="flagBroad1">방송통신원</label>
 								    </td>
 								</tr>								
 								<tr>								
 								    <th>통신원 분류 2)</th>								
 								    <td>
-								        <input type="checkbox" name="flagBest" id="flagBest" value="Y" <c:if test="${informerInfo.flagBest eq 'Y'}">checked</c:if>/>
+								        <input type="checkbox" name="flagBest" id="flagBest" value="Y"/>
 								        <label for="flagBest">최고통신원</label>
 								
-								        <input type="checkbox" name="honor" id="honor" value="Y" <c:if test="${informerInfo.honor eq 'Y'}">checked</c:if>/>
+								        <input type="checkbox" name="honor" id="honor" value="Y"/>
 								        <label for="honor">명예통신원</label>
 								
-								        <input type="checkbox" name="flagService" id="flagService" <c:if test="${informerInfo.flagService eq 'Y'}">checked</c:if>/>
+								        <input type="checkbox" name="flagService" id="flagService"/>
 								        <label for="flagService">자원봉사</label>
 								    </td>								
 								</tr>								
@@ -1051,11 +550,11 @@
 								<tr>								
 								    <th>통신원 이름 <span style="color:red">*</span></th>								
 								    <td>
-										<input type="text" id="informerName" name="informerName" value="${informerInfo.informerName}"/>
+										<input type="text" id="informerName" name="informerName"/>
 								    </td>
 								    <th>통신원 ID <span style="color:red">*</span></th>
 								    <td>
-								    	<input type="text" id="actId" name="actId" value="${informerInfo.actId}"/>
+								    	<input type="text" id="actId" name="actId"/>
 								    </td>
 								</tr>	
 															
@@ -1064,7 +563,9 @@
 								    <td>
 										<select style="width:155px;" id="informerTypeSel" name="informerType">
 											<c:forEach var="informerType" items="${informerTypeList}">
-												<option value="${informerType.ifmId1}" <c:if test="${informerType.ifmId1 eq informerInfo.informerType}">selected</c:if>>${informerType.ifmName}</option>
+												<option value="${informerType.ifmId1}" 
+												<c:if test="${informerType.ifmId1 eq informerInfo.informerType}">selected</c:if>>
+												${informerType.ifmName}</option>
 											</c:forEach>
 										</select>
 								    </td>
@@ -1115,14 +616,14 @@
 								</tr>
 								
 								<tr>								
-								    <th>사진 <span style="font-size:10px;">(변경시 선택)</span></th>								
+								    <th>사진</th>								
 								    <td>
 										<input type="hidden" class="input_base" id="localFilePath" name="localFilePath" value="${informerInfo.localFilePath}" />
                                         <input type="file" id="file" name="file" onchange="changePicture($(this));" style="width:200px;"/>
 								    </td>
 								    <th>활동 상태</th>
 								    <td>
-										<input type="text" class="input_base" id="flageAct" name="flageAct" value="${informerInfo.flagAct eq 'Y' ? '위촉' : '해촉'}" disabled />
+										<input type="text" class="input_base" id="flageAct" name="flageAct" value="신규가입" disabled />
 								    </td>
 								</tr>									
 							</table>
@@ -1138,24 +639,22 @@
 								<tr>								
 								    <th>주민등록번호</th>								
 								    <td>
-										<input type="hidden" class="input_base" id="residentNum" name="residentNum" style="width:50px;" value="${informerInfo.residentNum}" />
+										<input type="hidden" class="input_base" id="residentNum" name="residentNum" style="width:50px;" />
                                         <input type="text" id="residentNum1" name="residentNum1" value="" maxlength="6" style="width:85px;" onkeydown='onlyNumber(this)' onkeyup='onlyNumber(this)'/>                                            	
                                         <span> - </span>
                                         <input type="text" id="residentNum2" name="residentNum2" value="" maxlength="7" style="width:85px;" onkeydown='onlyNumber(this)' onkeyup='onlyNumber(this)'/>
 								    </td>
 								    <th>신분증 유효기간 <span style="font-size:10px;">(YYYYMMDD)</span></th>
 								    <td>
-										<input type="text" id="identifiDate" name="identifiDate" value="${fn:replace(informerInfo.identifiDate,'.','')}" maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
+										<input type="text" id="identifiDate" name="identifiDate" maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
 								    </td>
 								</tr>
 								<tr>								
 								    <th>가입일자</th>								
-								    	<c:if test="${informerInfo.informerId eq null }">
-						                        <td><fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd" /></td>
-						                </c:if>
-						                <c:if test="${informerInfo.informerId ne null }">
-						                        <td><c:out value="${informerInfo.regDate}"/></td>
-						                </c:if>
+								    <td>
+								    	<c:set var="nowDate" value="<%=new java.util.Date() %>"/>
+										<fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd" />
+								    </td>
 								    <th>생일</th>
 								    <td>
 										<div class='input-group date' id='datetimepicker1' style="display: inline;">
@@ -1170,11 +669,11 @@
 								<tr>								
 								    <th>최종학력</th>								
 								    <td>
-								    	<input type="text" id="lastSchool" name="lastSchool" value="${informerInfo.lastSchool}"/>
+								    	<input type="text" id="lastSchool" name="lastSchool" />
 								    </td>
 								    <th>통신원 직업</th>
 								    <td>
-										<input type="text" id="informerJob" name="informerJob" value="${informerInfo.informerJob}"/>
+										<input type="text" id="informerJob" name="informerJob" />
 								    </td>
 								</tr>
 							</table>	
@@ -1203,11 +702,11 @@
 								<tr>							
 								    <th>핸드폰 번호 <span style="color:red">*</span></th>								
 								    <td>
-								        <input type="text" id="phoneCell" name="phoneCell" style="font-weight: bold;" value="${informerInfo.phoneCell}" maxlength="11" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
+								        <input type="text" id="phoneCell" name="phoneCell" style="font-weight: bold;" maxlength="11" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
 								    </td>
 								    <th>집 전화번호</th>								
 								    <td>
-								        <input type="text" id="phoneHome" name="phoneHome" value="${informerInfo.phoneHome}" maxlength="13"  onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
+								        <input type="text" id="phoneHome" name="phoneHome" style="" maxlength="13" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
 								    </td>
 								</tr>								
 								<tr>																    								
@@ -1215,21 +714,21 @@
 								<tr>								
 								    <th>TRS</th>								
 								    <td>
-								        <input type="text" id="trsNo" name="trsNo" value="${informerInfo.trsNo}"/>
+								        <input type="text" id="trsNo" name="trsNo" />
 								    </td>	
 								    <th>회사 전화번호</th>
 								    <td>
-								    	<input type="text" id="phoneOffice" name="phoneOffice" style="" maxlength="13" value="${informerInfo.phoneOffice}" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
+								    	<input type="text" id="phoneOffice" name="phoneOffice" style="" maxlength="13" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
 								    </td>							
 								</tr>
 								<tr>								
 								    <th>차량 번호</th>								
 								    <td>
-								        <input type="text" id="carNum" name="carNum"  maxlength="15" value="${informerInfo.carNum}"/>
+								        <input type="text" id="carNum" name="carNum"  maxlength="15"/>
 								    </td>
 								    <th>차량 종류</th>
 								    <td>
-								    	<input type="text" id="carType" name="carType"  maxlength="15" value="${informerInfo.carType}"/>
+								    	<input type="text" id="carType" name="carType"  maxlength="15"/>
 								    </td>								
 								</tr>					
 							</table>
@@ -1239,9 +738,9 @@
 									<th rowspan="2">주소(개인)</th>								
 								    <th>우편 번호 / 주소</th>								
 								    <td>								        
-                                        <input type="hidden" id="address" name="address" value="${informerInfo.address}"/>
-                                        <input type="hidden" id="addressHome" name="addressHome" value="${informerInfo.addressHome}"/>
-                                        <input type="text" id="adressHome3" name="zipcode" value="${informerInfo.zipcode}" readonly></input>
+                                        <input type="hidden" id="address" name="address"/>
+                                        <input type="hidden" id="addressHome" name="addressHome"/>
+                                        <input type="text" id="adressHome3" name="zipcode" readonly></input>
                                         <input type="text" id="addressHome1" name="addressHome1" style="margin-right:10px; width:230px;" readonly/>
                                         <input type="button" id="searchAddress1" name="searchAddress1" onclick="searchAddress(1);" style="width:70px;" value="주소검색"/>
 								    </td>								
@@ -1256,8 +755,8 @@
 									<th rowspan="2">주소(회사)</th>								
 								    <th>우편 번호 / 주소</th>								
 								    <td>
-								        <input type="hidden" id="addressOffice" name="addressOffice" value="${informerInfo.addressOffice}"/>
-                                        <input type="text" id="addressOffice3" name="zipcode2" value="${informerInfo.zipcode2}" readonly></input>
+								        <input type="hidden" id="addressOffice" name="addressOffice" />
+                                        <input type="text" id="addressOffice3" name="zipcode2" readonly></input>
                                         <input type="text" id="addressOffice1" name="addressOffice1" style="margin-right:10px; width:230px;" readonly/>
                                         <input type="button" id="searchAddress2" name="searchAddress2" onclick="searchAddress(2);" style="width:70px;" value="주소검색"/>
 								    </td>								
@@ -1297,10 +796,10 @@
 						
 						        <tr>
 						            <td rowspan="3">
-						            	<textarea class="table_sel" id="memo" name="memo" cols="50" rows="8" style="width:400px; height:110px;resize:none;" maxlength="500" >${informerInfo.memo}</textarea>
+						            	<textarea class="table_sel" id="memo" name="memo" cols="50" rows="8" style="width:400px; height:110px;resize:none;" maxlength="500" ></textarea>
 						            </td>
 						            <td>
-						            	<input type="text" id="memo1" name="memo1" maxlength="100" value="${informerInfo.memo1}" style="width:400px;"/>
+						            	<input type="text" id="memo1" name="memo1" maxlength="100" style="width:400px;"/>
 						            </td>
 						        </tr>
 						
@@ -1310,7 +809,7 @@
 						
 						        <tr>
 						            <td>
-						            	<input type="text" id="memo2" name="memo2" maxlength="50" value="${informerInfo.memo2}" style="width:400px;"/>
+						            	<input type="text" id="memo2" name="memo2" maxlength="50" style="width:400px;"/>
 						            </td>
 						        </tr>
 						
@@ -1322,7 +821,7 @@
             	<!-- 통신원 등록 끝 -->
             	
             </div>
-            <!-- //contentWrap2 -->
+            <!-- //contentWrap -->
         </div>
         <!-- //bodyWrap -->
     </div>
@@ -1339,10 +838,6 @@ $(document).ready(function(){
     //파일 관련하여 있으면 값 대입
     var tagFile = "${informerInfo.localFilePath}";
     
-    
-    // 수정(U), 상세(D) 화면 KEY 값
-    var viewStatus = 'D';
-    // 기본 값 : 상세(D)
     	
     if(typeof tagHome !== "undefined" && tagHome !=""){
     	addressSp("addressHome",tagHome,"--");
@@ -1795,25 +1290,6 @@ function setAddress(str, target){
 function changePicture(obj){
 	$('#localFilePath').val((obj.val()).replace("C:\\fakepath\\", ""));
 }
-
-
-
-function changeView(viewName) {
-	console.log("가져온 화면 :" + viewName);
-	
-	if(viewName == 'update') {
-		console.log("업데이트");
-		$('#contentWrap2').show();
-		$('#contentWrap').hide();
-	} else {
-		console.log("상세");
-		$('#contentWrap2').hide();
-		$('#contentWrap').show();
-	}
-	
-}
-
-
 </script>
 </body>
 </html>

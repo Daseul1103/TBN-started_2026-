@@ -566,13 +566,18 @@ $(document).ready(function(){
  */
 function editInformer(str){
     var param = "";
+    var popupW = 1100;  // 팝업 넓이
+    var popupH = 900;  // 팝업 높이
+    
+    
+    // 업데이트 인 경우
     if(str != null && str != "" && str != "undefined"){
         param = "?pr1=" + str;
     }
+    console.log("변수 :" + param);
+    
     var url = "/informer/editInformer.do" + param;
     var windowName = "통신원등록";
-    var popupW = 1100;  // 팝업 넓이
-    var popupH = 900;  // 팝업 높이
     var left = Math.ceil((window.screen.width - popupW)/2);
     var top = Math.ceil((window.screen.height - popupH)/2);
     popObj = window.open(url, windowName, 'width=' + popupW +  ', height=' + popupH +  ', left=' + left +  ', top=' + top + ', toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no');

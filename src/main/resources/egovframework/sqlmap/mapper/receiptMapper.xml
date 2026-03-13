@@ -624,18 +624,58 @@
 	
 	<!-- 모바일 앱 제보 => receipt_today로 이동(insert) -->
 	<insert id="insertAppStatus">
+	    INSERT INTO REPORT_RECEIPT_TODAY (
+	        RECEIPT_ID, INDIVIDUAL_ID, INDIVIDUAL_NAME, MEMO, REGION_ID,
+	        REPORT_TYPE, R_TEL, X_COORDINATE, Y_COORDINATE, REPORTER_TYPE,
+	        FLAG_BROD, FLAG_SEND, FLAG_IMPORTANT,
+	        RECEIPT_DAY, RECEIPT_TIME, FLAG_DISASTOR,
+	        RECEPTION_ID, RECEPTION_NAME, INDIVIDUAL_TYPE
+	    )
+	    SELECT 
+	        RA.RECEIPT_ID,
+	        RA.INFORMER_ID,
+	        RA.INFORMER_NAME,
+	        RA.COMMENT_TXT,
+	        RA.AREA_CODE,
+	        RA.REPORT_TYPE,
+	        RA.PHONE_CELL,
+	        RA.X_COORDINATE,
+	        RA.Y_COORDINATE,
+	        RA.REPORTER_TYPE,
+	        RA.FLAG_BROD,
+	        RA.FLAG_SEND,
+	        RA.FLAG_IMPORTANT,
+	        RA.RECEIPT_DAY,
+	        RA.RECEIPT_TIME,
+	        RA.FLAG_DISASTOR,
+	        #{nlVo.userId},
+	        #{nlVo.userName},
+	        NVL(I.INFORMER_TYPE, '2')
+	    FROM RECEIPT_APP RA
+	    LEFT JOIN INFORMER I
+	        ON RA.PHONE_CELL = I.PHONE_CELL
+	    LEFT JOIN CODE_INFORMER_TYPE CIT
+	        ON I.INFORMER_TYPE = CIT.TYPE_ID
+	    WHERE RA.RECEIPT_ID IN
+	    <foreach collection="list" item="item" open="(" separator="," close=")">
+	        #{item.RECEIPT_ID}
+	    </foreach>
+	</insert>
+	
+	
+<!-- 	<insert id="insertAppStatus">
 		INSERT INTO REPORT_RECEIPT_TODAY (RECEIPT_ID, INDIVIDUAL_ID, INDIVIDUAL_NAME, MEMO, REGION_ID,
 		REPORT_TYPE, R_TEL, X_COORDINATE, Y_COORDINATE, REPORTER_TYPE, FLAG_BROD, FLAG_SEND, FLAG_IMPORTANT,
-		RECEIPT_DAY, RECEIPT_TIME, FLAG_DISASTOR)
+		RECEIPT_DAY, RECEIPT_TIME, FLAG_DISASTOR,RECEPTION_ID, RECEPTION_NAME)
 		SELECT RECEIPT_ID, INFORMER_ID, INFORMER_NAME, COMMENT_TXT, AREA_CODE, REPORT_TYPE,
 		PHONE_CELL, X_COORDINATE, Y_COORDINATE, REPORTER_TYPE, FLAG_BROD,
-		FLAG_SEND, FLAG_IMPORTANT, RECEIPT_DAY, RECEIPT_TIME, FLAG_DISASTOR
+		FLAG_SEND, FLAG_IMPORTANT, RECEIPT_DAY, RECEIPT_TIME, FLAG_DISASTOR ,#{nlVo.userId}, #{nlVo.userName}
 		FROM RECEIPT_APP
 		WHERE RECEIPT_ID IN 
 		<foreach collection="list" item="item" open="(" separator="," close=")">
 	        #{item.RECEIPT_ID}
 	    </foreach>
-	</insert>
+	</insert> -->
 	
 	
 	<!-- 모바일 앱 제보 flag update -->

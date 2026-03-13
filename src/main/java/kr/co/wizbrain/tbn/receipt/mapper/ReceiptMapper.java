@@ -119,7 +119,7 @@ public interface ReceiptMapper{
 	public List<ReceivedStatusVO> appStatusList(CriteriaVO cri) throws Exception;
 	
 	// 팝업 - 모바일 제보 => 금일 제보 테이블로 insert
-	public void insertAppStatus(List<ReceivedStatusVO> list) throws Exception;
+	public void insertAppStatus(@Param("list") List<ReceivedStatusVO> list, @Param("nlVo") UserVO nlVo) throws Exception;
 	
 	// 팝업 - 모바일 제보 검증 flag update
 	public void updateAppStatus(List<ReceivedStatusVO> list) throws Exception;

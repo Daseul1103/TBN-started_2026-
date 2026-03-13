@@ -17,25 +17,7 @@ public class ReceivedStatusVO {
 	private String INDIVIDUAL_NAME; //
 	private String TYPE_NAME; //TEXT
 	private String RECEPTION_ID;
-
 	private String FLAG_SITU_ED;
-	
-	
-	public String getFLAG_SITU_ED() {
-		return FLAG_SITU_ED;
-	}
-
-	public void setFLAG_SITU_ED(String fLAG_SITU_ED) {
-		FLAG_SITU_ED = fLAG_SITU_ED;
-	}
-
-	public String getFLAG_CHK() {
-		return FLAG_CHK;
-	}
-
-	public void setFLAG_CHK(String fLAG_CHK) {
-		FLAG_CHK = fLAG_CHK;
-	}
 
 	private String RECEPTION_NAME; //
 	private String MEMO; //
@@ -76,6 +58,22 @@ public class ReceivedStatusVO {
 		B_COLOR = b_COLOR;
 		FLAG_IMPORTANT = fLAG_IMPORTANT;
 		BROAD_TIME = bROAD_TIME;
+	}
+	
+	public String getFLAG_SITU_ED() {
+		return FLAG_SITU_ED;
+	}
+
+	public void setFLAG_SITU_ED(String fLAG_SITU_ED) {
+		FLAG_SITU_ED = fLAG_SITU_ED;
+	}
+
+	public String getFLAG_CHK() {
+		return FLAG_CHK;
+	}
+
+	public void setFLAG_CHK(String fLAG_CHK) {
+		FLAG_CHK = fLAG_CHK;
 	}
 	
 	public String getFLAG_DISASTOR() {

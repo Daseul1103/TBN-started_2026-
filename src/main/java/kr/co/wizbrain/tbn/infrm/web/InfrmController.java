@@ -423,67 +423,99 @@ public class InfrmController implements ApplicationContextAware {
 			,@RequestParam(required=false, value="histCode") String histCode
 			,@RequestParam(required=false, value="fileChg") String fileChg
 			,@RequestParam(required=false, value="createFileError") String createFileError
+			,@RequestParam(value="file", required=false) MultipartFile imgFile
 			,@ModelAttribute("ifmVO") InfrmVO ifmVO) throws Exception {
-		ModelAndView mv = new ModelAndView("jsonView");
-		
-		
-		// 신규 가입인 경우 => pageDiv : 신규/수정 구분 값
-		if(ifmVO.getPageDiv().equals("new")) {
+		try {
+
+			ModelAndView mv = new ModelAndView("jsonView");
 			
-			// 전화번호 중복인지 확인
-			if(infrmService.chkPhone(ifmVO)!=null) {
-				mv.addObject("msg","다른 통신원이 사용중인 전화번호입니다");
-				return mv;
+			
+			// 신규 가입인 경우 => pageDiv : 신규/수정 구분 값
+			if(ifmVO.getPageDiv().equals("new")) {
+				
+				// 전화번호 중복인지 확인
+				if(infrmService.chkPhone(ifmVO)!=null) {
+					mv.addObject("msg","다른 통신원이 사용중인 전화번호입니다");
+					return mv;
+				}
+				
+				// 신규 가입인 경우 통신원 ID 생성(actId X)
+				ifmVO.setInformerId(infrmService.getNewId(ifmVO));
 			}
 			
-			// 신규 가입인 경우 통신원 ID 생성(actId X)
-			ifmVO.setInformerId(infrmService.getNewId(ifmVO));
-		}
-		
-		//221129 경로관련 로직 변경
-		String fdir = "resources/picture/"+ifmVO.getInformerId()+"/";
-		//String dir = req.getServletContext().getRealPath(fdir);
-		//context.getServletContext().getRealPath("/")+ "picture/" + paramVO.getInformerId()+ "/";
+			//221129 경로관련 로직 변경
+			String fdir = "resources/picture/"+ifmVO.getInformerId()+"/";
+			//String dir = req.getServletContext().getRealPath(fdir);
+			//context.getServletContext().getRealPath("/")+ "picture/" + paramVO.getInformerId()+ "/";
 
-		if(Boolean.parseBoolean(fileChg)){									// 사진이 변경된 경우만 저장.
-			if(req instanceof MultipartHttpServletRequest){ 										// req 객체와 MultipartHttpServletRequest타입이 같다면,
-				MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req; 	// req를 MultipartHttpServletRequest타입으로 캐스팅.
-				MultipartFile imgFile = multipartRequest.getFile("file"); 					// 화면으로 부터 전달 받은 컨텐츠를 얻어옴.
-				if(imgFile != null){
-					if(imgFile.getContentType().startsWith("image")){
-						saveFileInfo(imgFile, ifmVO);
-						
-						if(createFileError != null && !createFileError.equals("")){
-							mv.addObject("createFileError", "createFileError");
+			
+			/*기존 소스*/
+			/*if(Boolean.parseBoolean(fileChg)){									// 사진이 변경된 경우만 저장.
+				if(req instanceof MultipartHttpServletRequest){ 										// req 객체와 MultipartHttpServletRequest타입이 같다면,
+					MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req; 	// req를 MultipartHttpServletRequest타입으로 캐스팅.
+					MultipartFile imgFile = multipartRequest.getFile("file"); 					// 화면으로 부터 전달 받은 컨텐츠를 얻어옴.
+					if(imgFile != null){
+						if(imgFile.getContentType().startsWith("image")){
+							saveFileInfo(imgFile, ifmVO);
+							
+							if(createFileError != null && !createFileError.equals("")){
+								mv.addObject("createFileError", "createFileError");
+								return mv;
+							}
+						}else{
+							mv.addObject("badFileType", "badFileType");
 							return mv;
 						}
-					}else{
-						mv.addObject("badFileType", "badFileType");
-						return mv;
 					}
+				} else {
+					res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected multipart request");
 				}
-			} else {
-				res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected multipart request");
-			}
-		}
-		
-		
-		// impl에서 insert, update 분기 처리함
-		int cnt = infrmService.saveInformer(ifmVO);
-		
-		if(ifmVO.getHistCode() != null && !ifmVO.getHistCode().equals("")){
-			String[] histCodeArray = ((String)ifmVO.getHistCode()).split(",");
-			for(int i = 0; i < histCodeArray.length; i++){
-				ifmVO.setUpdateCode(histCodeArray[i]);
-				ifmVO.setUpdateText(infrmService.getUpdateCode(ifmVO));
-				
-				infrmService.saveInformerHist(ifmVO);
-			}
-		}
-		
-		mv.addObject("cnt", cnt);
+			}*/
+			
+			
+			/*변경 후 소스*/
+			if(Boolean.parseBoolean(fileChg)){  // 사진 변경 시만
 
-		return mv;
+			    if(imgFile != null && !imgFile.isEmpty()){
+
+			        if(imgFile.getContentType().startsWith("image")){
+
+			            saveFileInfo(imgFile, ifmVO);
+
+			            if(createFileError != null && !createFileError.equals("")){
+			                mv.addObject("createFileError", "createFileError");
+			                return mv;
+			            }
+
+			        }else{
+			            mv.addObject("badFileType", "badFileType");
+			            return mv;
+			        }
+			    }
+			}
+			
+			// impl에서 insert, update 분기 처리함
+			int cnt = infrmService.saveInformer(ifmVO);
+			
+			if(ifmVO.getHistCode() != null && !ifmVO.getHistCode().equals("")){
+				String[] histCodeArray = ((String)ifmVO.getHistCode()).split(",");
+				for(int i = 0; i < histCodeArray.length; i++){
+					ifmVO.setUpdateCode(histCodeArray[i]);
+					ifmVO.setUpdateText(infrmService.getUpdateCode(ifmVO));
+					
+					infrmService.saveInformerHist(ifmVO);
+				}
+			}
+			
+			mv.addObject("cnt", cnt);
+
+			return mv;
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
+	        logger.error(e.toString(),e);  
+	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+	    }
 	}
 	
 	/**

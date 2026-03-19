@@ -132,9 +132,16 @@ public class ExportPoiHssfExcel extends AbstractView {
             }
             
             ServletOutputStream outputStream = response.getOutputStream();
-            response.setContentType(super.getContentType());
+            //response.setContentType(super.getContentType());
+            
+            response.setCharacterEncoding("UTF-8"); 
+            response.setContentType("application/vnd.ms-excel");
+            
             response.setHeader("Content-Transfer-Encoding", "binary");
-            response.setHeader("Content-Disposition", "attachment;fileName=\"" + this.filename + "\";");
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + this.filename + "\";");
+            
+            
+            
             wb.write(outputStream);
         } catch (IOException ioe) {
             ioe.printStackTrace();

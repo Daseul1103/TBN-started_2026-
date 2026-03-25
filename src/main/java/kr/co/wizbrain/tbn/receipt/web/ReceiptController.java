@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -45,6 +46,13 @@ import kr.co.wizbrain.tbn.receipt.vo.popup.EditVO;
 import kr.co.wizbrain.tbn.receipt.vo.popup.ReceiptSearchVO;
 import kr.co.wizbrain.tbn.receipt.vo.popup.ReceivedStatusVO;
 import kr.co.wizbrain.tbn.user.vo.UserVO;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.web.bind.annotation.RequestBody;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+
 
 @Controller
 public class ReceiptController {
@@ -866,6 +874,85 @@ public class ReceiptController {
 			mv.setViewName("/receipt/fullReceivedHistoryList");
 		}
 		return mv;
+	}
+	
+	@RequestMapping("/receipt/releaseSituationUni.ajax")
+	public ModelAndView transferGW(
+	        Model model,
+	        HttpServletRequest request,
+	        @RequestParam(value = "ids") List<String> ids,
+	        @RequestParam(value = "actionType") String actionType) throws Exception {
+
+	    logger.info("------------------ releaseSituationUni 진입 ------------------");
+	    logger.info("ids        : {}", ids);
+	    logger.info("actionType : {}", actionType);
+
+	    ModelAndView mv = new ModelAndView("jsonView");
+
+	    try {
+	        // 1. 파라미터 검증
+	        if (ids == null || ids.isEmpty()) {
+	            mv.addObject("result", "fail");
+	            mv.addObject("msg", "선택된 receiptId가 없습니다.");
+	            return mv;
+	        }
+
+	        if (actionType == null || "".equals(actionType.trim())) {
+	            mv.addObject("result", "fail");
+	            mv.addObject("msg", "처리 구분값(actionType)이 없습니다.");
+	            return mv;
+	        }
+
+	        // 버튼 id를 실제 업무 구분값으로 치환
+	        String procType = "";
+	        if ("appUptBtn".equals(actionType)) {
+	            procType = "RELEASE";   // 상황해제
+	        } else if ("appDelBtn".equals(actionType)) {
+	            procType = "ERROR";     // 오류제보
+	        } else {
+	            mv.addObject("result", "fail");
+	            mv.addObject("msg", "잘못된 처리 구분값입니다. actionType=" + actionType);
+	            return mv;
+	        }
+
+	        // 로컬 테스트
+	        //String gwUrl = "http://localhost:7999/tbnAppGw/releaseSituation.do";
+	        // 실 제보접수 서버
+	        String gwUrl = "http://192.101.1.191:7999/tbnAppGw/releaseSituation.do";
+
+	        // GW로 보낼 JSON body
+	        Map<String, Object> body = new HashMap<String, Object>();
+	        body.put("ids", ids);
+	        body.put("procType", procType);
+
+	        HttpResponse<String> gwResponse = Unirest.post(gwUrl)
+	                .header("Content-Type", "application/json; charset=UTF-8")
+	                .body(body)
+	                .asString();
+
+	        logger.info("GW 응답 status = {}", gwResponse.getStatus());
+	        logger.info("GW 응답 body   = {}", gwResponse.getBody());
+
+	        if (gwResponse.getStatus() == 200) {
+	            mv.addObject("result", "success");
+	            mv.addObject("msg", "GW 전송 완료");
+	            mv.addObject("gwBody", gwResponse.getBody());
+	            mv.addObject("gwStatus", gwResponse.getStatus());
+	        } else {
+	            mv.addObject("result", "fail");
+	            mv.addObject("msg", "GW 호출 실패");
+	            mv.addObject("gwStatus", gwResponse.getStatus());
+	            mv.addObject("gwBody", gwResponse.getBody());
+	        }
+
+	    } catch (Exception e) {
+	        logger.error("releaseSituationUni 처리 중 오류", e);
+	        mv.addObject("result", "fail");
+	        mv.addObject("msg", "상황해제/오류제보 처리 중 오류");
+	        mv.addObject("error", e.toString());
+	    }
+
+	    return mv;
 	}
 	
 }

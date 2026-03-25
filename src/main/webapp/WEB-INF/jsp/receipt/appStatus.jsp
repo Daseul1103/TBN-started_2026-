@@ -124,7 +124,7 @@ $(document).ready(function() {
 	// 등록 시 유효성 검사 함수
 	function labelYes() {		
 		if ($("input[name='Selection']:checked").length === 0) {
-	        alert("등록할 제보를 1개 이상 선택해주세요");
+	        alert("등록/해제 할 제보를 1개 이상 선택해주세요");
 	        return false; 
 		 } else {
 			 return true;
@@ -161,8 +161,61 @@ $(document).ready(function() {
 		}
 	}
 	
-	
-	
+	/* 제보접수 was -> 모바일 app로 데이터 전송 (상황해제 / 오류제보) */
+	$('#appUptBtn, #appDelBtn').on('click', function(e) {
+		e.preventDefault();
+
+		console.log("상황해제/오류제보 버튼 클릭");
+
+		var valCheck = labelYes(); // true or false
+		if (!valCheck) {
+			return false;
+		}
+
+		var frmChk = confirm("이대로 등록하시겠습니까?");
+		if (!frmChk) {
+			return false;
+		}
+
+		let checkedList = [];
+		$('input[name="Selection"]:checked').each(function() {
+			checkedList.push($(this).val());
+		});
+
+		if (checkedList.length === 0) {
+			alert("선택된 제보가 없습니다.");
+			return false;
+		}
+
+		// 어떤 버튼을 눌렀는지 구분
+		var actionType = $(this).attr('id'); // appUptBtn 또는 appDelBtn
+
+		$.ajax({
+			url: "/receipt/releaseSituationUni.ajax",
+			type: "POST",
+			traditional: true,
+			data: {
+				ids: checkedList,
+				actionType: actionType
+			},
+			success: function(res) {
+				if (res.result === "success") {
+					alert("성공적으로 반영되었습니다.");
+					location.reload();
+				} else {
+					alert(res.msg || "처리 중 오류가 발생했습니다.");
+					console.log(res);
+				}
+			},
+			error: function(err) {
+				console.log(err);
+				alert("서버 오류가 발생했습니다.");
+			}
+		});
+	});
+		
+		
+		
 });
 
 
@@ -294,7 +347,7 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<span style="margin-right:20px;">
+			<span style="margin-right:20px;width: 350px;display: flex;justify-content: space-around;">
 			    <button id="appInsBtn"
 			        style="display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#3b6fd8,#2f5fbf); color:#ffffff; padding:9px 20px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 3px 10px rgba(47,95,191,0.25); transition:all 0.2s ease;"
 			        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 14px rgba(47,95,191,0.3)';"
@@ -303,8 +356,29 @@ $(document).ready(function() {
 			        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:rgba(255,255,255,0.2); border-radius:50%; font-size:14px; font-weight:bold;">
 			            +
 			        </span>
-			
 			        등록
+			    </button>
+			    
+			    <button id="appUptBtn"
+			        style="display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#3b6fd8,#2f5fbf); color:#ffffff; padding:9px 20px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 3px 10px rgba(47,95,191,0.25); transition:all 0.2s ease;"
+			        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 14px rgba(47,95,191,0.3)';"
+			        onmouseout="this.style.transform='none'; this.style.boxShadow='0 3px 10px rgba(47,95,191,0.25)';">
+			
+			        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:rgba(255,255,255,0.2); border-radius:50%; font-size:14px; font-weight:bold;">
+			            +
+			        </span>
+			         상황해제
+			    </button>
+			    
+			    <button id="appDelBtn"
+			        style="display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#3b6fd8,#2f5fbf); color:#ffffff; padding:9px 20px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 3px 10px rgba(47,95,191,0.25); transition:all 0.2s ease;"
+			        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 14px rgba(47,95,191,0.3)';"
+			        onmouseout="this.style.transform='none'; this.style.boxShadow='0 3px 10px rgba(47,95,191,0.25)';">
+			
+			        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:rgba(255,255,255,0.2); border-radius:50%; font-size:14px; font-weight:bold;">
+			            +
+			        </span>
+			         오류제보
 			    </button>
 			</span>
 			</div>

@@ -59,7 +59,8 @@
 	<script  type="text/javascript" charset="utf-8"  src="<%=request.getContextPath()%>/js/map/controller-chkbox.js"></script>
 	<!-- Map -->
 	<!--<script src="https://xn--on3b27gb0fhb.kr/js/map/kakao.js"></script>-->
-	<script src='https://dapi.kakao.com/v2/maps/sdk.js?appkey=76926c8fc53b69aa9749cecf9354c83b&libraries=services'></script>
+	<script src='https://dapi.kakao.com/v2/maps/sdk.js?appkey=0e47a7114cd522e3ad2ba64f1f5b54c6&libraries=services'></script>
+															  
 	<!-- <script src='https://dapi.kakao.com/v2/maps/sdk.js?appkey=54d14784e95f5570e5f47d4554cd1b9d&libraries=services'></script> -->
 	
 	<!-- 로그인 시큐어코딩 관련 -->

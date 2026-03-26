@@ -8,16 +8,12 @@
 	<!-- 25년 보안취약점 조치 -->
 	<!-- 1) 인코딩 -->
 	<filter>
-	    <filter-name>encodingFilter</filter-name>
-	    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-	    <init-param>
-	        <param-name>encoding</param-name>
-	        <param-value>UTF-8</param-value>
-	    </init-param>
-	    <init-param>
-	        <param-name>forceEncoding</param-name>
-	        <param-value>true</param-value>
-	    </init-param>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
 	</filter>
 
 	<!-- 2) 멀티파트를 필터 단계에서 먼저 파싱 -->
@@ -45,6 +41,65 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>*.ajax</url-pattern>
 	</filter-mapping>
+
+	<!-- EASYCERTI PSM AGENT START -->
+	<filter>
+  <display-name>EzFilter</display-name>
+    <filter-name>EzFilter</filter-name>
+    <filter-class>com.easycerti.psm.log.generator.filter.EzFilter</filter-class>
+    <!--<init-param><param-name>propertie.file.path</param-name><param-value>/dev/src-Filter_p/ezfilter/src/main/resources/ez_resource/ez.props.properties</param-value></init-param>-->
+    <init-param><param-name>log.server.ip</param-name><param-value>192.101.1.181</param-value></init-param>
+    <init-param><param-name>log.server.port</param-name><param-value>46006</param-value></init-param>
+    <init-param><param-name>log.server.sub.ip</param-name><param-value>192.101.1.181</param-value></init-param>
+    <init-param><param-name>log.server.sub.port</param-name><param-value>46007</param-value></init-param>
+    <init-param><param-name>command.server.port</param-name><param-value>56091</param-value></init-param>
+    <init-param><param-name>log.file.name</param-name><param-value>EzMon_13_</param-value></init-param>
+    <init-param><param-name>system.code</param-name><param-value>13</param-value></init-param>
+    <init-param><param-name>print.session.info</param-name><param-value>false</param-value></init-param>
+    <init-param><param-name>print.object.info</param-name><param-value>false</param-value></init-param>
+    <init-param><param-name>print.context.info</param-name><param-value>false</param-value></init-param>
+    <init-param><param-name>req.id</param-name><param-value>login,userId</param-value></init-param>
+    <init-param><param-name>req.id.type</param-name><param-value></param-value></init-param>
+    <init-param><param-name>socket.timeout</param-name><param-value>1500</param-value></init-param>
+    <init-param><param-name>socket.send.buff</param-name><param-value>1048576</param-value></init-param>
+    <init-param><param-name>socket.recv.buff</param-name><param-value>146988</param-value></init-param>
+    <init-param><param-name>log.limit.size</param-name><param-value>10</param-value></init-param>
+    <init-param><param-name>log.level</param-name><param-value>1</param-value></init-param>
+    <init-param><param-name>log.file.write</param-name><param-value>false</param-value></init-param>
+    <init-param><param-name>file.log.path</param-name><param-value>C:\tbn_log</param-value></init-param>
+    <init-param><param-name>max.queue.cnt</param-name><param-value>10000</param-value></init-param>
+    <init-param><param-name>send.logging.size</param-name><param-value>100</param-value></init-param>
+    <init-param><param-name>send.log.queue.limit</param-name><param-value>20</param-value></init-param>
+    <init-param><param-name>max.thread.cnt</param-name><param-value>5</param-value></init-param>
+    <init-param><param-name>monitor.term</param-name><param-value>5000</param-value></init-param>
+    <init-param><param-name>offline.write.limit</param-name><param-value>10</param-value></init-param>
+    <init-param><param-name>offline.write</param-name><param-value>/tmp/</param-value></init-param>
+	<init-param><param-name>writethread.limitsize</param-name><param-value>100</param-value></init-param>
+	<init-param><param-name>convert.executor.size</param-name><param-value>5</param-value></init-param>
+	<init-param><param-name>convert.executor.que.size</param-name><param-value>-1</param-value></init-param>
+	<init-param><param-name>send.executor.size</param-name><param-value>5</param-value></init-param>
+	<init-param><param-name>send.executor.que.size </param-name><param-value>-1</param-value></init-param>
+    <init-param><param-name>request.content.type</param-name><param-value>all</param-value></init-param>
+    <init-param><param-name>mon.agent</param-name><param-value>use</param-value></init-param>
+    <init-param><param-name>ssl.version</param-name><param-value>TLSv1.2</param-value></init-param>
+    <init-param><param-name>filter.url</param-name><param-value>false</param-value></init-param>
+    <init-param><param-name>filter.url.policy</param-name><param-value>WHITELIST_FIRST</param-value></init-param>
+    <init-param><param-name>filter.url.include.file</param-name><param-value>/usr/local/PSM/EzFilter/conf/whitelist.props</param-value></init-param>
+    <init-param><param-name>filter.url.exclude.file</param-name><param-value>/usr/local/PSM/EzFilter/conf/blacklist.props</param-value></init-param>
+    <init-param><param-name>collect.sql</param-name><param-value></param-value></init-param>
+    <init-param><param-name>collect.result</param-name><param-value></param-value></init-param>
+	<init-param><param-name>jdbc.filter</param-name><param-value>false</param-value></init-param>
+    <init-param><param-name>send.type</param-name><param-value>legacy</param-value></init-param>
+    <init-param><param-name>session.type</param-name><param-value>request</param-value></init-param>
+ </filter>
+ <filter-mapping>
+	<filter-name>EzFilter</filter-name>
+	<url-pattern>/*</url-pattern>
+ </filter-mapping>
+  <listener>
+	<listener-class>com.easycerti.psm.log.generator.filter.EzContextListener</listener-class>
+  </listener>
+	<!-- EASYCERTI PSM AGENT END -->
 
 	<filter-mapping>
 		<filter-name>multipartFilter</filter-name>

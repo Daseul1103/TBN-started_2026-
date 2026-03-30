@@ -369,7 +369,7 @@ $(document).ready(function() {
 			        </span>
 			         상황해제
 			    </button>
-			    
+			   <!-- 	깃허브 연동 테스트 -->
 			    <button id="appDelBtn"
 			        style="display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#3b6fd8,#2f5fbf); color:#ffffff; padding:9px 20px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 3px 10px rgba(47,95,191,0.25); transition:all 0.2s ease;"
 			        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 14px rgba(47,95,191,0.3)';"

@@ -779,6 +779,7 @@ function getFormatDate(date){
 ************************************************************************/
 function dateFunc(id1,id2,sdt,edt,format,callback){
 
+	console.log("dateFunc 실행");
 	var fmt="YYYY-MM-DD";
 	if(typeof format !== "undefined" && typeof format != ""){
 		fmt=format;
@@ -801,7 +802,26 @@ function dateFunc(id1,id2,sdt,edt,format,callback){
 			/*console.log("날짜변경");
 			alert("날짜변경");*/
 		});
-	} else if(id1 == 'standardDate') {
+	} else if(id1 =='userDate1') { // 사용자 관리 시작일
+		console.log("캘린더 1 선택 진입");
+		
+		$('#dateText1').datetimepicker({
+			 format:fmt
+		}).on('dp.change',function(e){// 변경 상황 있을 때 사용   
+
+		});
+		
+		
+	} else if(id1 =='userDate2') { // 사용자 관리 종료일
+		console.log("캘린더 2 선택 진입");
+		$('#dateText2').datetimepicker({
+			 format:fmt
+		}).on('dp.change',function(e){
+			
+		});
+	}
+	
+	else if(id1 == 'standardDate') {
 		/*$('#' + id1).datetimepicker({
 		    format: 'YYYY-MM',  
 		    viewMode: 'months'    

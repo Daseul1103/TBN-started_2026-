@@ -25,6 +25,7 @@ import kr.co.wizbrain.tbn.option.vo.OptAreaVo;
 import kr.co.wizbrain.tbn.user.service.UserService;
 import kr.co.wizbrain.tbn.user.vo.UserVO;
 import kr.co.wizbrain.tbn.comm.util.PasswordPolicy;
+import kr.co.wizbrain.tbn.infrm.vo.InfrmVO;
 
 /**
  * 사용자 컨트롤러 클래스
@@ -281,6 +282,19 @@ public class UserController {
 		}
 		return mav;
 	}
+	
+	
+	@RequestMapping(value="/user/userDelete.ajax" , method=RequestMethod.POST)
+	public ModelAndView deleteUser(Model model, @ModelAttribute("userVO") UserVO userVO,
+            HttpServletRequest request) throws Exception {
+		ModelAndView mv = new ModelAndView("jsonView");
+		
+		userService.deleteUser(userVO);
+
+		return mv;
+	}
+	
+	
 	
 	@RequestMapping(value="/user/userUpdate.ajax", method=RequestMethod.POST) // 가능하면 POST로 고정 권장
 	public @ResponseBody ModelAndView userUpdateForm(@ModelAttribute("userVO") UserVO userVO,

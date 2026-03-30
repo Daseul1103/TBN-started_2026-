@@ -1,8 +1,15 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/calender/jquery-ui.css"/>
-    <script src="<%=request.getContextPath()%>/calender/jquery-ui.js"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/js/jquery.form.js"></script>
+
+	<!-- datetimepicker 실행 필수 -->
+    <script src="<%=request.getContextPath()%>/calender/moment.js"></script>
+	<script src="<%=request.getContextPath()%>/calender/mo_ko.js"></script>
+	<script src="<%=request.getContextPath()%>/calender/bootstrap-datetimepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/calender/no-boot-calendar-custom.css" />
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/calender/datetimepickerstyle.css" />ㄴ
 <div id="contentWrap">
 <!-- <div id="posi"><a href="/main.do"><img src="../images/ico_home.gif" alt="home" /></a>사용자관리 > 사용자관리</div> -->
 <div id="searchDiv">
@@ -22,9 +29,9 @@
 				 					등록일 : 
 				 					</td>
 				 					<td style="width:205px;">
-				 						<input type="text" id="dateText1" class="dateText" name="sDate" style="text-align:center" size=10 maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)' onclick="dateFunc">
+				 						<input type="text" id="dateText1" class="dateText" name="sDate" style="text-align:center" size=10 maxlength="8" onclick="dateFunc('userDate1')">
 				 						 ~ 
-				 						<input type="text" id="dateText2" class="dateText" name="eDate" style="text-align:center" size=10 maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)' onclick="dateFunc">
+				 						<input type="text" id="dateText2" class="dateText" name="eDate" style="text-align:center" size=10 maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)' onclick="dateFunc('userDate2')">
 				 					</td>
 				                    <td>
 				                        <select class="table_sel" id=authCode name="authCode">
@@ -79,7 +86,7 @@ $(document).ready(function(){
 	3. 종료일 input의 id값 (기간이 아니라 날짜 input이 1개라면 안 넣어도 무방)
 	4. 날짜 초기지정 또는 날짜 변경후 실행할 callback함수(안 넣어도 무방)
 	*/
-	var userCalender = dateFunc("dateText","dateText1","dateText2",search);
+	var userCalender = dateFunc("dateText1", "dateText2");
 	
 	//최초에는 미사용이므로 비활성화(사용자관리 한정)
 	$(".dateText").attr("disabled", true);

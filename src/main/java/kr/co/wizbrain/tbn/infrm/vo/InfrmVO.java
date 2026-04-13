@@ -43,8 +43,6 @@ public class InfrmVO extends BaseVO{
 	 public String zipcode2;
 	//사무실주소 
 	 public String addressOffice;
-	//주민등록번호 
-	 public String residentNum;
 	//생일 
 	 public String birthday;
 	//차량번호 
@@ -243,12 +241,6 @@ public class InfrmVO extends BaseVO{
 	}
 	public void setAddressOffice(String addressOffice) {
 		this.addressOffice = addressOffice;
-	}
-	public String getResidentNum() {
-		return residentNum;
-	}
-	public void setResidentNum(String residentNum) {
-		this.residentNum = residentNum;
 	}
 	public String getBirthday() {
 		return birthday;

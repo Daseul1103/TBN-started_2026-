@@ -107,7 +107,6 @@
 		<result property="address" column="ADDRESS"/>
 		<result property="zipcode2" column="ZIPCODE2"/>
 		<result property="addressOffice" column="ADDRESS_OFFICE"/>
-		<result property="residentNum" column="RESIDENT_NUM"/>
 		<result property="birthday" column="BIRTHDAY"/>
 		<result property="carNum" column="CAR_NUM"/>
 		<result property="comments" column="COMMENTS"/>
@@ -171,7 +170,6 @@
 		<result property="address" column="ADDRESS"/>
 		<result property="zipcode2" column="ZIPCODE2"/>
 		<result property="addressOffice" column="ADDRESS_OFFICE"/>
-		<result property="residentNum" column="RESIDENT_NUM"/>
 		<result property="birthday" column="BIRTHDAY"/>
 		<result property="carNum" column="CAR_NUM"/>
 		<result property="comments" column="COMMENTS"/>

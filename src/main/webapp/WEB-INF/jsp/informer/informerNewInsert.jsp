@@ -637,13 +637,6 @@
 								</colgroup>
 								
 								<tr>								
-								    <th>주민등록번호</th>								
-								    <td>
-										<input type="hidden" class="input_base" id="residentNum" name="residentNum" style="width:50px;" />
-                                        <input type="text" id="residentNum1" name="residentNum1" value="" maxlength="6" style="width:85px;" onkeydown='onlyNumber(this)' onkeyup='onlyNumber(this)'/>                                            	
-                                        <span> - </span>
-                                        <input type="text" id="residentNum2" name="residentNum2" value="" maxlength="7" style="width:85px;" onkeydown='onlyNumber(this)' onkeyup='onlyNumber(this)'/>
-								    </td>
 								    <th>신분증 유효기간 <span style="font-size:10px;">(YYYYMMDD)</span></th>
 								    <td>
 										<input type="text" id="identifiDate" name="identifiDate" maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
@@ -834,7 +827,7 @@ $(document).ready(function(){
     //상세페이지의 경우 주소 분할
     var tagHome = "${informerInfo.address}";
     var tagOfs = "${informerInfo.addressOffice}";
-    var tagRn = "${informerInfo.residentNum}";
+
     //파일 관련하여 있으면 값 대입
     var tagFile = "${informerInfo.localFilePath}";
     
@@ -845,9 +838,7 @@ $(document).ready(function(){
     if(typeof tagOfs !== "undefined" && tagOfs !=""){
     	addressSp("addressOffice",tagOfs,"--");
     }
-    if(typeof tagRn !== "undefined" && tagRn !=""){
-    	addressSp("residentNum",tagRn,"-");
-    }
+
     $("#addressOffice1").val(tagOfs.split("--")[0]);
 	$("#addressOffice2").val(tagOfs.split("--")[1]);
     
@@ -1057,15 +1048,6 @@ function saveInformer(){
 		if(!regCall.test($('#phoneOffice').val())){
 			alert("올바른 전화번호 형식을 입력하세요");
 			$('#phoneOffice').focus();
-			return false;
-		}
-	}
-	//주민번호
-	if ($('#residentNum1').val() != "" && $('#residentNum2').val() != "" ){
-		$("#residentNum").val(addressChk("residentNum","-"));
-		if(!regJumin.test($('#residentNum').val())){
-			alert("올바른 주민등록번호 형식을 입력하세요");
-			$('#residentNum1').focus();
 			return false;
 		}
 	}

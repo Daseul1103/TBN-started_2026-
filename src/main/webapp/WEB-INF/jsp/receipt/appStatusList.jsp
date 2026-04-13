@@ -32,7 +32,18 @@
 		<span style="width:100px;">${toadysListVO.RECEIPT_TIME }</span>
 		<span style="width:100px;">${toadysListVO.REPORT_TYPE}</span>
 		<span style="width:150px;">${toadysListVO.INDIVIDUAL_NAME }</span>
-		<span style="width:516px;">${toadysListVO.MEMO }</span>		
+		<c:choose>
+        	<c:when test="${toadysListVO.FLAG_SITU_ED eq '3'}">
+				<span style="width:516px;">
+					<div style="display : flex; justify-content: center;">
+						[오류제보]<p style="color :lightgray;">${fn:replace(toadysListVO.MEMO, '[오류제보]', '')}</p>
+					</div>		
+				</span>	
+			</c:when>	
+			<c:otherwise>
+				<span style="width:516px;">${toadysListVO.MEMO }</span>	
+			</c:otherwise>			
+		</c:choose>
 		<span style="width:80px;">${toadysListVO.REPORTER_TYPE }</span>
 		<span>${toadysListVO.REGION_NAME }</span>
 	</li>

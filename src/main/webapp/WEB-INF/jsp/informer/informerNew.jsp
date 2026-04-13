@@ -36,7 +36,7 @@
 	
 	
 	
-	/* 26-02-24 : 통신원 관리 상세/수정/등록 화면 스타일 추가 및 변경 */
+/* 26-02-24 : 통신원 관리 상세/수정/등록 화면 스타일 추가 및 변경 */
 
 /* 버튼 그룹 */
 .button-group {
@@ -696,16 +696,6 @@
 	            					<p style="font-size : 16px;">${empty informerInfo.lastSchool ? '정보 없음' : informerInfo.lastSchool}</p>
 	            				</div>
 	            			</div>  
-	            			
-	              			<div style="width:430px; height : 30px; display: flex; align-items: center;">
-	            				<div style="width:120px; margin-right:15px;">
-	            					<p style="font-size : 16px; color : gray; margin-left:20px;">주민등록번호</p>
-	            				</div>
-	            				<div> 
-	            					<p style="font-size : 16px;">${empty informerInfo.residentNum ? '정보 없음' : informerInfo.residentNum}</p>
-	            				</div>
-	            			</div>
-	            			
 	            			<div style="width:430px; height : 30px; display: flex; align-items: center;">
 	            				<div style="width:120px; margin-right:15px;">
 	            					<p style="font-size : 16px; color : gray; margin-left:20px;">통신원 직업</p>
@@ -1136,13 +1126,6 @@
 								</colgroup>
 								
 								<tr>								
-								    <th>주민등록번호</th>								
-								    <td>
-										<input type="hidden" class="input_base" id="residentNum" name="residentNum" style="width:50px;" value="${informerInfo.residentNum}" />
-                                        <input type="text" id="residentNum1" name="residentNum1" value="" maxlength="6" style="width:85px;" onkeydown='onlyNumber(this)' onkeyup='onlyNumber(this)'/>                                            	
-                                        <span> - </span>
-                                        <input type="text" id="residentNum2" name="residentNum2" value="" maxlength="7" style="width:85px;" onkeydown='onlyNumber(this)' onkeyup='onlyNumber(this)'/>
-								    </td>
 								    <th>신분증 유효기간 <span style="font-size:10px;">(YYYYMMDD)</span></th>
 								    <td>
 										<input type="text" id="identifiDate" name="identifiDate" value="${fn:replace(informerInfo.identifiDate,'.','')}" maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
@@ -1335,7 +1318,7 @@ $(document).ready(function(){
     //상세페이지의 경우 주소 분할
     var tagHome = "${informerInfo.address}";
     var tagOfs = "${informerInfo.addressOffice}";
-    var tagRn = "${informerInfo.residentNum}";
+    
     //파일 관련하여 있으면 값 대입
     var tagFile = "${informerInfo.localFilePath}";
     
@@ -1350,9 +1333,7 @@ $(document).ready(function(){
     if(typeof tagOfs !== "undefined" && tagOfs !=""){
     	addressSp("addressOffice",tagOfs,"--");
     }
-    if(typeof tagRn !== "undefined" && tagRn !=""){
-    	addressSp("residentNum",tagRn,"-");
-    }
+
     $("#addressOffice1").val(tagOfs.split("--")[0]);
 	$("#addressOffice2").val(tagOfs.split("--")[1]);
     
@@ -1517,8 +1498,6 @@ function saveInformer(){
 	 var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
 	 //전화번호 정규식
 	 var regCall = /^[0-9]{2,3}-?[0-9]{3,4}-?[0-9]{4}/;
-	 //주민번호 정규식
-	 var regJumin = /^(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}$/;
 	 
 	 // 반드시 입력해야 할 항목이 추가 되면 작성 해야함.(필수항목)
 	 if($('#actId').val() == ""){
@@ -1562,15 +1541,6 @@ function saveInformer(){
 		if(!regCall.test($('#phoneOffice').val())){
 			alert("올바른 전화번호 형식을 입력하세요");
 			$('#phoneOffice').focus();
-			return false;
-		}
-	}
-	//주민번호
-	if ($('#residentNum1').val() != "" && $('#residentNum2').val() != "" ){
-		$("#residentNum").val(addressChk("residentNum","-"));
-		if(!regJumin.test($('#residentNum').val())){
-			alert("올바른 주민등록번호 형식을 입력하세요");
-			$('#residentNum1').focus();
 			return false;
 		}
 	}

@@ -31,7 +31,6 @@
 		<result property="address" column="ADDRESS"/>
 		<result property="zipcode2" column="ZIPCODE2"/>
 		<result property="addressOffice" column="ADDRESS_OFFICE"/>
-		<result property="residentNum" column="RESIDENT_NUM"/>
 		<result property="birthday" column="BIRTHDAY"/>
 		<result property="carNum" column="CAR_NUM"/>
 		<result property="comments" column="COMMENTS"/>
@@ -524,7 +523,6 @@
 		    A.ADDRESS,
 		    A.ZIPCODE2,
 		    A.ADDRESS_OFFICE,
-		    A.RESIDENT_NUM,
 		    TO_CHAR(TO_DATE(A.BIRTHDAY,'YY/MM/DD'), 'YYYY.MM.DD') AS BIRTHDAY,
 		    A.CAR_NUM,
 		    A.COMMENTS,
@@ -604,7 +602,6 @@
 				,ADDRESS
 				,ADDRESS_HOME
 				,ADDRESS_OFFICE
-				,RESIDENT_NUM
 				,BIRTHDAY
 				,CAR_NUM
 				,REG_DATE
@@ -651,7 +648,6 @@
 			,#{address}
 			,#{addressHome}
 			,#{addressOffice}
-			,#{residentNum}
 			,#{birthday}
 			,#{carNum}
 			,TO_CHAR(SYSDATE, 'YYYY-MM-DD')
@@ -733,9 +729,6 @@
 		</if>
 		<if test='addressOffice != null'>
 		,ADDRESS_OFFICE = #{addressOffice}
-		</if>
-		<if test='residentNum != null'>
-		,RESIDENT_NUM = #{residentNum}
 		</if>
 		<if test='birthday != null'>
 		,BIRTHDAY = #{birthday}

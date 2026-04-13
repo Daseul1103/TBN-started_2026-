@@ -27,7 +27,53 @@
 <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/js/timeDate.js"></script>
 <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/js/paging.js"></script>
 <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/js/broadcast/common.js"></script>
+<style>
+.action-area {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
 
+/* 기존 버튼 스타일 유지 */
+.btn.primary {
+    background-color: #3b6edc;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn.primary:hover {
+    background-color: #2f5cc2;
+}
+
+/* 🔥 select 스타일 */
+.custom-select {
+    height: 40px; /* 버튼 높이 맞춤 */
+    padding: 0 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    margin-left : 20px;
+}
+
+/* 포커스 시 */
+.custom-select:focus {
+    border-color: #3b6edc;
+    box-shadow: 0 0 0 2px rgba(59, 110, 220, 0.1);
+}
+
+</style>
 <script>
 
 $(document).ready(function() {
@@ -164,10 +210,8 @@ $(document).ready(function() {
 	/* 제보접수 was -> 모바일 app로 데이터 전송 (상황해제 / 오류제보) */
 	$('#appUptBtn, #appDelBtn').on('click', function(e) {
 		e.preventDefault();
-
-		console.log("상황해제/오류제보 버튼 클릭");
-
-		var valCheck = labelYes(); // true or false
+	
+		var valCheck = labelYes(); 
 		if (!valCheck) {
 			return false;
 		}
@@ -189,9 +233,84 @@ $(document).ready(function() {
 
 		// 어떤 버튼을 눌렀는지 구분
 		var actionType = $(this).attr('id'); // appUptBtn 또는 appDelBtn
+		
+			$.ajax({
+				url: "/receipt/releaseSituationUpdate.ajax",  // 상태 변경
+				type: "POST",
+				traditional: true,
+				data: {
+					ids: checkedList,
+					actionType: actionType
+				},
+				success: function(res) {
+					if (res.result === "success") {
+						alert("성공적으로 반영되었습니다.");
+						location.reload();
+					} else {
+						alert(res.msg || "처리 중 오류가 발생했습니다.");
+						console.log(res);
+					}
+				},
+				error: function(err) {
+					console.log(err);
+					alert("서버 오류가 발생했습니다.");
+				}
+			}); 
 
+			/* $.ajax({
+				url: "/receipt/releaseSituationReset.ajax",  // 상태 되돌리기
+				type: "POST",
+				traditional: true,
+				data: {
+					ids: checkedList,
+					actionType: actionType
+				},
+				success: function(res) {
+					if (res.result === "success") {
+						alert("성공적으로 반영되었습니다.");
+						location.reload();
+					} else {
+						alert(res.msg || "처리 중 오류가 발생했습니다.");
+						console.log(res);
+					}
+				},
+				error: function(err) {
+					console.log(err);
+					alert("서버 오류가 발생했습니다.");
+				}
+			});  */
+	});
+		
+	
+	$('#appResetBtn').on('click', function(e) {
+		console.log("되돌리기 버튼 클릭");
+		
+		e.preventDefault();
+		
+		var valCheck = labelYes(); 
+		if (!valCheck) {
+			return false;
+		}
+
+		var frmChk = confirm("이대로 되돌리기 하시겠습니까?");
+		if (!frmChk) {
+			return false;
+		}
+
+		let checkedList = [];
+		$('input[name="Selection"]:checked').each(function() {
+			checkedList.push($(this).val());
+		});
+
+		if (checkedList.length === 0) {
+			alert("선택된 제보가 없습니다.");
+			return false;
+		}
+		
+		var actionType = $(this).attr('id'); 
+		
 		$.ajax({
-			url: "/receipt/releaseSituationUni.ajax",
+			url: "/receipt/releaseSituationReset.ajax",  // 상태 되돌리기
 			type: "POST",
 			traditional: true,
 			data: {
@@ -212,9 +331,8 @@ $(document).ready(function() {
 				alert("서버 오류가 발생했습니다.");
 			}
 		});
+		
 	});
-		
-		
 		
 });
 
@@ -347,7 +465,18 @@ $(document).ready(function() {
 				</div>
 			</div>
 
-			<span style="margin-right:20px;width: 350px;display: flex;justify-content: space-around;">
+			<span style="margin-right:20px;width: 520px;display: flex;justify-content: space-around;">
+				<button id="appResetBtn"
+				        style="display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#3b6fd8,#2f5fbf); color:#ffffff; padding:9px 20px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 3px 10px rgba(47,95,191,0.25); transition:all 0.2s ease;"
+				        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 14px rgba(47,95,191,0.3)';"
+				        onmouseout="this.style.transform='none'; this.style.boxShadow='0 3px 10px rgba(47,95,191,0.25)';">
+				
+				        <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:rgba(255,255,255,0.2); border-radius:50%; font-size:14px; font-weight:bold;">
+				            -
+				        </span>
+				         되돌리기
+			    </button>
+			    
 			    <button id="appInsBtn"
 			        style="display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#3b6fd8,#2f5fbf); color:#ffffff; padding:9px 20px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 3px 10px rgba(47,95,191,0.25); transition:all 0.2s ease;"
 			        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 14px rgba(47,95,191,0.3)';"
@@ -369,7 +498,7 @@ $(document).ready(function() {
 			        </span>
 			         상황해제
 			    </button>
-			   <!-- 	깃허브 연동 테스트 -->
+			
 			    <button id="appDelBtn"
 			        style="display:flex; align-items:center; gap:8px; background:linear-gradient(135deg,#3b6fd8,#2f5fbf); color:#ffffff; padding:9px 20px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; box-shadow:0 3px 10px rgba(47,95,191,0.25); transition:all 0.2s ease;"
 			        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 14px rgba(47,95,191,0.3)';"

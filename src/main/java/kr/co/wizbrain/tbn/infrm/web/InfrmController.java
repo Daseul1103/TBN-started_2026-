@@ -316,15 +316,13 @@ public class InfrmController implements ApplicationContextAware {
 		List<OptInftVo> t2List = new ArrayList<OptInftVo>();//기관
 		List<OptInftVo> t3List = new ArrayList<OptInftVo>();//세부기관
 		
-		//관리자 제외 지역코드 삽입
-		if(!(nlVo.getAuthCode().equals("999")) && !(nlVo.getAuthCode().equals("1"))) {//999 관리자 권한
+/*		//관리자 제외 지역코드 삽입
+		if(!(nlVo.getAuthCode().equals("999"))) {//999 관리자 권한
 			areaVo.setAreaCode(nlVo.getRegionId());
 			thvo.setAreaCode(nlVo.getRegionId());
 			iTypeVo.setAreaCode(nlVo.getRegionId());
-		}
-		/*else{
-			iTypeVo.setAreaCode();
 		}*/
+
 		aList=areaOptService.selectAreaOpt1(areaVo);
 		//통신원유형
 		t1List = infrmOptService.selectInft1(new OptInftVo());
@@ -352,7 +350,7 @@ public class InfrmController implements ApplicationContextAware {
 			mv.setViewName("/informer/informerNewInsert");
 			
 			mv.addObject("pageDiv", "new");
-			
+			iTypeVo.setAreaCode(nlVo.getRegionId());
 			iTypeVo.setIfmId1(t1List.get(0).getIfmId1());
 			t2List=infrmOptService.selectInft2(iTypeVo);//기관
 			if(t2List.size()!=0) {

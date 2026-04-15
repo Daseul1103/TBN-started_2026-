@@ -175,7 +175,7 @@
     display: flex;
     align-items: center;
     gap: 24px;
-    margin-left: 120px;
+    margin-left: 240px;
     margin-top: 10px;
 }
 
@@ -611,26 +611,6 @@
 								        </span>
 								    </p>
 								</div>
-							
-							    <div class="divider"></div>
-							
-							    <div class="date-item">
-							        <p class="date-label">
-							            신분증 유효기간
-							            <br/>
-							            <c:choose>
-							                <c:when test="${empty informerInfo.identifiDate}">
-							                    <span class="date-expired">정보 미등록</span>
-							                </c:when>
-							                <c:otherwise>
-							                    <span class="date-expired">
-							                        ${informerInfo.identifiDate}
-							                    </span>
-							                </c:otherwise>
-							            </c:choose>
-							        </p>
-							    </div>
-							
 							</div>
             			</div>
             			<div style="height: 40px;">
@@ -994,7 +974,7 @@
             		<input type="hidden" id="pageDiv" name="pageDiv" value="${pageDiv}"></input>
             		<input type="hidden" id="informerId" name="informerId" value="${informerInfo.informerId}"></input>
 	            	<!-- 통신원 등록 - 기본정보 입력란 -->
-	            	<div style="background-color: white;width: 1030px;height: 560px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
+	            	<div style="background-color: white;width: 1030px;height: 520px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
 	            		<!-- 기본정보 타이틀 -->
 	            		<div style="display: flex; width: 1030px; height: 40px; align-items: center; margin-top: 10px; margin-bottom:5px;">
 		            		<!-- 기본정보 아이콘 -->
@@ -1124,13 +1104,6 @@
 									<col style="width:183px"/>
 									<col/>
 								</colgroup>
-								
-								<tr>								
-								    <th>신분증 유효기간 <span style="font-size:10px;">(YYYYMMDD)</span></th>
-								    <td>
-										<input type="text" id="identifiDate" name="identifiDate" value="${fn:replace(informerInfo.identifiDate,'.','')}" maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
-								    </td>
-								</tr>
 								<tr>								
 								    <th>가입일자</th>								
 								    	<c:if test="${informerInfo.informerId eq null }">
@@ -1636,9 +1609,6 @@ function saveInformer(){
     // 주석 처리 시 date에 하이픈 들어감 : 현재는 하이픈 제거 상태
     var date = $('#birthday').val().replace(/-/g,'');
     $('#birthday').val(date);
-    
-    var date = $('#identifiDate').val().replace(/-/g,'');
-    $('#identifiDate').val(date);
     
     let queryString = $("#informerEditFrm").serialize();
     let addStr ="&histCode="+histCode+"&fileChg="+fileChg+"&flagBroad="+$('input[name="flagBroad"]:checked').val()+"&honor="+$('#honor').val()+"&flagService="+$('#flagService').val()+"&flagBest="+$('#flagBest').val();

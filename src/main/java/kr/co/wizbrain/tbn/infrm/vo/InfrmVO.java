@@ -77,8 +77,6 @@ public class InfrmVO extends BaseVO{
 	 public String flagBlacklist;
 	//추가메모(통신원관리) 
 	 public String memo2;
-	//신분증 만료일 
-	 public String identifiDate;
 	//자원봉사여부 
 	 public String flagService;
 	// 최고통신원 플래그
@@ -343,12 +341,6 @@ public class InfrmVO extends BaseVO{
 	}
 	public void setMemo2(String memo2) {
 		this.memo2 = memo2;
-	}
-	public String getIdentifiDate() {
-		return identifiDate;
-	}
-	public void setIdentifiDate(String identifiDate) {
-		this.identifiDate = identifiDate;
 	}
 	public String getFlagService() {
 		return flagService;

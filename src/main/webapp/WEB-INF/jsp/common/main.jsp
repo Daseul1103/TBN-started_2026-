@@ -297,27 +297,12 @@
 			            </div>
 			        </div>
 			        <div class="line"></div>
-			        <div class="notice_content" style="white-space: pre-line;">
+			        
+			       	<!-- 공지사항 팝업 -->
+			        <div class="notice_content" style="white-space: pre-line; font-size:18px; line-height: 1.5;">
 			            
 			        </div>
-<!-- 			        <div class="notice_file" style="width: 500px; margin-top: 30px;">
-			        	<table style="width: 500px; border: 1px solid black;">
-			        		<tr>
-			        			<th style="border: 1px solid black;display: flex ;flex-direction: row;align-items: center;justify-content: center;height: 100%;">
-				        			<div style="display: flex ;">
-				        				<div class="file_img"></div>
-				        				<p>파일 첨부</p>
-				        			</div>
-			        			</th>
-			        			<td>
-				        			<div>
-					        			<a>공항철도 덤프 에러.txt</a> <br>
-				        				<a>공항철도 덤프 에러2.txt</a>
-				        			</div>
-			        			</td>
-			        		</tr>			        	
-			        	</table>
-			        </div> -->
+
 			        <div class="line"></div>
 			        <div id="moreNotice" style="display : none; margin-bottom: 15px;">
 			        	<p id="goNotice"></p>

@@ -503,7 +503,7 @@
             	<form id="informerEditFrm" name="informerEditFrm" method="post" enctype="multipart/form-data">
             		<input type="hidden" id="pageDiv" name="pageDiv" value="${pageDiv}"></input>
 	            	<!-- 통신원 등록 - 기본정보 입력란 -->
-	            	<div style="background-color: white;width: 1030px;height: 560px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
+	            	<div style="background-color: white;width: 1030px;height: 520px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
 	            		<!-- 기본정보 타이틀 -->
 	            		<div style="display: flex; width: 1030px; height: 40px; align-items: center; margin-top: 10px; margin-bottom:5px;">
 		            		<!-- 기본정보 아이콘 -->
@@ -635,13 +635,6 @@
 									<col style="width:183px"/>
 									<col/>
 								</colgroup>
-								
-								<tr>								
-								    <th>신분증 유효기간 <span style="font-size:10px;">(YYYYMMDD)</span></th>
-								    <td>
-										<input type="text" id="identifiDate" name="identifiDate" maxlength="8" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
-								    </td>
-								</tr>
 								<tr>								
 								    <th>가입일자</th>								
 								    <td>
@@ -1143,10 +1136,7 @@ function saveInformer(){
     // 주석 처리 시 date에 하이픈 들어감 : 현재는 하이픈 제거 상태
     var date = $('#birthday').val().replace(/-/g,'');
     $('#birthday').val(date);
-    
-    var date = $('#identifiDate').val().replace(/-/g,'');
-    $('#identifiDate').val(date);
-    
+
     let queryString = $("#informerEditFrm").serialize();
     let addStr ="&histCode="+histCode+"&fileChg="+fileChg+"&flagBroad="+$('input[name="flagBroad"]:checked').val()+"&honor="+$('#honor').val()+"&flagService="+$('#flagService').val()+"&flagBest="+$('#flagBest').val();
     queryString+=addStr;

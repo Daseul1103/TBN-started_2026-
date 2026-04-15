@@ -123,7 +123,6 @@
 		<result property="agree" column="AGREE"/>
 		<result property="flagBlacklist" column="FLAG_BLACKLIST"/>
 		<result property="memo2" column="MEMO2"/>
-		<result property="identifiDate" column="IDENTIFI_DATE"/>
 		<result property="flagService" column="FLAG_SERVICE"/>
 		<result property="startDate" column="START_DATE"/>
 		<result property="stopDate" column="STOP_DATE"/>
@@ -186,7 +185,6 @@
 		<result property="agree" column="AGREE"/>
 		<result property="flagBlacklist" column="FLAG_BLACKLIST"/>
 		<result property="memo2" column="MEMO2"/>
-		<result property="identifiDate" column="IDENTIFI_DATE"/>
 		<result property="flagService" column="FLAG_SERVICE"/>
 		<result property="startDate" column="START_DATE"/>
 		<result property="stopDate" column="STOP_DATE"/>

@@ -4269,8 +4269,6 @@ public class ExportPoiHssfExcel extends AbstractView {
 		        	headerList.add("명예 통신원");
 		        } else if ("BIRTHDAY".equals(col)) {
 		        	headerList.add("생일");
-		        } else if ("IDENTIFI_DATE".equals(col)) {
-		        	headerList.add("신분증 유효기간");
 		        } else if ("FLAG_SERVICE".equals(col)) {
 		        	headerList.add("자원봉사");
 		        } else if ("MEMO".equals(col)) {
@@ -4318,7 +4316,6 @@ public class ExportPoiHssfExcel extends AbstractView {
 			    InfrmVO::getMemo1,
 			    InfrmVO::getHonor,
 			    InfrmVO::getBirthday,
-			    InfrmVO::getIdentifiDate,
 			    InfrmVO::getFlagService,
 			    InfrmVO::getMemo,
 			    InfrmVO::getAddressOffice,
@@ -4354,7 +4351,6 @@ public class ExportPoiHssfExcel extends AbstractView {
 		newExtractorMap.put("MEMO1", InfrmVO::getMemo1);
 		newExtractorMap.put("HONOR", InfrmVO::getHonor);
 		newExtractorMap.put("BIRTHDAY", InfrmVO::getBirthday);
-		newExtractorMap.put("IDENTIFI_DATE", InfrmVO::getIdentifiDate);
 		newExtractorMap.put("FLAG_SERVICE", InfrmVO::getFlagService);
 		newExtractorMap.put("MEMO", InfrmVO::getMemo);
 		newExtractorMap.put("ADDRESS_OFFICE", InfrmVO::getAddressOffice);

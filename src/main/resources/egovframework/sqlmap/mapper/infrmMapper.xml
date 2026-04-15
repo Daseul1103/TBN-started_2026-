@@ -47,7 +47,6 @@
 		<result property="agree" column="AGREE"/>
 		<result property="flagBlacklist" column="FLAG_BLACKLIST"/>
 		<result property="memo2" column="MEMO2"/>
-		<result property="identifiDate" column="IDENTIFI_DATE"/>
 		<result property="flagService" column="FLAG_SERVICE"/>
 		<result property="startDate" column="START_DATE"/>
 		<result property="stopDate" column="STOP_DATE"/>
@@ -345,7 +344,6 @@
 				,A.MEMO1
 				,A.HONOR
 				,A.BIRTHDAY
-				,A.IDENTIFI_DATE
 				,A.FLAG_SERVICE
 				,A.MEMO
 				,A.ADDRESS_OFFICE
@@ -537,7 +535,6 @@
 		    A.AGREE,
 		    A.FLAG_BLACKLIST,
 		    A.MEMO2,
-		    TO_CHAR(TO_DATE(A.IDENTIFI_DATE, 'YY/MM/DD'), 'YYYY.MM.DD') AS IDENTIFI_DATE,
 		    A.FLAG_SERVICE,
 		    A.FLAG_BEST,
 		    A.BIRTHDAY_DIV,
@@ -615,7 +612,6 @@
 				,AREA_CODE
 				,HONOR
 				,MEMO2
-				,IDENTIFI_DATE
 				,FLAG_SERVICE
 				<if test='startDate !=null and startDate neq ""'>
 				,START_DATE
@@ -661,7 +657,6 @@
 			,#{areaCode}
 			,#{honor}
 			,#{memo2}
-			,#{identifiDate}
 			,#{flagService}
 			<if test='startDate !=null and startDate neq ""'>
 			,#{startDate}
@@ -753,9 +748,6 @@
 		</if>
 		<if test='lastSchool != null'>
 		,LAST_SCHOOL = #{lastSchool}
-		</if>
-		<if test='identifiDate != null'>
-		,IDENTIFI_DATE = #{identifiDate}
 		</if>
 		<if test='agree != null'>
 		,AGREE = #{agree}

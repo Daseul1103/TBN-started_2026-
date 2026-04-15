@@ -415,7 +415,6 @@ $('#selectConfirmBtn').on('click', function () {
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="MEMO1"> 메모</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="HONOR"> 명예 통신원</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="BIRTHDAY"> 생일</label>
-						<label><input class="datalist" type="checkbox" name="selectedCols" value="IDENTIFI_DATE"> 신분증 유효기간</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="FLAG_SERVICE"> 자원 봉사</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="MEMO"> 전달 사항</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="ADDRESS_OFFICE"> 회사 주소</label>

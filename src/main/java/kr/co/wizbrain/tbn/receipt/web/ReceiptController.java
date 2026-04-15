@@ -918,10 +918,10 @@ public class ReceiptController {
 	        }
 
 	        // 로컬 테스트
-	       String gwUrl = "http://localhost:7999/tbnAppGw/releaseSituation.do";
+	       /*String gwUrl = "http://localhost:7999/tbnAppGw/releaseSituation.do";*/
 	        
 	        // 실 제보접수 서버(모바일 앱 연계서버)
-	        //String gwUrl = "http://192.101.1.191:7999/tbnAppGw/releaseSituation.do";
+	        String gwUrl = "http://192.101.1.191:7999/tbnAppGw/releaseSituation.do";
 
 	        // GW로 보낼 JSON body
 	        Map<String, Object> body = new HashMap<String, Object>();
@@ -1004,10 +1004,10 @@ public class ReceiptController {
 	        }
 
 	        // 로컬 테스트
-	        String gwUrl = "http://localhost:7999/tbnAppGw/releaseSituationReset.do";
+	        //String gwUrl = "http://localhost:7999/tbnAppGw/releaseSituationReset.do";
 	        
 	        // 실 제보접수 서버(모바일 앱 연계서버)
-	        //String gwUrl = "http://192.101.1.191:7999/tbnAppGw/releaseSituationReset.do";
+	        String gwUrl = "http://192.101.1.191:7999/tbnAppGw/releaseSituationReset.do";
 
 	        // GW로 보낼 JSON body
 	        Map<String, Object> body = new HashMap<String, Object>();

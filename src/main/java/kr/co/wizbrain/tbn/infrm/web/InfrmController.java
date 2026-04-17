@@ -333,7 +333,11 @@ public class InfrmController implements ApplicationContextAware {
 			mv.addObject("pageDiv", "update");
 			thvo.setInformerId(request.getParameter("pr1"));
 			thvo=infrmService.detailInformer(thvo);
+			
+			areaVo.setAreaCode(nlVo.getRegionId());
+			thvo.setAreaCode(nlVo.getRegionId());
 			iTypeVo.setAreaCode(thvo.getAreaCode());
+			
 			iTypeVo.setIfmId1(thvo.getInformerType());
 			t2List=infrmOptService.selectInft2(iTypeVo);//기관
 			if(thvo.getOrgId()==null||thvo.getOrgId().equals("")) {//통신원 소속기관이 무소속일 경우
@@ -353,13 +357,17 @@ public class InfrmController implements ApplicationContextAware {
 			
 			/*26-04-13 : 현재 로그인 된 사용자의 소속에 따라 소속 기관, 소속기관(세부) 드롭박스 오류 해결*/
 			iTypeVo.setAreaCode(nlVo.getRegionId());
+			areaVo.setAreaCode(nlVo.getRegionId());
+			thvo.setAreaCode(nlVo.getRegionId());
+			
 			iTypeVo.setIfmId1(t1List.get(0).getIfmId1());
 			t2List=infrmOptService.selectInft2(iTypeVo);//기관
 			if(t2List.size()!=0) {
 				iTypeVo.setIfmId2(t2List.get(0).getIfmId2());
 			}
 			t3List=infrmOptService.selectInft3(iTypeVo);//세부기관
-			thvo.setAreaCode(aList.get(0).getAreaCode());
+/*			thvo.setAreaCode(aList.get(0).getAreaCode());*/
+			/*26-04-16 : 본부 요청으로 진입 시 자동으로 id 생성*/
 			thvo.setActId(infrmService.creActId(thvo));
 		}
 		mv.addObject("informerInfo", thvo);//통신원정보

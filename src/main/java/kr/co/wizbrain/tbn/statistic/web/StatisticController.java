@@ -141,11 +141,7 @@ public class StatisticController extends BaseController{
 		return mav;
 	}
 	
-	/**1. 교통정보 제공대장
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	/*통계 관리 > 기간별 통계 - 1. 교통정보 제공대장*/
 	@RequestMapping("/stats/receiptBroad.do")
 	public String receiptBroad(HttpServletRequest request,Model model) throws Exception {
 		
@@ -198,8 +194,11 @@ public class StatisticController extends BaseController{
 			sumOurOtherMain.add(2, sumOurOtherList);
 			dataMain.add(2, dataList);
 			
+			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+			
 			model.addAttribute("mapping", "standardInformerType");
-			model.addAttribute("fileName", "교통정보 제공대장"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "교통정보 제공대장"+params.getString("city")+ titleDate +".xls");
 			
 			model.addAttribute("titleMain", titleMain);
 			model.addAttribute("headMain", headMain);
@@ -217,7 +216,7 @@ public class StatisticController extends BaseController{
 	}
 
 	
-	// 교통 정보 제공 대장 - 시간별
+	// 통계 관리 > 기간별 통계 - 2.교통정보 제공대장(시간대 별)
 	@RequestMapping("stats/receiptBroadTime.do")
 	public String receiptBroadTime (HttpServletRequest request,Model model) throws Exception {
 		ParamsDto params = getParams(true);
@@ -245,8 +244,11 @@ public class StatisticController extends BaseController{
 			// 제보수단별 현황
 			rptMDatatype =  statisticService.selectRtt();
 			
+			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+			
 			model.addAttribute("mapping", "standardInformerTypeTime");
-			model.addAttribute("fileName", "교통정보 제공대장(시간대 별)"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "교통정보 제공대장(시간대 별)"+params.getString("city")+ titleDate +".xls");
 			model.addAttribute("titleName", "교통정보 제공대장"+params.getString("city"));
 			model.addAttribute("start_date", params.get("start_date"));
 			model.addAttribute("end_date", params.get("end_date"));
@@ -269,12 +271,7 @@ public class StatisticController extends BaseController{
 	}
 	
 	
-	
-	/*2. 긴급교통정보_방송현황분석 
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	// 통계 관리 > 기간별 통계 - 3.긴급교통정보_방송현황분석 
 	@RequestMapping("stats/extrBro.do")
 	public String extrBro(Model model,HttpServletRequest request) throws Exception {
 		
@@ -282,8 +279,11 @@ public class StatisticController extends BaseController{
 		try {
 			List Data = statisticService.extrBro(params);//2. 긴급교통정보_방송현황분석
 			
+			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+			
 			model.addAttribute("mapping", "extrBro");
-			model.addAttribute("fileName", "긴급교통정보_방송현황분석"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "긴급교통정보_방송현황분석"+params.getString("city")+ titleDate +".xls");
 			model.addAttribute("titleName", "긴급교통정보 처리건수 실적"+params.getString("city"));
 			model.addAttribute("sheetNames1", "긴급교통정보 처리건수 실적");
 			model.addAttribute("Data", Data);
@@ -298,11 +298,9 @@ public class StatisticController extends BaseController{
 	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
 	    }
 	}
-	/*3. 재난 제보건수
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	
+	
+	// 통계 관리 > 기간별 통계 - 4. 재난 제보건수
 	@RequestMapping("stats/disastorStat.do")
 	public String disastorStat(Model model,HttpServletRequest request) throws Exception {
 		
@@ -310,8 +308,11 @@ public class StatisticController extends BaseController{
 		try {
 			List Data = statisticService.disastorStat(params);	//무 제보자 통신원 목록
 			
+			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+			
 			model.addAttribute("mapping", "disastorStat");
-			model.addAttribute("fileName", "재난 제보건수"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "재난 제보건수"+params.getString("city")+ titleDate +".xls");
 			model.addAttribute("titleName", "재난 제보건수"+params.getString("city"));
 			model.addAttribute("sheetNames1", "재난 제보건수");
 			model.addAttribute("Data", Data);
@@ -327,11 +328,244 @@ public class StatisticController extends BaseController{
 	    }
 	}
 	
-	/*4. 월별 제보자별 제보건수
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	
+	// 통계 관리 > 기간별 통계 - 5. 교통정보 수집건수 및 활용실적
+	@RequestMapping("/stats/receiptUse.do")
+	public String receiptUse(Model model,HttpServletRequest request) throws Exception {
+		ParamsDto params = getParams(true);
+		try {
+			List headList = statisticService.selectInfrm();	//제보자 유형 title
+			List useAllList = statisticService.informerTypeAll(params);	//제보자 유형별 건수
+			List useOurOther = statisticService.informerTypeOurOther(params);	//제보자 유형별 자국/타국 건수
+			List useDaily = statisticService.receiptUseDaily(params);	//일별 상세
+				
+			List regionHead = statisticService.selectInfrm();	//방송국 title
+			List sumMonth = statisticService.monthSendYNA07A08(params);	// 월별 합계
+			List Data = statisticService.dailyRegionSendYNA07A08(params);	// 일별 방송국별 데이터
+				
+			int eSize = headList.size(); // 통신원 유형 크기
+				
+			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+				
+			model.addAttribute("mapping", "standartdReceiptUse");
+			model.addAttribute("fileName", "교통정보 수집건수 및 활용실적"+params.getString("city")+ titleDate +".xls");
+				
+			model.addAttribute("sheetNames1", "1) 수집건수");
+			model.addAttribute("headList", headList);
+			model.addAttribute("useAllList", useAllList);
+			model.addAttribute("useOurOther", useOurOther);
+			model.addAttribute("useDaily", useDaily);
+			model.addAttribute("ourRegion", params.get("session_user_region"));
+				
+			model.addAttribute("sheetNames2", "2) 활용실적");
+			model.addAttribute("regionHead", regionHead);
+			model.addAttribute("sumMonth", sumMonth);
+		//	model.addAttribute("sumDaily", sumDaily);
+			model.addAttribute("Data", Data);
+			model.addAttribute("start_date", params.get("start_date"));
+			model.addAttribute("end_date", params.get("end_date"));
+			model.addAttribute("eSize",eSize);
+				
+			return "hssfExcel";
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+		       e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+		       // 로그 레벨 ERROR로 예외의 문자열만 기록 
+		       logger.error(e.toString(),e);  
+		       throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+		   }
+	}
+		
+
+	
+	// 통계 관리 > 기간별 통계 - 6. 통신원 중소 분류별 통계
+	@RequestMapping("stats/orgOrgSub.do")
+	public String orgOrgSub(Model model,HttpServletRequest request) throws Exception {
+		
+		ParamsDto params = getParams(true);
+		//문자열        
+		List eraList =  statisticService.statDateCal(params); 
+		params.add("chkArr", eraList);
+		List sheetNames = new ArrayList();//기관별 시트명
+		List informerListMain =new ArrayList(); //왼쪽 통신원부 
+		List cntListMain =new ArrayList(); //오른쪽 건수
+		
+		List orgOrgSubList = new ArrayList();
+		
+		orgOrgSubList = statisticService.orgOrgSub(params);
+		
+		RecordDto record = (RecordDto) orgOrgSubList.get(0);
+		
+		/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+		String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+		
+		model.addAttribute("mapping", "orgOrgSub");
+		model.addAttribute("fileName", "통신원 중소 분류별 통계"+params.getString("city")+ titleDate + ".xls");
+		model.addAttribute("titleName", "통신원 중소 분류별 통계"+params.getString("city")+".xls");
+		model.addAttribute("sheetNames1", "통신원 중소 분류별 통계");
+		//해당 부분은 위 부분과 대조하여 검토
+		model.addAttribute("orgOrgSub", orgOrgSubList);
+		model.addAttribute("eraList", eraList);
+		model.addAttribute("start_date", params.get("start_date"));
+		model.addAttribute("org_id", params.get("org_id"));
+		return "hssfExcel";
+	}
+	
+	
+	
+	
+	
+	// 통계 관리 > 기간별 통계 - 7. 제보자별 제보현황
+	@RequestMapping("/stats/informerReceipt.do")
+	public String informerReport(Model model, HttpServletRequest request) throws Exception {
+		ParamsDto params = getParams(true);
+
+		try {
+		    List dataList = statisticService.informerReport(params);
+		    int allInformer = dataList.size();
+
+		    /*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+			
+		    model.addAttribute("mapping", "informerReport");
+		    model.addAttribute("fileName", "제보자별 제보현황" + params.getString("city") + titleDate + ".xls");
+
+		    model.addAttribute("sheetNames1", "제보자별 제보현황");
+		    model.addAttribute("dataList", dataList);
+		    model.addAttribute("start_date", params.get("start_date"));
+		    model.addAttribute("end_date", params.get("end_date"));
+		    model.addAttribute("allInformer", allInformer);
+
+		    return "hssfExcel";
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+		    e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+		    // 로그 레벨 ERROR로 예외의 문자열만 기록 
+		    logger.error(e.toString(),e);  
+		    throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+		}
+	}
+	
+	
+	
+	// 통계 관리 > 기간별 통계 - 7. 제보자별 제보현황(연간)
+	@RequestMapping("/stats/yearReceipt.do")
+	public String yearReceipt (Model model, HttpServletRequest request) throws Exception {
+		ParamsDto params = getParams(true);
+		try {
+			// 시상관리 % 가져오기
+			List<AwardVO> perList = statisticService.perList(params);
+	
+			// 최대 값(total) 가져오기
+			List totalList = statisticService.totalList(params);
+					
+			List dataList = statisticService.yearReceipt(params); // 엑셀에 사용할 데이터 리스트 가져오기
+			
+			int allInformer = dataList.size(); // 총 인원수 구해오기 
+			// 총 건수 구해오기
+			
+			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+			
+			model.addAttribute("mapping", "yearReceipt");
+			model.addAttribute("fileName", "연간 제보자별 제보현황(" + params.getString("city") + titleDate + ".xls");
+			
+			model.addAttribute("sheetName1","연간 제보자별 제보현황");
+			model.addAttribute("dataList", dataList);
+			model.addAttribute("start_date", params.get("start_date"));
+			model.addAttribute("end_date", params.get("end_date"));
+			model.addAttribute("allInformer",allInformer);
+			model.addAttribute("perList",perList);
+			model.addAttribute("totalList",totalList);
+			
+			return "hssfExcel";
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
+	        logger.error(e.toString(),e);  
+	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+	    }
+	}
+	
+	
+	
+	// 통계 관리 > 기간별 통계 - 8. 연간 지역(소속)별 실적 통계
+	@RequestMapping("stats/yearOrgStat.do")
+	public String yearOrgStat (Model model, HttpServletRequest request) throws Exception {
+		ParamsDto params = getParams(true);
+		try {
+			// 시상관리 % 가져오기
+			List<AwardVO> perList = statisticService.perList(params);
+					
+			List dataList = statisticService.yearOrgStat(params); // 엑셀에 사용할 데이터 리스트 가져오기
+			
+			// 최대 값(total) 가져오기
+			List totalList = statisticService.totalListOrg(params);
+						
+			int allInformer = dataList.size(); // 총 인원수 구해오기 
+			// 총 건수 구해오기
+			
+			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+			
+			model.addAttribute("mapping", "yearOrgStat");
+			model.addAttribute("fileName", "연간 지역소속별 통계(" + params.getString("city") + titleDate + ".xls");
+				
+			model.addAttribute("sheetName1","연간 지역소속별 통계");
+			model.addAttribute("dataList", dataList);
+			model.addAttribute("start_date", params.get("start_date"));
+			model.addAttribute("end_date", params.get("end_date"));
+			model.addAttribute("allInformer",allInformer);
+			model.addAttribute("perList",perList);
+			model.addAttribute("totalList",totalList);
+				
+			return "hssfExcel";
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+		    e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+		    // 로그 레벨 ERROR로 예외의 문자열만 기록 
+		    logger.error(e.toString(),e);  
+		    throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+		}
+	}
+	
+	
+	
+	// 통계 관리 > 기간별 통계 - 9. 사회 봉사자 일자별 통계
+	@RequestMapping("stats/volunteer.do")
+	public String volunteer(Model model,HttpServletRequest request) throws Exception {
+		
+		ParamsDto params = getParams(true);
+		
+		List sheetNames = new ArrayList();//기관별 시트명
+		List informerListMain =new ArrayList(); //왼쪽 통신원부 
+		List cntListMain =new ArrayList(); //오른쪽 건수
+		
+		List vltList = new ArrayList();
+		//flagService
+		vltList = statisticService.volunteer(params);
+		
+		//List orgType = statisticService.orgType(params);//지역별 통신원 하부 기관 조회
+		
+		/*RecordDto record = (RecordDto) vltList.get(0);*/
+		
+		/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+		String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+		
+		model.addAttribute("mapping", "volunteer");
+		model.addAttribute("fileName", "사회봉사자 일자별 통계"+params.getString("city")+ titleDate + ".xls");
+		model.addAttribute("titleName", "사회봉사자 일자별 통계"+params.getString("city")+".xls");
+		model.addAttribute("sheetNames1", "일자별 제보건수");
+		//해당 부분은 위 부분과 대조하여 검토
+		model.addAttribute("vltList", vltList);
+		model.addAttribute("start_date", params.get("start_date"));
+		model.addAttribute("end_date", params.get("end_date"));
+		model.addAttribute("org_id", params.get("org_id"));
+		
+		return "hssfExcel";
+	}
+	
+	
+	
+	// 통계 관리 > 월별 통계 - 1. 월별 제보자별 제보건수
 	@RequestMapping("stats/muInformer.do")
 	public String muJebo(Model model,HttpServletRequest request) throws Exception {
 		
@@ -346,7 +580,7 @@ public class StatisticController extends BaseController{
 		try {
 			List headList = statisticService.monInfrmList(params);	//제보자 리스트
 			List Data = statisticService.monInfrmCnt(params);	//월별 건수
-			
+
 			model.addAttribute("mapping", "muJebo");
 			model.addAttribute("fileName", "월별 제보자별 제보건수("+params.getString("start_date")+") "+params.getString("city")+".xls");
 			model.addAttribute("titleName", "월별 제보자별 제보건수("+params.getString("start_date")+") "+params.getString("city"));
@@ -364,49 +598,11 @@ public class StatisticController extends BaseController{
 	    }
 	}
 	
-	/*03. 무 제보자 현황
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("stats/muInformer2.do")
-	public String muJebo2(Model model,HttpServletRequest request) throws Exception {
-		
-		ParamsDto params = getParams(true);
-		/*int monthCnt = Integer.parseInt(params.getString("start_date").substring(4,6));
-		List<Integer> monList = new ArrayList<>();
-		//1월부터 해당월까지의 무제보자
-		for (int i = 0; i < monthCnt; i++) {
-			monList.add(i);
-		}
-		params.add("monList", monList);*/
-		try {
-			List headList = statisticService.muJeboList(params);	//무 제보자 통신원 목록
-			List Data = statisticService.muJeboList(params);	//무 제보자 통신원 목록
-			
-			model.addAttribute("mapping", "muJebo2");
-			model.addAttribute("fileName", "무 제보자 현황("+params.getString("end_date")+") "+params.getString("city")+".xls");
-			model.addAttribute("titleName", "무 제보자 현황("+params.getString("end_date")+") "+params.getString("city"));
-			model.addAttribute("sheetNames1", "무 제보자 현황");
-			model.addAttribute("headList", headList);
-			model.addAttribute("Data", Data);
-			model.addAttribute("start_date", params.get("start_date"));
-			model.addAttribute("start_date", params.get("end_date"));
-			
-			return "hssfExcel";
-		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
-	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
-	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
-	        logger.error(e.toString(),e);  
-	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
-	    }
-	}
 	
-	/*4. 교통통신원 제보건수 및 접수직원 가공건수
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	
+	
+
+	// 통계 관리 > 월별 통계 - 2. 교통통신원 제보건수 및 접수직원 가공건수
 	@RequestMapping("/stats/receiptInformer.do")
 	public String receiptInformer(HttpServletRequest request,Model model) throws Exception {
 		ParamsDto params = getParams(true);
@@ -474,7 +670,7 @@ public class StatisticController extends BaseController{
 			}
 	
 			model.addAttribute("mapping", "standardInformUse");
-			model.addAttribute("fileName", "교통통신원 제보건수 및 접수직원 가공건수"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "교통통신원 제보건수 및 접수직원 가공건수(" +params.getString("start_date")+")"+params.getString("city")+".xls");
 			model.addAttribute("sheetNames", sheetNames);
 			
 			model.addAttribute("monthReceipt", monthReceiptMain);
@@ -493,165 +689,10 @@ public class StatisticController extends BaseController{
 	    }
 	}
 	
+	
 
-	/*5. 교통정보 수집건수 및 활용실적
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/stats/receiptUse.do")
-	public String receiptUse(Model model,HttpServletRequest request) throws Exception {
-		ParamsDto params = getParams(true);
-		try {
-			List headList = statisticService.selectInfrm();	//제보자 유형 title
-			List useAllList = statisticService.informerTypeAll(params);	//제보자 유형별 건수
-			List useOurOther = statisticService.informerTypeOurOther(params);	//제보자 유형별 자국/타국 건수
-			List useDaily = statisticService.receiptUseDaily(params);	//일별 상세
-			
-			List regionHead = statisticService.selectInfrm();	//방송국 title
-			List sumMonth = statisticService.monthSendYNA07A08(params);	// 월별 합계
-			List Data = statisticService.dailyRegionSendYNA07A08(params);	// 일별 방송국별 데이터
-			
-			int eSize = headList.size(); // 통신원 유형 크기
-			
-			model.addAttribute("mapping", "standartdReceiptUse");
-			model.addAttribute("fileName", "교통정보 수집건수 및 활용실적"+params.getString("city")+".xls");
-			
-			model.addAttribute("sheetNames1", "1) 수집건수");
-			model.addAttribute("headList", headList);
-			model.addAttribute("useAllList", useAllList);
-			model.addAttribute("useOurOther", useOurOther);
-			model.addAttribute("useDaily", useDaily);
-			model.addAttribute("ourRegion", params.get("session_user_region"));
-			
-			model.addAttribute("sheetNames2", "2) 활용실적");
-			model.addAttribute("regionHead", regionHead);
-			model.addAttribute("sumMonth", sumMonth);
-		//	model.addAttribute("sumDaily", sumDaily);
-			model.addAttribute("Data", Data);
-			model.addAttribute("start_date", params.get("start_date"));
-			model.addAttribute("end_date", params.get("end_date"));
-			model.addAttribute("eSize",eSize);
-			
-			return "hssfExcel";
-		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
-	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
-	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
-	        logger.error(e.toString(),e);  
-	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
-	    }
-	}
-
-	//24-11-19 : 제보자별 제보현황 컨트롤러
-	@RequestMapping("/stats/informerReceipt.do")
-	public String informerReport(Model model, HttpServletRequest request) throws Exception {
-	    ParamsDto params = getParams(true);
-
-	    try {
-	        List dataList = statisticService.informerReport(params);
-	        int allInformer = dataList.size();
-
-	        model.addAttribute("mapping", "informerReport");
-	        model.addAttribute("fileName", "제보자별 제보현황" + params.getString("city") + ".xls");
-
-	        model.addAttribute("sheetNames1", "제보자별 제보현황");
-	        model.addAttribute("dataList", dataList);
-	        model.addAttribute("start_date", params.get("start_date"));
-	        model.addAttribute("end_date", params.get("end_date"));
-	        model.addAttribute("allInformer", allInformer);
-
-	        return "hssfExcel";
-	    } catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
-	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
-	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
-	        logger.error(e.toString(),e);  
-	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
-	    }
-	}
 	
-	
-	
-	// 25-02-27 : 제보자별 제보현황 (연간) 컨트롤러 
-	@RequestMapping("/stats/yearReceipt.do")
-	public String yearReceipt (Model model, HttpServletRequest request) throws Exception {
-		ParamsDto params = getParams(true);
-		try {
-			// 시상관리 % 가져오기
-			List<AwardVO> perList = statisticService.perList(params);
-	
-			// 최대 값(total) 가져오기
-			List totalList = statisticService.totalList(params);
-					
-			List dataList = statisticService.yearReceipt(params); // 엑셀에 사용할 데이터 리스트 가져오기
-			
-			int allInformer = dataList.size(); // 총 인원수 구해오기 
-			// 총 건수 구해오기
-			
-			model.addAttribute("mapping", "yearReceipt");
-			model.addAttribute("fileName", "연간 제보자별 제보현황(" + params.getString("city") + ".xls");
-			
-			model.addAttribute("sheetName1","연간 제보자별 제보현황");
-			model.addAttribute("dataList", dataList);
-			model.addAttribute("start_date", params.get("start_date"));
-			model.addAttribute("end_date", params.get("end_date"));
-			model.addAttribute("allInformer",allInformer);
-			model.addAttribute("perList",perList);
-			model.addAttribute("totalList",totalList);
-			
-			return "hssfExcel";
-		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
-	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
-	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
-	        logger.error(e.toString(),e);  
-	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
-	    }
-	}
-	
-	
-	// 25-02-27 : 연간 지역소속별 통계(수상 관련)
-	@RequestMapping("stats/yearOrgStat.do")
-	public String yearOrgStat (Model model, HttpServletRequest request) throws Exception {
-		ParamsDto params = getParams(true);
-		try {
-			// 시상관리 % 가져오기
-			List<AwardVO> perList = statisticService.perList(params);
-					
-			List dataList = statisticService.yearOrgStat(params); // 엑셀에 사용할 데이터 리스트 가져오기
-			
-			// 최대 값(total) 가져오기
-			List totalList = statisticService.totalListOrg(params);
-					
-			int allInformer = dataList.size(); // 총 인원수 구해오기 
-			// 총 건수 구해오기
-			
-			model.addAttribute("mapping", "yearOrgStat");
-			model.addAttribute("fileName", "연간 지역소속별 통계(" + params.getString("city") + ".xls");
-			
-			model.addAttribute("sheetName1","연간 지역소속별 통계");
-			model.addAttribute("dataList", dataList);
-			model.addAttribute("start_date", params.get("start_date"));
-			model.addAttribute("end_date", params.get("end_date"));
-			model.addAttribute("allInformer",allInformer);
-			model.addAttribute("perList",perList);
-			model.addAttribute("totalList",totalList);
-			
-			return "hssfExcel";
-		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
-	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
-	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
-	        logger.error(e.toString(),e);  
-	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
-	    }
-	}
-	
-	
-	
-	
-	/**전국통계: 돌발 교통정보 표출실적
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	// 통계 관리 > 월별 통계 - 3. 돌발 교통정보 표출실적
 	@RequestMapping("/stats/incidentStats.do")
 	public String incidentStats(Model model) throws Exception {
 		ParamsDto params = getParams(true);
@@ -666,7 +707,7 @@ public class StatisticController extends BaseController{
 			List Data = statisticService.nationalIncident(params);	
 			
 			model.addAttribute("mapping", "nationalIncident");
-			model.addAttribute("fileName", "돌발 교통정보 제공실적"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "돌발 교통정보 제공실적("+ params.get("start_date") +")"+params.getString("city")+".xls");
 			model.addAttribute("titleName", params.getString("start_date").substring(0,4)+"년 돌발교통정보 수집건수"+params.getString("city"));
 			model.addAttribute("sheetNames1", "돌발교통정보 수집건수");
 			model.addAttribute("Data", Data);
@@ -681,11 +722,47 @@ public class StatisticController extends BaseController{
 	    }
 	}
 	
-	/** 7. 교통정보 수집원 현황
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	
+
+	
+	// 통계 관리 > 월별 통계 - 4. 무 제보자 현황
+	@RequestMapping("stats/muInformer2.do")
+	public String muJebo2(Model model,HttpServletRequest request) throws Exception {
+		
+		ParamsDto params = getParams(true);
+		/*int monthCnt = Integer.parseInt(params.getString("start_date").substring(4,6));
+		List<Integer> monList = new ArrayList<>();
+		//1월부터 해당월까지의 무제보자
+		for (int i = 0; i < monthCnt; i++) {
+			monList.add(i);
+		}
+		params.add("monList", monList);*/
+		try {
+			List headList = statisticService.muJeboList(params);	//무 제보자 통신원 목록
+			List Data = statisticService.muJeboList(params);	//무 제보자 통신원 목록
+			
+			model.addAttribute("mapping", "muJebo2");
+			model.addAttribute("fileName", "무 제보자 현황("+params.getString("end_date")+") "+params.getString("city")+".xls");
+			model.addAttribute("titleName", "무 제보자 현황("+params.getString("end_date")+") "+params.getString("city"));
+			model.addAttribute("sheetNames1", "무 제보자 현황");
+			model.addAttribute("headList", headList);
+			model.addAttribute("Data", Data);
+			model.addAttribute("start_date", params.get("start_date"));
+			model.addAttribute("start_date", params.get("end_date"));
+			
+			return "hssfExcel";
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
+	        logger.error(e.toString(),e);  
+	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+	    }
+	}
+	
+	
+
+
+	// 통계 관리 > 월별 통계 - 5. 교통정보 수집원 현황
 	@RequestMapping("/stats/informerStats.do")
 	public String informerStats(Model model) throws Exception {
 		ParamsDto params = getParams(true);
@@ -695,7 +772,7 @@ public class StatisticController extends BaseController{
 			List Data = statisticService.informerStats(params);	//교통정보 수집원 현황
 			
 			model.addAttribute("mapping", "standardInformer");
-			model.addAttribute("fileName", "교통정보 수집원 현황"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "교통정보 수집원 현황(" + params.get("start_date") + ")" +params.getString("city")+".xls");
 			model.addAttribute("titleName", "교통정보 수집원 현황"+params.getString("city"));
 			model.addAttribute("sheetNames1", "교통정보 수집원 현황");
 			model.addAttribute("Data", Data);
@@ -710,11 +787,11 @@ public class StatisticController extends BaseController{
 	    }
 	}
 	
-	/*8. 한국가스기술공사 제보실적
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+
+
+	
+	
+	// 통계 관리 > 월별 통계 - 6. 한국가스기술공사 제보실적
 	@RequestMapping("stats/krGas.do")
 	public String krGas(Model model,HttpServletRequest request) throws Exception {
 		ParamsDto params = getParams(true);
@@ -722,7 +799,7 @@ public class StatisticController extends BaseController{
 			List Data = statisticService.krGasMonCnt(params);	//제보자 유형별 건수
 			
 			model.addAttribute("mapping", "korLx");
-			model.addAttribute("fileName", "한국가스기술공사 제보실적"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "한국가스기술공사 제보실적("+ params.get("start_date") + ")" +params.getString("city")+".xls");
 			model.addAttribute("titleName", "한국가스기술공사 통신원 제보실적"+params.getString("city"));
 			model.addAttribute("sheetNames1", "가스기술공사 제보실적");
 			model.addAttribute("Data", Data);
@@ -738,11 +815,11 @@ public class StatisticController extends BaseController{
 		
 	}
 	
-	/*9. 한국국토정공사 제보현황
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+
+	
+	
+	
+	// 통계 관리 > 월별 통계 - 7. 한국국토정공사 제보현황
 	@RequestMapping("stats/korLx.do")
 	public String korLx(Model model,HttpServletRequest request) throws Exception {
 		
@@ -751,7 +828,7 @@ public class StatisticController extends BaseController{
 			List Data = statisticService.korLxMonCnt(params);	//제보자 유형별 건수
 			
 			model.addAttribute("mapping", "korLx");
-			model.addAttribute("fileName", "한국국토정보공사 제보현황"+params.getString("city")+".xls");
+			model.addAttribute("fileName", "한국국토정보공사 제보현황("+ params.get("start_date") + ")" +params.getString("city")+".xls");
 			model.addAttribute("titleName", "한국국토정보공사 통신원 제보현황"+params.getString("city"));
 			model.addAttribute("sheetNames1", "국토정보공사 제보현황");
 			model.addAttribute("Data", Data);
@@ -766,11 +843,11 @@ public class StatisticController extends BaseController{
 	    }
 	}
 
-	/* 통신원 소속별 일자별 통계 
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+
+	
+	
+	
+	// 통계 관리 > 월별 통계 - 8. 통신원 소속별 일자별 통계 
 	@RequestMapping("stats/dayReceipt.do")
 	public String dayReceipt(Model model,HttpServletRequest request) throws Exception {
 		
@@ -786,7 +863,7 @@ public class StatisticController extends BaseController{
 			
 			RecordDto record = (RecordDto) dayReceiptList.get(0);
 			model.addAttribute("mapping", "dayReceipt");
-			model.addAttribute("fileName", record.get("ORG_NAME")+" 통신원 일자별 제보건수"+params.getString("city")+".xls");
+			model.addAttribute("fileName", record.get("ORG_NAME")+" 통신원 일자별 제보건수"+params.getString("city")+ "(" +  params.get("start_date")+").xls");
 			model.addAttribute("titleName", record.get("ORG_NAME")+" 통신원 일자별 제보건수"+params.getString("city")+".xls");
 			model.addAttribute("sheetNames1", "일자별 제보건수");
 			//해당 부분은 위 부분과 대조하여 검토
@@ -802,72 +879,9 @@ public class StatisticController extends BaseController{
 	    }
 	}
 
-	/* 통신원 중소 분류별 통계
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("stats/orgOrgSub.do")
-	public String orgOrgSub(Model model,HttpServletRequest request) throws Exception {
-		
-		ParamsDto params = getParams(true);
-		//문자열        
-		List eraList =  statisticService.statDateCal(params); 
-		params.add("chkArr", eraList);
-		List sheetNames = new ArrayList();//기관별 시트명
-		List informerListMain =new ArrayList(); //왼쪽 통신원부 
-		List cntListMain =new ArrayList(); //오른쪽 건수
-		
-		List orgOrgSubList = new ArrayList();
-		
-		orgOrgSubList = statisticService.orgOrgSub(params);
-		
-		RecordDto record = (RecordDto) orgOrgSubList.get(0);
-		model.addAttribute("mapping", "orgOrgSub");
-		model.addAttribute("fileName", "통신원 중소 분류별 통계"+params.getString("city")+".xls");
-		model.addAttribute("titleName", "통신원 중소 분류별 통계"+params.getString("city")+".xls");
-		model.addAttribute("sheetNames1", "통신원 중소 분류별 통계");
-		//해당 부분은 위 부분과 대조하여 검토
-		model.addAttribute("orgOrgSub", orgOrgSubList);
-		model.addAttribute("eraList", eraList);
-		model.addAttribute("start_date", params.get("start_date"));
-		model.addAttribute("org_id", params.get("org_id"));
-		return "hssfExcel";
-	}
+	
 
-	/* 사회봉사자 일자별 통계
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("stats/volunteer.do")
-	public String volunteer(Model model,HttpServletRequest request) throws Exception {
-		
-		ParamsDto params = getParams(true);
-		
-		List sheetNames = new ArrayList();//기관별 시트명
-		List informerListMain =new ArrayList(); //왼쪽 통신원부 
-		List cntListMain =new ArrayList(); //오른쪽 건수
-		
-		List vltList = new ArrayList();
-		//flagService
-		vltList = statisticService.volunteer(params);
-		
-		//List orgType = statisticService.orgType(params);//지역별 통신원 하부 기관 조회
-		
-		/*RecordDto record = (RecordDto) vltList.get(0);*/
-		model.addAttribute("mapping", "volunteer");
-		model.addAttribute("fileName", "사회봉사자 일자별 통계"+params.getString("city")+".xls");
-		model.addAttribute("titleName", "사회봉사자 일자별 통계"+params.getString("city")+".xls");
-		model.addAttribute("sheetNames1", "일자별 제보건수");
-		//해당 부분은 위 부분과 대조하여 검토
-		model.addAttribute("vltList", vltList);
-		model.addAttribute("start_date", params.get("start_date"));
-		model.addAttribute("end_date", params.get("end_date"));
-		model.addAttribute("org_id", params.get("org_id"));
-		
-		return "hssfExcel";
-	}
+
 	
 	//금일접수현황 엑셀 다운로드
 	@RequestMapping("/stats/receiptDownToday.ajax")

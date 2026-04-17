@@ -554,7 +554,7 @@
 								    </td>
 								    <th>통신원 ID <span style="color:red">*</span></th>
 								    <td>
-								    	<input type="text" id="actId" name="actId"/>
+								    	<input type="text" id="actId" name="actId" value="${informerInfo.actId}"/> <!-- 26-04-16 : 본부 요청으로 진입 시 자동으로 id 생성 -->
 								    </td>
 								</tr>	
 															

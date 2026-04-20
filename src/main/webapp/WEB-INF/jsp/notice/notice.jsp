@@ -175,8 +175,8 @@
         <h1 class="content-title">공지사항</h1>
         <div class="board_list">
             <form id="searchNotice" action="/notice/notice.do" method="post">
-                <div class="rounding_wrap mgt10">
-                    <div class="wrap_top"></div>
+                <div class="rounding_wrap mgt10" style="width:1500px;">
+<!--                     <div class="wrap_top"></div>
                     <div class="wrap_center">
                         <fieldset class="searchField">
                             <legend> 공지사항 검색조건</legend>
@@ -190,31 +190,52 @@
                           	 </div>
                         </fieldset>
                     </div>
-                    <div class="wrap_bottom"></div>
+                    <div class="wrap_bottom" style="width:1500px;"></div> -->
+					<div style="width:1470px; border:1px solid #ccc; background-color:#f8f8f8; 
+					            padding:10px 15px; display:flex; align-items:center; gap:10px;
+					            border-radius:8px; margin-bottom:25px;">
+					
+					    <input type="checkbox" id="startDate_chk">
+					
+					    <span style="margin-left:5px;">월별 검색 :</span>
+					    <input type="text" id="searchDate" name="searchDate"
+					           style="height:22px; border:1px solid #aaa; padding:2px 5px; border-radius:3px;">
+					
+					    <span style="margin-left:10px;">검색어 입력 :</span>
+					    <input type="text" id="searchText" name="searchText"
+					           style="height:22px; border:1px solid #aaa; padding:2px 5px; border-radius:3px;">
+					
+					    <button class="searchButton"
+					            style="padding:3px 10px; border:1px solid #999; background-color:#e0e0e0; 
+					                   cursor:pointer; border-radius:3px;">
+					        검색
+					    </button>
+					
+					</div>
                 </div>
             </form>
-            <div id="targetDiv">
+<!--             <div id="targetDiv">
             </div>
-        
-        <div class="admin_result_sc">
-	    <table class="list01">
+         -->
+        <div class="admin_result_sc" style="width:1500px;">
+	    <table class="list01" style="width:1500px;">
 	        <thead>
 	            <tr>
-	                <th style="width : 466px;">제목</th>
-	                <th style="width : 195px;">작성자</th>
+	                <th style="width : 800px;">제목</th>
+	                <th style="width : 335px;">작성자</th>
 	                <th>작성일</th>
 	            </tr>
 	        </thead>
 	    </table>
 	
 	    <div class="tbody_scroll" style="max-height: 400px; overflow-y: auto;">
-	        <table class="list01">
+	        <table class="list01" style="width:1500px;">
 	            <tbody>
 	                <c:forEach var="list" items="${noticeList}">
 	                    <tr>
 	                    	<input type="hidden" id="notice_id" value="${list.NOTICE_ID}"/>
-	                        <td>${list.NOTICE_TITLE}</td>
-	                        <td>${list.WRITER_NAME}</td>
+	                        <td style="width:700px;">${list.NOTICE_TITLE}</td>
+	                        <td style="width:300px;">${list.WRITER_NAME}</td>
 	                        <td>${list.START_DATE}</td>
 	                    </tr>
 	                </c:forEach>
@@ -223,7 +244,7 @@
 	    </div>
 	</div>
 
-        <div id="insertBtn_div" style="margin-top: 15px; width: 880px;">
+        <div id="insertBtn_div" style="margin-top: 15px; width: 1500px;">
             	<div style="float: right;">
             		<button class="insertButton">등록</button>
             	</div>

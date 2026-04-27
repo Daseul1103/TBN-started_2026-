@@ -131,8 +131,9 @@
 <script>
 $(function () {
   const $form = $('#searchFrm'); // ← 수정됨
-  const nameMap = { 1:'INFORMER_ID', 2:'AREA_NAME', 3:'INFORMER_TYPE_NAME', 4:'ORG_NAME', 5:'INFORMER_NAME', 6:'PHONE_CELL', 7:'FLAG_ACT', 8:'REG_DATE' };
-
+  /* const nameMap = { 1:'INFORMER_ID', 2:'AREA_NAME', 3:'INFORMER_TYPE_NAME', 4:'ORG_NAME', 5:'INFORMER_NAME', 6:'PHONE_CELL', 7:'FLAG_ACT', 8:'REG_DATE' }; */
+  const nameMap = { 1:'ACT_ID', 2:'AREA_NAME', 3:'INFORMER_TYPE_NAME', 4:'ORG_NAME', 5:'INFORMER_NAME', 6:'PHONE_CELL', 7:'FLAG_ACT', 8:'REG_DATE' };
+	
   // ★ 전역 노출: window.dt
 window.dt = createDataTable('#informerTable', {
   order: [[8, 'desc']], // 화면 기본 정렬
@@ -414,7 +415,8 @@ $('#selectConfirmBtn').on('click', function () {
 			            <label><input class="datalist" type="checkbox" name="selectedCols" value="TRS_NO"> TRS</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="MEMO1"> 메모</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="HONOR"> 명예 통신원</label>
-						<label><input class="datalist" type="checkbox" name="selectedCols" value="BIRTHDAY"> 생일</label>
+						<label><input class="datalist" type="checkbox" name="selectedCols" value="BIRTHDAY"> 생년월일</label>
+						<label><input class="datalist" type="checkbox" name="selectedCols" value="IDENTIFI_DATE"> 통신원 신분증 유효기간</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="FLAG_SERVICE"> 자원 봉사</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="MEMO"> 전달 사항</label>
 						<label><input class="datalist" type="checkbox" name="selectedCols" value="ADDRESS_OFFICE"> 회사 주소</label>

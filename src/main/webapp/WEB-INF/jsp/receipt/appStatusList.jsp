@@ -30,6 +30,7 @@
 		<span style="width:60px;">${toadysListVO.RNUM }</span>
 		<span style="width:100px;">${toadysListVO.RECEIPT_DAY }</span>
 		<span style="width:100px;">${toadysListVO.RECEIPT_TIME }</span>
+		<span style="width:100px;">${toadysListVO.PHONE_CELL }</span>
 		<span style="width:100px;">${toadysListVO.REPORT_TYPE}</span>
 		<span style="width:150px;">${toadysListVO.INDIVIDUAL_NAME }</span>
 		<c:choose>

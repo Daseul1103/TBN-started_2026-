@@ -197,10 +197,22 @@ public class InfrmController implements ApplicationContextAware {
 	    
 	    // 재사용 헬퍼: BaseVO에서 안전한 ORDER BY 생성
 	    String orderBy ="";
-	    if(sortName.equals("")||sortDir.equals("")) {
+	    
+	    /*26-04-27 : 테이블에서 통신원 ID 정렬 안됨에 따라 일부 수정 전 코드*/
+/*	    if(sortName.equals("")||sortDir.equals("")) {
 	    	orderBy="REG_ORDER DESC";
-	    }else {
+	    } else {
 	    	orderBy=sortName+" "+sortDir;
+	    }*/
+	    
+	    /*26-04-27 : 테이블에서 통신원 ID 정렬 안됨에 따라 일부 수정한 코드*/
+	    if (sortName == null || sortName.equals("") || sortDir == null || sortDir.equals("")) {
+	        orderBy = "REG_ORDER DESC";
+	    } else if ("ACT_ID".equals(sortName)) {
+	        orderBy = "CASE WHEN REGEXP_LIKE(ACT_ID, '^[0-9]+$') THEN TO_NUMBER(ACT_ID) END " 
+	                  + sortDir;
+	    } else {
+	        orderBy = sortName + " " + sortDir;
 	    }
 
 	    //long total    = infrmService.countAll(vo);

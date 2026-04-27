@@ -425,6 +425,7 @@ $(document).ready(function() {
 			        <span style="width:60px; text-align:center;">번호</span>
 			        <span style="width:100px; text-align:center;">일자</span>
 			        <span style="width:100px; text-align:center;">제보시간</span>
+			        <span style="width:100px; text-align:center;">전화번호</span>
 			        <span style="width:100px; text-align:center;">유형(대)</span>
 			        <span style="width:150px; text-align:center;">제보자</span>
 			        <span style="width:516px; text-align:center;">내용</span>

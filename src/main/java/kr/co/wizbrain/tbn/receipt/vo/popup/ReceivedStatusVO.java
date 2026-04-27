@@ -30,6 +30,8 @@ public class ReceivedStatusVO {
 	private String FLAG_DISASTOR;		//재난제보
 	private String BROAD_TIME; //방송시간
 	
+	private String PHONE_CELL; // 전화번호
+	
 	public ReceivedStatusVO() {}
 
 	public ReceivedStatusVO(String rNUM, String rECEIPT_ID, String rECEIPT_DAY, String fLAG_SEND, String fLAG_BROD,
@@ -60,6 +62,16 @@ public class ReceivedStatusVO {
 		BROAD_TIME = bROAD_TIME;
 	}
 	
+	
+	
+	public String getPHONE_CELL() {
+		return PHONE_CELL;
+	}
+
+	public void setPHONE_CELL(String pHONE_CELL) {
+		PHONE_CELL = pHONE_CELL;
+	}
+
 	public String getFLAG_SITU_ED() {
 		return FLAG_SITU_ED;
 	}

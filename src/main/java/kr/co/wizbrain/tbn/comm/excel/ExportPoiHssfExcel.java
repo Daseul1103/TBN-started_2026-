@@ -4268,7 +4268,9 @@ public class ExportPoiHssfExcel extends AbstractView {
 		        } else if ("HONOR".equals(col)) {
 		        	headerList.add("명예 통신원");
 		        } else if ("BIRTHDAY".equals(col)) {
-		        	headerList.add("생일");
+		        	headerList.add("생년월일");
+		        } else if ("IDENTIFI_DATE".equals(col)) {
+		        	headerList.add("통신원 신분증 유효기간");
 		        } else if ("FLAG_SERVICE".equals(col)) {
 		        	headerList.add("자원봉사");
 		        } else if ("MEMO".equals(col)) {
@@ -4316,6 +4318,7 @@ public class ExportPoiHssfExcel extends AbstractView {
 			    InfrmVO::getMemo1,
 			    InfrmVO::getHonor,
 			    InfrmVO::getBirthday,
+			    InfrmVO::getIdentifiDate,
 			    InfrmVO::getFlagService,
 			    InfrmVO::getMemo,
 			    InfrmVO::getAddressOffice,
@@ -4351,6 +4354,7 @@ public class ExportPoiHssfExcel extends AbstractView {
 		newExtractorMap.put("MEMO1", InfrmVO::getMemo1);
 		newExtractorMap.put("HONOR", InfrmVO::getHonor);
 		newExtractorMap.put("BIRTHDAY", InfrmVO::getBirthday);
+		newExtractorMap.put("IDENTIFI_DATE", InfrmVO::getIdentifiDate);
 		newExtractorMap.put("FLAG_SERVICE", InfrmVO::getFlagService);
 		newExtractorMap.put("MEMO", InfrmVO::getMemo);
 		newExtractorMap.put("ADDRESS_OFFICE", InfrmVO::getAddressOffice);
@@ -7802,24 +7806,28 @@ public class ExportPoiHssfExcel extends AbstractView {
         thCell3.setCellStyle(headStyle);
         
         HSSFCell thCell4 = thRow.createCell(4);
-        thCell4.setCellValue("총점");
+        thCell4.setCellValue("통신원 중분류");
         thCell4.setCellStyle(headStyle);
         
         HSSFCell thCell5 = thRow.createCell(5);
-        thCell5.setCellValue("당월 점수");
+        thCell5.setCellValue("총점");
         thCell5.setCellStyle(headStyle);
         
         HSSFCell thCell6 = thRow.createCell(6);
-        thCell6.setCellValue("전월 점수");
+        thCell6.setCellValue("당월 점수");
         thCell6.setCellStyle(headStyle);
         
         HSSFCell thCell7 = thRow.createCell(7);
-        thCell7.setCellValue("재난");
+        thCell7.setCellValue("전월 점수");
         thCell7.setCellStyle(headStyle);
         
         HSSFCell thCell8 = thRow.createCell(8);
-        thCell8.setCellValue("영상/사진");
+        thCell8.setCellValue("재난");
         thCell8.setCellStyle(headStyle);
+        
+        HSSFCell thCell9 = thRow.createCell(9);
+        thCell9.setCellValue("영상/사진");
+        thCell9.setCellStyle(headStyle);
         
         
         CellStyle dataStyle = wb.createCellStyle();
@@ -7858,29 +7866,33 @@ public class ExportPoiHssfExcel extends AbstractView {
             	dataCell3.setCellStyle(dataStyle);
             	
             	HSSFCell dataCell4 = dataRow.createCell(4);
-            	int allPoint = Integer.parseInt(record.get("ALL_POINT").toString());
-            	dataCell4.setCellValue(allPoint);
+            	dataCell4.setCellValue(record.get("ORG_NAME").toString());
             	dataCell4.setCellStyle(dataStyle);
             	
             	HSSFCell dataCell5 = dataRow.createCell(5);
-            	int receiptPoint = Integer.parseInt(record.get("RECEIPT_POINT").toString());
-            	dataCell5.setCellValue(receiptPoint);
+            	int allPoint = Integer.parseInt(record.get("ALL_POINT").toString());
+            	dataCell5.setCellValue(allPoint);
             	dataCell5.setCellStyle(dataStyle);
             	
             	HSSFCell dataCell6 = dataRow.createCell(6);
-            	int beforePoint = Integer.parseInt(record.get("BEFORE_POINT").toString());
-            	dataCell6.setCellValue(beforePoint);
+            	int receiptPoint = Integer.parseInt(record.get("RECEIPT_POINT").toString());
+            	dataCell6.setCellValue(receiptPoint);
             	dataCell6.setCellStyle(dataStyle);
             	
             	HSSFCell dataCell7 = dataRow.createCell(7);
-            	int disastorPoint = Integer.parseInt(record.get("DISASTOR_POINT").toString());
-            	dataCell7.setCellValue(disastorPoint);
+            	int beforePoint = Integer.parseInt(record.get("BEFORE_POINT").toString());
+            	dataCell7.setCellValue(beforePoint);
             	dataCell7.setCellStyle(dataStyle);
             	
             	HSSFCell dataCell8 = dataRow.createCell(8);
-            	int videoPoint = Integer.parseInt(record.get("VIDEO_POINT").toString());
-            	dataCell8.setCellValue(videoPoint);
+            	int disastorPoint = Integer.parseInt(record.get("DISASTOR_POINT").toString());
+            	dataCell8.setCellValue(disastorPoint);
             	dataCell8.setCellStyle(dataStyle);
+            	
+            	HSSFCell dataCell9 = dataRow.createCell(9);
+            	int videoPoint = Integer.parseInt(record.get("VIDEO_POINT").toString());
+            	dataCell9.setCellValue(videoPoint);
+            	dataCell9.setCellStyle(dataStyle);
         	}
         } 
         
@@ -7888,11 +7900,12 @@ public class ExportPoiHssfExcel extends AbstractView {
         sheet.setColumnWidth(1, 4000);
         sheet.setColumnWidth(2, 4000);
         sheet.setColumnWidth(3, 5000);
-        sheet.setColumnWidth(4, 4000);
+        sheet.setColumnWidth(4, 5000);
         sheet.setColumnWidth(5, 4000);
         sheet.setColumnWidth(6, 4000);
         sheet.setColumnWidth(7, 4000);
         sheet.setColumnWidth(8, 4000);
+        sheet.setColumnWidth(9, 4000);
     }
     
 }

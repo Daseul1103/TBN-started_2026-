@@ -280,6 +280,10 @@ public interface StatisticService {
 	// 카. 제보자별 제보 현황
 	
 	
+	
+	// 타. 모바일 앱 제보 통계
+	public List receiptAppStat(ParamsDto params);
+	
 
 	
 	

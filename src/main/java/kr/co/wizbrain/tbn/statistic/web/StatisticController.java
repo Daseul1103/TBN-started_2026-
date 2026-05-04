@@ -565,6 +565,42 @@ public class StatisticController extends BaseController{
 	
 	
 	
+	
+	// 통계 관리 > 기간별 통계 - 10. 모바일 앱 제보 통계
+	@RequestMapping("stats/receiptAppStat.do")
+	public String receiptAppStat(Model model,HttpServletRequest request) throws Exception {
+			
+		ParamsDto params = getParams(true);
+		
+		try {
+			List vltList = new ArrayList();
+			
+			// 통계 데이터 가져오기
+			vltList = statisticService.receiptAppStat(params);
+			
+			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
+			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
+			
+			model.addAttribute("mapping", "receiptapp");
+			model.addAttribute("fileName", "모바일 앱 제보 통계"+params.getString("city")+ titleDate + ".xls");
+			model.addAttribute("titleName", "모바일 앱 제보 통계"+params.getString("city")+".xls");
+			model.addAttribute("sheetNames1", "모바일 앱  제보건수");
+			//해당 부분은 위 부분과 대조하여 검토
+			model.addAttribute("vltList", vltList);
+			model.addAttribute("start_date", params.get("start_date"));
+			model.addAttribute("end_date", params.get("end_date"));
+			model.addAttribute("org_id", params.get("org_id"));
+			
+			return "hssfExcel";
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+		    e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+		    // 로그 레벨 ERROR로 예외의 문자열만 기록 
+		    logger.error(e.toString(),e);  
+		    throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+		}
+	}
+	
+	
 	// 통계 관리 > 월별 통계 - 1. 월별 제보자별 제보건수
 	@RequestMapping("stats/muInformer.do")
 	public String muJebo(Model model,HttpServletRequest request) throws Exception {

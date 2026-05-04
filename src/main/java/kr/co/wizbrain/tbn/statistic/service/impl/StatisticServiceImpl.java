@@ -443,6 +443,13 @@ public class StatisticServiceImpl implements StatisticService{
 	
 	
 	
+	// 타. 모바일 앱 제보 통계
+	@Override
+	public List receiptAppStat(ParamsDto params) {
+		return statisticMapper.receiptAppStat(params);
+	}
+	
+	
 	
 	
 	

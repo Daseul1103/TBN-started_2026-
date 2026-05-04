@@ -299,6 +299,9 @@ public interface StatisticMapper{
 	
 	
 	
+	// 타. 모바일 앱 제보 통계
+	public List receiptAppStat(ParamsDto params);
+	
 	
 	
 	

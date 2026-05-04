@@ -129,7 +129,9 @@ public class ExportPoiHssfExcel extends AbstractView {
             	yearOrgStat(model, wb);
             } else if (model.get("mapping").equals("mileageExcel") || model.get("mapping").equals("excellenceExcel")) {
             	mileageExcel(model, wb);
-            }
+            }else if (model.get("mapping").equals("receiptapp")) {
+            	receiptApp(model, wb);
+            } 
             
             ServletOutputStream outputStream = response.getOutputStream();
             //response.setContentType(super.getContentType());
@@ -7907,5 +7909,160 @@ public class ExportPoiHssfExcel extends AbstractView {
         sheet.setColumnWidth(8, 4000);
         sheet.setColumnWidth(9, 4000);
     }
+    
+    
+    /*26-05-04 : 모바일 앱 제보 통계*/
+    public void receiptApp(Map model, HSSFWorkbook wb) {
+    	
+    	// 엑셀에서 사용할 데이터 가져오기
+    	List dataList = (List) model.get("vltList"); 
+    	
+    	// 시트 생성 및 시트 명 변경
+    	HSSFSheet sheet1 = wb.createSheet(model.get("sheetNames1").toString());
+    	
+    	
+    	// 제목 셀 스타일 맞춤
+        CellStyle titleStyle = wb.createCellStyle();
+        titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 가운데 정렬 (가로 기준)
+        titleStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER); // 중앙 정렬 (세로 기준)
+ 	    
+        
+        // 제목 셀 폰트 설정
+ 	    Font font = wb.createFont(); // 폰트 객체 생성
+ 	    font.setFontHeightInPoints((short) 24); // 폰트 크기 설정
+ 	    titleStyle.setFont(font); // 폰트 스타일을 셀 스타일에 적용
+    	
+    	
+ 	    CellStyle mainStyle = wb.createCellStyle();
+		mainStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 가운데 정렬 (가로 기준)
+		mainStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER); // 중앙 정렬 (세로 기준)
+	    
+	    Font mainStylefont = wb.createFont(); // 폰트 객체 생성
+	    mainStylefont.setFontHeightInPoints((short) 14); // 폰트 크기 설정
+	    mainStyle.setFont(mainStylefont); // 폰트 스타일을 셀 스타일에 적용
+
+	    
+	    // 항목 셀 스타일
+	    CellStyle headStyle = wb.createCellStyle();
+    	headStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 오른쪽 정렬 (가로 기준)
+    	headStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER); // 중앙 정렬 (세로 기준)
+    	headStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex()); // 배경색 설정*/ 	   
+    	headStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);  // 배경색이 채워지도록 패턴 설정
+    	headStyle.setBorderRight(HSSFCellStyle.BORDER_THIN); // 테두리 설정
+    	headStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+    	headStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+    	headStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		
+		Font headStyleF = wb.createFont(); // 폰트 객체 생성
+		headStyleF.setFontHeightInPoints((short) 14); // 폰트 크기 설정
+		headStyleF.setFontName("굴림체");
+		headStyle.setFont(headStyleF); // 폰트 스타일을 셀 스타일에 적용
+
+		DataFormat format = wb.createDataFormat();
+
+		// 데이터 셀 스타일
+		CellStyle dataStyle = wb.createCellStyle();
+		dataStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT); // 가운데 정렬 (가로 기준)
+		dataStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER); // 중앙 정렬 (세로 기준)
+		dataStyle.setBorderRight(HSSFCellStyle.BORDER_THIN); // 테두리 설정
+		dataStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		dataStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		dataStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		dataStyle.setDataFormat(format.getFormat("#,##0"));
+	    
+	    Font dataStylefont = wb.createFont(); // 폰트 객체 생성
+	    dataStylefont.setFontHeightInPoints((short) 14); // 폰트 크기 설정
+	    dataStyle.setFont(dataStylefont); // 폰트 스타일을 셀 스타일에 적용
+    	
+	    sheet1.addMergedRegion(new CellRangeAddress(0, 0, 0, 6)); //제목 셀 병합
+
+        sheet1.setColumnWidth(0, 3000);
+        sheet1.setColumnWidth(1, 6000);
+        sheet1.setColumnWidth(2, 6000);
+        sheet1.setColumnWidth(3, 7000);
+        sheet1.setColumnWidth(4, 8000);
+        sheet1.setColumnWidth(5, 8000);
+        sheet1.setColumnWidth(6, 8000);
+    	
+	    
+	    // 타이틀 셀 생성 및 스타일 적용
+	    HSSFRow titlerow = sheet1.createRow(0);
+        HSSFCell titleCell = titlerow.createCell(0);
+        titleCell.setCellValue(model.get("titleName").toString());
+        titleCell.setCellStyle(titleStyle);
+    	
+        int rowCnt = 1;
+        HSSFRow headrow1 = sheet1.createRow(rowCnt);
+        
+        // 헤드 데이터 생성 및 스타일 적용
+        HSSFCell headCell0 = headrow1.createCell(0);
+        HSSFCell headCell1 = headrow1.createCell(1);
+        HSSFCell headCell2 = headrow1.createCell(2);
+        HSSFCell headCell3 = headrow1.createCell(3);
+        HSSFCell headCell4 = headrow1.createCell(4);
+        HSSFCell headCell5 = headrow1.createCell(5); 
+        HSSFCell headCell6 = headrow1.createCell(6);
+    	
+        headCell0.setCellValue("순번");
+        headCell1.setCellValue("통신원 이름");
+        headCell2.setCellValue("통신원 유형");
+        headCell3.setCellValue("전화번호");
+        headCell4.setCellValue("모바일 제보 건수");
+        headCell5.setCellValue("모바일 제보 등록 건수");
+        headCell6.setCellValue("모바일 제보 방송 건수");
+    	
+        headCell0.setCellStyle(headStyle);
+        headCell1.setCellStyle(headStyle);
+        headCell2.setCellStyle(headStyle);
+        headCell3.setCellStyle(headStyle);
+        headCell4.setCellStyle(headStyle);
+        headCell5.setCellStyle(headStyle);
+        headCell6.setCellStyle(headStyle);
+    	
+        
+        // 데이터를 넣기 위해  rowCnt 증가
+        rowCnt = 2;
+        HSSFRow[] dataRow = new HSSFRow[dataList.size()];
+        for (int i = 0; i < dataList.size(); i++) {
+        	dataRow[i] = sheet1.createRow(rowCnt + i);
+            RecordDto record = (RecordDto) dataList.get(i);
+            HSSFCell dataCell0 = dataRow[i].createCell(0);
+            dataCell0.setCellValue(i + 1);
+            dataCell0.setCellStyle(dataStyle);
+    	
+            HSSFCell dataCell1 = dataRow[i].createCell(1);
+            dataCell1.setCellValue(record.getString("INFORMER_NAME"));
+            dataCell1.setCellStyle(dataStyle);
+            
+            HSSFCell dataCell2 = dataRow[i].createCell(2);
+            dataCell2.setCellValue(record.getString("INFORMER_TYPE"));
+            dataCell2.setCellStyle(dataStyle);
+            
+            HSSFCell dataCell3 = dataRow[i].createCell(3);
+            dataCell3.setCellValue(record.getString("PHONE"));
+            dataCell3.setCellStyle(dataStyle);            
+            
+            HSSFCell dataCell4 = dataRow[i].createCell(4);
+            dataCell4.setCellValue(record.getString("TOTAL_CNT"));
+            dataCell4.setCellStyle(dataStyle);
+            
+            HSSFCell dataCell5 = dataRow[i].createCell(5);
+            dataCell5.setCellValue(record.getString("REG_CNT"));
+            dataCell5.setCellStyle(dataStyle);
+            
+            HSSFCell dataCell6 = dataRow[i].createCell(6);
+            dataCell6.setCellValue(record.getString("SEND_CNT"));
+            dataCell6.setCellStyle(dataStyle);
+    	
+        }
+        
+        
+        
+    	
+    }
+    	
+
+ 	 
+       
     
 }

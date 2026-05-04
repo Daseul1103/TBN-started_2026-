@@ -367,6 +367,11 @@ $('#areaOptSel').on("click", function() {
                                         <td class="txt_left"><img src="../images/ico_excel.gif" alt="" class="mglsub03" /><a href="javascript:goStats('range','stats/volunteer.do');">사회봉사자 일자별 통계</a></td>
                                         <td><a href="javascript:goStats('range','stats/volunteer.do');"><img src="../images/btn_excel_down.gif" alt="엑셀다운로드" /></a></td>
                                     </tr>
+                                    <!-- 26-04-30 : 모바일 앱 제보 통계 -->
+                                    <tr>
+                                        <td class="txt_left"><img src="../images/ico_excel.gif" alt="" class="mglsub03" /><a href="javascript:goStats('range','stats/receiptAppStat.do');">모바일 앱 제보 통계</a></td>
+                                        <td><a href="javascript:goStats('range','stats/receiptAppStat.do');"><img src="../images/btn_excel_down.gif" alt="엑셀다운로드" /></a></td>
+                                    </tr>
                                 </tbody>
                                 
                                 

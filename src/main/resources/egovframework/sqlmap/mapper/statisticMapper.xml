@@ -1507,6 +1507,62 @@
 		order by TO_NUMBER(ACT_ID) ASC
 	</select>
 	
+	
+	<!-- 26-05-04 : 모바일 앱 제보 통계 receiptAppStat-->
+	<select id="receiptAppStat" parameterType="params" resultType="record">
+		with receipt_agg as (
+		    select 
+		        regexp_replace(r.phone_cell, '[^0-9]', '') as phone,
+		        max(r.informer_name) as informer_name,
+		        count(*) as total_cnt,
+		        sum(case when r.flag_chk = 'Y' then 1 else 0 end) as reg_cnt
+		    from receipt_app r
+		    where r.area_code = #{REGION_ID}  
+		    and receipt_day <![CDATA[>=]]> to_date(#{start_date},'YY/MM/DD')
+            and receipt_day <![CDATA[<=]]> to_date(#{end_date},'YY/MM/DD')
+		    group by regexp_replace(r.phone_cell, '[^0-9]', '')
+		),
+		send_agg as (
+		    select 
+		        regexp_replace(r_tel, '[^0-9]', '') as phone,
+		        count(*) as send_cnt
+		    from report_receipt_today
+		    where flag_send = 'Y'
+		      and reporter_type = 7
+		    group by regexp_replace(r_tel, '[^0-9]', '')
+		)
+		
+		select 
+		    a.phone as phone,
+		    a.total_cnt as total_cnt,
+		    a.reg_cnt as reg_cnt,
+		    nvl(s.send_cnt, 0) as send_cnt,
+		    nvl(b.informer_name, a.informer_name) as informer_name,
+		    nvl(c.type_name, '모바일 회원') as informer_type
+		from receipt_agg a
+		left join send_agg s
+		    on a.phone = s.phone
+		left join informer b
+		    on a.phone = regexp_replace(b.phone_cell, '[^0-9]', '')
+		left join code_informer_type c
+		    on c.type_id = b.informer_type	
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<!-- 제보수단 -->
 	<resultMap type="optInftVo" id="statRtt">
 		<result property="ifmId1" column="ID"/>

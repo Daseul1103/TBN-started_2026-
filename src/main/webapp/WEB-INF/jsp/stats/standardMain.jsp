@@ -220,9 +220,58 @@ $('#areaOptSel').on("click", function() {
 		    error: function() {
 		        console.log("오류 발생");
 		    }
-		});
+		});	
 
 });
+
+
+//엑셀 일괄 다운로드  - 기간별
+function downloadAllExcel() {
+
+    let urls = [];
+
+    // 👉 urls만 분기
+    if (document.getElementById('rangeDate').classList.contains('stat_now_btn')) {
+        urls = [
+            'stats/receiptBroad.do',
+            'stats/receiptBroadTime.do',
+            'stats/extrBro.do',
+            'stats/disastorStat.do',
+            'stats/receiptUse.do',
+            'stats/orgOrgSub.do',
+            'stats/informerReceipt.do',
+            'stats/yearReceipt.do',
+           	'stats/yearOrgStat.do',
+            'stats/volunteer.do',
+            'stats/receiptAppStat.do'
+        ];
+    } else {
+        
+    	urls = [
+    	    'stats/muInformer.do',
+    	    'stats/receiptInformer.do',
+    	    'stats/incidentStats.do',
+    	    'stats/muInformer2.do',
+    	    'stats/informerStats.do',
+    	    'stats/krGas.do',
+    	    'stats/korLx.do',
+    	    'stats/dayReceipt.do'
+    	];
+    }
+
+    let i = 0;
+
+    function downloadNext() {
+        if (i >= urls.length) return;
+
+        goStats('range', urls[i]);
+        i++;
+
+        setTimeout(downloadNext, 2000);
+    }
+
+    downloadNext();
+}
 </script>
     <div id="contentWrap">
         <!-- <div id="posi"><img src="../images/ico_home.gif" alt="home" />통계관리 > 표준화통계</div> -->
@@ -445,6 +494,11 @@ $('#areaOptSel').on("click", function() {
 
                                 </tbody>
                             </table>
+                            
+                            <button onclick="downloadAllExcel()" 
+							        style="padding:6px 12px; background:#4CAF50; color:white; border:none; cursor:pointer; margin-top : 10px;">
+							    엑셀 일괄 다운로드
+							</button>
                         </div>
                         <!-- 검색결과 끝-->
                         

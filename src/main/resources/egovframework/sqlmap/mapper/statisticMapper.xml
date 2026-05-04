@@ -1526,7 +1526,7 @@
 		    select 
 		        regexp_replace(r_tel, '[^0-9]', '') as phone,
 		        count(*) as send_cnt
-		    from report_receipt_today
+		    from report_receipt
 		    where flag_send = 'Y'
 		      and reporter_type = 7
 		    group by regexp_replace(r_tel, '[^0-9]', '')

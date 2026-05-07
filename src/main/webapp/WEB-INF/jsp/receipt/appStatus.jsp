@@ -181,7 +181,7 @@ $(document).ready(function() {
 	// 10초마다 자동 갱신
 	
 	// 함수 호출
-	setInterval(function () { chkAutoLoad(); }, 30000);
+	/* setInterval(function () { chkAutoLoad(); }, 30000);
 	
 	function chkAutoLoad() {
 		if($('input[name="Selection"]:checked').length > 0) {
@@ -190,7 +190,7 @@ $(document).ready(function() {
 			console.log("새로고침");
 			/* location.reload(); */
  
-		 	var totalAjax = ajaxMethod("/receipt/appGetTotalPage.ajax", {"RECEIPT_DAY" : todaysDate, "startRow" : currentPage, "AREA_CODE":opener.lgnArea});
+		 	/* var totalAjax = ajaxMethod("/receipt/appGetTotalPage.ajax", {"RECEIPT_DAY" : todaysDate, "startRow" : currentPage, "AREA_CODE":opener.lgnArea});
 			
 			nowCnt = totalAjax.totalPage;
 			beforeCnt = totalAjax.totalPage;
@@ -205,6 +205,121 @@ $(document).ready(function() {
 			} 
 
 		}
+	} */
+	
+	
+	
+	// ==============================
+	// 전역 변수
+	// ==============================
+	var beforeCnt = 0;
+	var nowCnt = 0;
+
+	var blinkInterval = null;
+	var isBlinking = false;
+	var originalTitle = document.title;
+
+
+	// ==============================
+	// 탭 깜빡임 시작
+	// ==============================
+	function startBlink() {
+
+	    if (isBlinking) return;
+
+	    isBlinking = true;
+
+	    blinkInterval = setInterval(function () {
+	        document.title = (document.title === "🔔 신규 데이터!")
+	            ? originalTitle
+	            : "🔔 신규 데이터!";
+	    }, 1000);
+	}
+
+
+	// ==============================
+	// 탭 깜빡임 종료
+	// ==============================
+	function stopBlink() {
+
+	    if (blinkInterval) {
+	        clearInterval(blinkInterval);
+	        blinkInterval = null;
+	    }
+
+	    document.title = originalTitle;
+	    isBlinking = false;
+	}
+
+
+	// 👉 사용자가 다시 창 보면 자동 종료
+	window.addEventListener("focus", function () {
+	    stopBlink(); 
+	});
+
+
+	// ==============================
+	// 30초마다 데이터 체크
+	// ==============================
+	setInterval(function () {
+	    chkAutoLoad();
+	}, 30000);
+
+
+	// ==============================
+	// 데이터 체크 함수
+	// ==============================
+	function chkAutoLoad() {
+
+	    // 체크된 항목 있으면 자동 갱신 막기
+	    if ($('input[name="Selection"]:checked').length > 0) {
+	        return false;
+	    }
+
+	    console.log("데이터 확인");
+
+	    var totalAjax = ajaxMethod("/receipt/appGetTotalPage.ajax", {
+	        "RECEIPT_DAY": todaysDate,
+	        "startRow": currentPage,
+	        "AREA_CODE": opener.lgnArea
+	    });
+
+	    nowCnt = totalAjax.totalPage;
+
+	    // ==========================
+	    // 🔥 신규 데이터 감지
+	    // ==========================
+	    if (nowCnt > beforeCnt) {
+
+	        console.log("신규 데이터 발생!");
+
+	        // 👉 창이 백그라운드(최소화)일 때만 깜빡이기
+	        if (document.hidden) {
+	            startBlink();
+	        }
+	    }
+
+	    // ==========================
+	    // 기존 화면 갱신 로직
+	    // ==========================
+	    totalPage = nowCnt;
+
+	    $("#resultListTotal span").text(totalAjax.totalSize);
+
+	    if (totalAjax.totalSize == 0) {
+	        $("#broadcastList").load("/receipt/noResult.do");
+	    } else {
+	        $("#broadcastList").load("/receipt/appStatusList.do", {
+	            "RECEIPT_DAY": todaysDate,
+	            "startRow": currentPage,
+	            "AREA_CODE": opener.lgnArea
+	        });
+	    }
+
+	    // ==========================
+	    // 🔥 마지막에 기준값 업데이트 (중요)
+	    // ==========================
+	    beforeCnt = nowCnt;
 	}
 	
 	/* 제보접수 was -> 모바일 app로 데이터 전송 (상황해제 / 오류제보) */

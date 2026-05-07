@@ -90,7 +90,7 @@
 			
 		}); */
 
-		if(authCode == 999) {
+		if(authCode == 999 || authCode == 2) {
 			openPopup(); // 팝업창 띄우는 함수 호출
 		}
 	

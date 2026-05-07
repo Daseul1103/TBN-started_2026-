@@ -745,14 +745,14 @@ function tempsave(){
 function openAppreceipt() {
 	console.log("팝업창 버튼 클릭 성공");
 	
-	if(authCode == 999) {
+	if(authCode == 999 || authCode == 2) {
 		window.open(
 		        "/receipt/appStatus.do",  
 		        "popupWindow",      
 		        "width=1500,height=845,toolbar=no,menubar=no,scrollbars=yes,resizable=no"
 		    );
 	} else {
-		alert("현재는 관리자만 열람할 수 있습니다.");
+		alert("현재는 관리자 및 접수자만 열람할 수 있습니다.");
 	}
 }
 

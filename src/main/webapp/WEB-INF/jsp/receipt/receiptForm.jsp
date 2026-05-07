@@ -58,9 +58,9 @@
 		console.log("제보접수 폼 jsp");
 		initReceipt();
 		
-		//임시 : 관리자만 로그인 했을때 제보접수 팝업이 보이도록
-		if(authCode=='999'){
-			$('#mApp').show();
+		// 관리자와 접수자만 열람 가능하도록 변경
+		if (authCode == '999' || authCode == '2') {
+		    $('#mApp').show();
 		}
 		
 		/* 22.03.15 충북요청사항 */

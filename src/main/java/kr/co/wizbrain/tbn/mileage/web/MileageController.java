@@ -1,5 +1,6 @@
 package kr.co.wizbrain.tbn.mileage.web;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -378,9 +379,16 @@ public class MileageController extends BaseController{
 			String[] Selection = req.getParameterValues("Selection");
 			logger.debug("Selection===>"+Selection[0]);
 
-			
-			List<AwardVO> alist = new ArrayList<>(); 
-			
+			// AW_NAME decode 처리
+		    String awName = paramVO.getAW_NAME();
+
+		    if(awName != null && awName.contains("%")) {
+		        awName = URLDecoder.decode(awName, "UTF-8");
+		        paramVO.setAW_NAME(awName);
+		    }
+		    
+		    List<AwardVO> alist = new ArrayList<>();
+		    
 			for (int i = 0; i < Selection.length; i++) {
 				AwardVO awvo = new AwardVO();
 				String[] str = Selection[i].split("%%");
@@ -389,7 +397,7 @@ public class MileageController extends BaseController{
 				awvo.setMAIN_GRADE(str[2]);
 				awvo.setADD_GRADE(str[3]);
 				awvo.setALL_RANK(str[4]);
-				alist.add(awvo);
+				alist.add(awvo);	
 			}
 
 			mileageService.saveAward(paramVO,alist);

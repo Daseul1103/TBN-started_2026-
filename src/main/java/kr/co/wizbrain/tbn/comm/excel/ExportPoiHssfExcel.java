@@ -8004,7 +8004,7 @@ public class ExportPoiHssfExcel extends AbstractView {
         HSSFCell headCell6 = headrow1.createCell(6);
     	
         headCell0.setCellValue("순번");
-        headCell1.setCellValue("통신원 이름");
+        headCell1.setCellValue("제보자");
         headCell2.setCellValue("통신원 유형");
         headCell3.setCellValue("전화번호");
         headCell4.setCellValue("모바일 제보 건수");

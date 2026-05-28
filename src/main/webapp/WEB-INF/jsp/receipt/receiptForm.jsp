@@ -59,7 +59,7 @@
 		initReceipt();
 		
 		// 관리자와 접수자만 열람 가능하도록 변경
-		if (authCode == '999' || authCode == '2') {
+		if (authCode == '999' || authCode == '1' || authCode == '2') {
 		    $('#mApp').show();
 		}
 		

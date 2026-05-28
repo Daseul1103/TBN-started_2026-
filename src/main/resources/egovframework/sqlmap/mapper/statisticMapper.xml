@@ -1080,7 +1080,7 @@
 	<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 	
 	<!-- 6. 돌발정보 표출실적 -->
-	<select id="nationalIncident" parameterType="params" resultType="record">
+	<!-- <select id="nationalIncident" parameterType="params" resultType="record">
 	    with monicd as
 		(
 		select receipt_id,report_type,report_type2,receipt_day,region_id
@@ -1088,7 +1088,7 @@
 		where region_id=#{REGION_ID} 
 		and receipt_day <![CDATA[>=]]> concat(substr(#{start_date},0,4),'0101')
 		and report_type in('A02','A03','A04','A06'))
-		<!-- 공사,행사,사고,고장,기타 -->
+		공사,행사,사고,고장,기타
 		select * from
 		(
 			<foreach collection="monList" item="item" index="i" separator="union">
@@ -1140,6 +1140,195 @@
 				)
 			</foreach>
 		)
+	</select> -->
+	
+	
+	<select id="nationalIncident" parameterType="params" resultType="record">
+
+	    WITH monicd AS
+	    (
+	        SELECT receipt_id
+	             , report_type
+	             , report_type2
+	             , receipt_day
+	             , region_id
+	        FROM report_receipt
+	        WHERE region_id = #{REGION_ID}
+	          AND receipt_day <![CDATA[>=]]>
+	              concat(substr(#{start_date},1,4),'0101')
+	          AND report_type IN ('A02','A03','A04','A06')
+	    )
+	
+	    <!-- 공사, 행사, 사고, 고장, 기타 -->
+	    SELECT *
+	    FROM
+	    (
+	        <foreach collection="monList"
+	                 item="item"
+	                 index="i"
+	                 separator="union">
+	
+	            SELECT
+	                  STAT_MONTH
+	                , CNT1
+	                , CNT2
+	                , CNT3
+	                , CNT4
+	                , CNT5
+	                , (CNT1 + CNT2 + CNT3 + CNT4 + CNT5) AS SUMC
+	            FROM
+	            (
+	                SELECT
+	                      substr(
+	                          to_char(
+	                              add_months(
+	                                  to_date(#{start_date}, 'yyyymm'),
+	                                  -#{item}
+	                              ),
+	                              'yyyymm'
+	                          ),
+	                          5,
+	                          2
+	                      ) AS STAT_MONTH
+	
+	                    , NVL(
+	                        (
+	                            SELECT count(receipt_id)
+	                            FROM monicd
+	                            WHERE region_id = #{REGION_ID}
+	                              AND receipt_day <![CDATA[>=]]>
+	                                  TRUNC(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      ),
+	                                      'MM'
+	                                  )
+	                              AND receipt_day <![CDATA[<=]]>
+	                                  LAST_DAY(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      )
+	                                  )
+	                              AND report_type = 'A02'
+	                            GROUP BY report_type
+	                        ),
+	                        0
+	                    ) AS CNT1
+	
+	                    , NVL(
+	                        (
+	                            SELECT count(receipt_id)
+	                            FROM monicd
+	                            WHERE region_id = #{REGION_ID}
+	                              AND receipt_day <![CDATA[>=]]>
+	                                  TRUNC(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      ),
+	                                      'MM'
+	                                  )
+	                              AND receipt_day <![CDATA[<=]]>
+	                                  LAST_DAY(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      )
+	                                  )
+	                              AND report_type = 'A03'
+	                            GROUP BY report_type
+	                        ),
+	                        0
+	                    ) AS CNT2
+	
+	                    , NVL(
+	                        (
+	                            SELECT count(receipt_id)
+	                            FROM monicd
+	                            WHERE region_id = #{REGION_ID}
+	                              AND receipt_day <![CDATA[>=]]>
+	                                  TRUNC(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      ),
+	                                      'MM'
+	                                  )
+	                              AND receipt_day <![CDATA[<=]]>
+	                                  LAST_DAY(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      )
+	                                  )
+	                              AND report_type = 'A04'
+	                            GROUP BY report_type
+	                        ),
+	                        0
+	                    ) AS CNT3
+	
+	                    , NVL(
+	                        (
+	                            SELECT count(receipt_id)
+	                            FROM monicd
+	                            WHERE region_id = #{REGION_ID}
+	                              AND receipt_day <![CDATA[>=]]>
+	                                  TRUNC(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      ),
+	                                      'MM'
+	                                  )
+	                              AND receipt_day <![CDATA[<=]]>
+	                                  LAST_DAY(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      )
+	                                  )
+	                              AND report_type = 'A06'
+	                              AND report_type2 = 'B00'
+	                            GROUP BY report_type
+	                        ),
+	                        0
+	                    ) AS CNT4
+	
+	                    , NVL(
+	                        (
+	                            SELECT count(receipt_id)
+	                            FROM monicd
+	                            WHERE region_id = #{REGION_ID}
+	                              AND receipt_day <![CDATA[>=]]>
+	                                  TRUNC(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      ),
+	                                      'MM'
+	                                  )
+	                              AND receipt_day <![CDATA[<=]]>
+	                                  LAST_DAY(
+	                                      add_months(
+	                                          to_date(#{start_date}, 'YYYYMM'),
+	                                          -#{item}
+	                                      )
+	                                  )
+	                              AND report_type = 'A06'
+	                              AND report_type2 != 'B00'
+	                            GROUP BY report_type
+	                        ),
+	                        0
+	                    ) AS CNT5
+	
+	                FROM dual
+	            )
+	
+	        </foreach>
+	    )
+	
 	</select>
 	
 	<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->

@@ -745,7 +745,7 @@ function tempsave(){
 function openAppreceipt() {
 	console.log("팝업창 버튼 클릭 성공");
 	
-	if(authCode == 999 || authCode == 2) {
+	if(authCode == 999 || authCode == 1 || authCode == 2) {
 		window.open(
 		        "/receipt/appStatus.do",  
 		        "popupWindow",      

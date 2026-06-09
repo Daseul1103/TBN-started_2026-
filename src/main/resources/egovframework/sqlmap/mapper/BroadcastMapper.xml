@@ -56,55 +56,6 @@
 			FROM DUAL
 	</select> -->
 
-    <!-- 수정 전 -->
-    <!-- <select id="selectTodaysList" resultType="broadCastListVO">
-        SELECT * 
-		FROM(
-		    SELECT ROWNUM AS SEQ, H.* 
-		    FROM(SELECT ROW_NUMBER() OVER(ORDER BY RECEIPT_DT ASC) AS RNUM, G.* 
-		        FROM(SELECT A.RECEIPT_ID
-					        ,REGEXP_REPLACE(A.R_TEL ,'([[:digit:]]{'||
-		DECODE(SUBSTR(A.R_TEL,0,2
-		),'02',2,3)||'})([[:digit:]]{3,4})([[:digit:]]{4})','\1-\2-\3') AS R_TEL
-					        , A.FLAG_BROD
-					        , TO_CHAR(TO_DATE(A.RECEIPT_TIME , 'HH24MI') , 'HH24:MI') AS RECEIPT_TIME
-					        , to_char(to_date(broad_time , 'YYYYMMDDHH24MISS'),'HH24:MI') AS BROAD_TIME 
-					        , A.RECEIPT_DAY||A.RECEIPT_TIME AS RECEIPT_DT
-			                , A.report_type
-					        , B.BAS_NAME
-					        , A.INDIVIDUAL_NAME
-					        , C.TYPE_NAME
-					        , A.MEMO
-					        , A.RECEIPT_DAY
-					        , D.CITY AS AREA_NAME
-					        , A.FLAG_IMPORTANT
-					        , B.F_COLOR
-		                    , B.B_COLOR
-		                    , A.FLAG_KNEX
-					FROM REPORT_RECEIPT_TODAY A
-					    LEFT OUTER JOIN CODE_REPORT_TYPE B
-					        ON A.REPORT_TYPE = B.BAS_SCOD
-					    LEFT OUTER JOIN CODE_INFORMER_TYPE C
-					        ON A.INDIVIDUAL_TYPE = C.TYPE_ID
-					    LEFT OUTER JOIN CODE_AREACODE D
-                            ON A.REGION_ID = D.AREA_CODE
-					WHERE B.BAS_LCOD = '100'
-					    AND RECEIPT_DAY= to_char(sysdate,'YYYYMMDD')
-					    <if test="!AREA_CODE.equals('080')">
-					    AND REGION_ID = #{AREA_CODE}
-					    </if>
-					    AND FLAG_SEND = 'Y'
-		            ) G
-		        ORDER BY RNUM DESC
-		        )H
-		    )
-		<![CDATA[
-		WHERE  SEQ > #{startRow} AND SEQ <= (#{startRow} + #{size})
-        ]]>
-    </select>  -->
-    
-    
-    
     <!-- <select id="selectTodaysList" resultType="broadCastListVO">
 	    SELECT * 
 	    FROM(
@@ -191,7 +142,7 @@
 
 
 
-	<select id="selectTodaysList" resultType="broadCastListVO">
+	<!-- <select id="selectTodaysList" resultType="broadCastListVO">
 	    SELECT *
 	    FROM (
 	        SELECT ROWNUM AS SEQ, H.*
@@ -247,8 +198,69 @@
 	    WHERE SEQ > #{startRow}
 	      AND SEQ <= (#{startRow} + #{size})
 	    ]]>
-	</select>
+	</select> -->
 
+
+
+	 <!-- 26/06/08 모바일 앱 제보 시 type_name에 app 추가 -->
+	<select id="selectTodaysList" resultType="broadCastListVO">
+	    SELECT *
+	    FROM (
+	        SELECT ROWNUM AS SEQ, H.*
+	        FROM (
+	            SELECT ROW_NUMBER() OVER (ORDER BY RECEIPT_DT ASC) AS RNUM, G.*
+	            FROM (
+	                SELECT A.RECEIPT_ID
+	                     , REGEXP_REPLACE(
+	                           A.R_TEL,
+	                           '([[:digit:]]{' ||
+	                           DECODE(SUBSTR(A.R_TEL, 0, 2), '02', 2, 3) ||
+	                           '})([[:digit:]]{3,4})([[:digit:]]{4})',
+	                           '\1-\2-\3'
+	                       ) AS R_TEL
+	                     , A.FLAG_BROD
+	                     , TO_CHAR(TO_DATE(A.RECEIPT_TIME, 'HH24MI'), 'HH24:MI') AS RECEIPT_TIME
+	                     , TO_CHAR(TO_DATE(BROAD_TIME, 'YYYYMMDDHH24MISS'), 'HH24:MI') AS BROAD_TIME
+	                     , A.RECEIPT_DAY || A.RECEIPT_TIME AS RECEIPT_DT
+	                     , A.REPORT_TYPE
+	                     , B.BAS_NAME
+	                     , A.INDIVIDUAL_NAME
+	                     , CASE
+	                           WHEN SUBSTR(A.RECEIPT_ID, 1, 3) = 'APP' THEN 'APP'
+	                           WHEN TRIM(I.FLAG_BEST) = 'Y' THEN '최고통신원'
+	                           ELSE C.TYPE_NAME
+	                       END AS TYPE_NAME
+	                     , A.MEMO
+	                     , A.RECEIPT_DAY
+	                     , D.CITY AS AREA_NAME
+	                     , A.FLAG_IMPORTANT
+	                     , B.F_COLOR
+	                     , B.B_COLOR
+	                     , A.FLAG_KNEX
+	                FROM REPORT_RECEIPT_TODAY A
+	                LEFT OUTER JOIN CODE_REPORT_TYPE B
+	                    ON A.REPORT_TYPE = B.BAS_SCOD
+	                LEFT OUTER JOIN CODE_INFORMER_TYPE C
+	                    ON A.INDIVIDUAL_TYPE = C.TYPE_ID
+	                LEFT OUTER JOIN INFORMER I
+	                    ON A.INDIVIDUAL_ID = I.INFORMER_ID
+	                LEFT OUTER JOIN CODE_AREACODE D
+	                    ON A.REGION_ID = D.AREA_CODE
+	                WHERE B.BAS_LCOD = '100'
+	                  AND RECEIPT_DAY = TO_CHAR(SYSDATE, 'YYYYMMDD')
+	                  <if test="!AREA_CODE.equals('080')">
+	                      AND REGION_ID = #{AREA_CODE}
+	                  </if>
+	                  AND FLAG_SEND = 'Y'
+	            ) G
+	            ORDER BY RNUM DESC
+	        ) H
+	    )
+	    <![CDATA[
+	    WHERE SEQ > #{startRow}
+	      AND SEQ <= (#{startRow} + #{size})
+	    ]]>
+	</select>
     
     <select id="searchBroadcastList" resultType="broadCastListVO">
       

@@ -123,6 +123,8 @@ public class BroadcastController {
 		cri.setSize(size);
 		cri.setStartRow((cri.getStartRow()-1) * size);
 		
+		
+		// PD/CASTER 첫 진입 시 실행
 		List<BroadCastListVO> todaysList = broadcastService.selectTodaysList(cri);
 		mv.addObject("todaysList", todaysList);
 		System.out.println("(Broad)todaysListSize: " + todaysList.size());

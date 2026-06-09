@@ -89,6 +89,19 @@ $(document).ready(function() {
 	window.beforeCnt = 0;
 	window.nowCnt = 0;
 	
+	
+	// 신규 추가 (26/06/09)
+	// 누적 신규 건수
+	window.unreadCnt = 0;
+
+	// 현재 떠있는 알림 객체
+	window.currentNotification = null;
+	
+	
+	
+	
+	
+	
 	// 브라우저 알림 함수
 	function showBrowserNotification(title, body) {
 
@@ -109,7 +122,8 @@ $(document).ready(function() {
 
 	        let notification = new Notification(title, {
 
-	            body : body
+	            body : body,
+	            requireInteraction : true
 
 	        });
 
@@ -132,7 +146,8 @@ $(document).ready(function() {
 
 	                new Notification(title, {
 
-	                    body : body
+	                    body : body,
+	                    requireInteraction : true
 	                });
 	            }
 	        });
@@ -291,27 +306,40 @@ $(document).ready(function() {
 	        console.log("nowCnt :", window.nowCnt); */
 
 
-	        // 신규 데이터 감지
 	        if (window.nowCnt > window.beforeCnt) {
 
-	            /* console.log("신규 데이터 발생!"); */
+	            var diffCnt = window.nowCnt - window.beforeCnt;
 
+	            // 누적
+	            window.unreadCnt += diffCnt;
 
-	            // 신규 증가 건수
-	            var diffCnt =
-	                window.nowCnt - window.beforeCnt;
-
-
-	            // 최소화, 백그라운드 상태일 때만 알림 전송
 	            if (document.hidden) {
 
-	                showBrowserNotification(
+	                // 기존 알림이 있으면 닫기
+	                if (window.currentNotification) {
+	                    window.currentNotification.close();
+	                }
 
+	                window.currentNotification = new Notification(
 	                    "신규 제보 알림",
-
-	                    diffCnt +
-	                    "건의 신규 제보가 등록되었습니다."
+	                    {
+	                        body: window.unreadCnt +
+	                              "건의 신규 제보가 등록되었습니다.",
+	                        requireInteraction: true
+	                    }
 	                );
+
+	                window.currentNotification.onclick = function() {
+
+	                    window.focus();
+
+	                    // 확인했으므로 누적건수 초기화
+	                    window.unreadCnt = 0;
+
+	                    this.close();
+
+	                    window.currentNotification = null;
+	                };
 	            }
 	        }
 
@@ -354,6 +382,23 @@ $(document).ready(function() {
 	        ); */
 	    }
 	}
+	
+	
+	
+	document.addEventListener("visibilitychange", function() {
+
+	    if (!document.hidden) {
+
+	        window.unreadCnt = 0;
+
+	        if (window.currentNotification) {
+
+	            window.currentNotification.close();
+
+	            window.currentNotification = null;
+	        }
+	    }
+	});
 
 	
 	/* 제보접수 was -> 모바일 app로 데이터 전송 (상황해제 / 오류제보) */

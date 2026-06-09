@@ -733,6 +733,14 @@ public class StatisticController extends BaseController{
 	public String incidentStats(Model model) throws Exception {
 		ParamsDto params = getParams(true);
 		try {
+			
+			// 일괄 다운로드 버튼에 의해 추가
+			String startDate = params.getString("start_date");
+	        if(startDate != null && startDate.length() >= 6) {
+	            startDate = startDate.substring(0, 6);
+	            params.add("start_date", startDate); 
+	        }
+	        
 			int monthCnt = Integer.parseInt(params.getString("start_date").substring(4,6));
 			List<Integer> monList = new ArrayList<>();
 			
@@ -741,7 +749,7 @@ public class StatisticController extends BaseController{
 			}
 			params.add("monList", monList);
 			List Data = statisticService.nationalIncident(params);	
-			
+			// start_date=20260501
 			model.addAttribute("mapping", "nationalIncident");
 			model.addAttribute("fileName", "돌발 교통정보 제공실적("+ params.get("start_date") +")"+params.getString("city")+".xls");
 			model.addAttribute("titleName", params.getString("start_date").substring(0,4)+"년 돌발교통정보 수집건수"+params.getString("city"));
@@ -752,7 +760,7 @@ public class StatisticController extends BaseController{
 			return "hssfExcel";
 		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
 	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
-	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
+	        // 로그 레벨 ERROR로 예외의 문자열만 기록  
 	        logger.error(e.toString(),e);  
 	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
 	    }

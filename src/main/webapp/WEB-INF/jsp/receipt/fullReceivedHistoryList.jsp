@@ -9,7 +9,7 @@
 </script>
 
 <c:forEach var="toadysListVO" items="${receivedStatusList}" varStatus="num">
-		<c:choose>
+<%-- 		<c:choose>
 		  <c:when test="${toadysListVO.REPORTER_TYPE == 'APP'}">
 		    <li style="background-color: aliceblue;">
 		  </c:when>
@@ -17,6 +17,19 @@
 		    	<li id="resultList${toadysListVO.RECEIPT_ID}"
 		        ondblclick="getEditPage('${toadysListVO.RECEIPT_ID}','${toadysListVO.RNUM}')">
 		  </c:otherwise>
+		</c:choose> --%>
+		
+		<!-- 26/06/08 : APP도 더블 클릭 시 정보 수정 가능 -->
+		<c:choose>
+		    <c:when test="${toadysListVO.REPORTER_TYPE == 'APP'}">
+		        <li id="resultList${toadysListVO.RECEIPT_ID}"
+		            style="background-color: aliceblue;"
+		            ondblclick="getEditPage('${toadysListVO.RECEIPT_ID}','${toadysListVO.RNUM}')">
+		    </c:when>
+		    <c:otherwise>
+		        <li id="resultList${toadysListVO.RECEIPT_ID}"
+		            ondblclick="getEditPage('${toadysListVO.RECEIPT_ID}','${toadysListVO.RNUM}')">
+		    </c:otherwise>
 		</c:choose>
 		
 		

@@ -317,9 +317,9 @@ function changePage(url){
     				<!-- 서브 메뉴 추가 -->
     				<div class="gnb_tab">
 						<ul class="lst_tab">
-							<li class="on"><a href="javascript:changePage('select')">통신원 관리</a></li>
+							<li><a href="javascript:changePage('select')">통신원 관리</a></li>
 							<li class="ns"></li>
-							<li><a href="javascript:changePage('selectApp')">APP 통신원 관리</a></li>
+							<li class="on"><a href="javascript:changePage('selectApp')">APP 통신원 관리</a></li>
 							<li class="ns"></li>
 							<li><a href="javascript:changePage('standard')">APP 가입 신청 현황</a></li>
 							<li class="ns"></li>
@@ -530,7 +530,7 @@ function changePage(url){
 	</div>
     <!--style="margin-right:15px;margin-top: 50px;"  -->
     <div class="btnBox" align="right" >
-        <span onclick="editInformer();" class="editUser"><button type="button" style="border: none;"><img src="../images/btn_save1.png" alt="" style="cursor: pointer;width: 92px;height: 30px;background-size: cover; "></button></span>
+        
     </div>
 </div>
 </div>

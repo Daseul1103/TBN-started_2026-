@@ -116,6 +116,65 @@ public class InfrmVO extends BaseVO{
 	//통신원관리 화면에서 다운시 분기 플래그
 	private String downFlag;
 	
+	
+	
+	
+	
+	
+	
+	
+	// 26-06-16 : app 통신원 가입 신청 현황 전용 컬럼 생성
+	private String applyDate;  // 가입 신청일
+	private String addDetail; // 주소 상세
+	private String applyId; // 가입 신청 id
+	private String driverGroup; // 소속운전자회
+	private String homeTel; // 집 전화번호
+	private String statusId; // 상태 id
+	private String statusName; // 상태명
+	
+	
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	public String getApplyDate() {
+		return applyDate;
+	}
+	public void setApplyDate(String applyDate) {
+		this.applyDate = applyDate;
+	}
+	public String getAddDetail() {
+		return addDetail;
+	}
+	public void setAddDetail(String addDetail) {
+		this.addDetail = addDetail;
+	}
+	public String getApplyId() {
+		return applyId;
+	}
+	public void setApplyId(String applyId) {
+		this.applyId = applyId;
+	}
+	public String getDriverGroup() {
+		return driverGroup;
+	}
+	public void setDriverGroup(String driverGroup) {
+		this.driverGroup = driverGroup;
+	}
+	public String getHomeTel() {
+		return homeTel;
+	}
+	public void setHomeTel(String homeTel) {
+		this.homeTel = homeTel;
+	}
+	public String getStatusId() {
+		return statusId;
+	}
+	public void setStatusId(String statusId) {
+		this.statusId = statusId;
+	}
 	public String getDownFlag() {
 		return downFlag;
 	}

@@ -54,11 +54,14 @@ public interface InfrmService {
 	public List<InfrmVO> monthReport(String selectYear, String informerId) throws Exception;
 
 	public long countAll(InfrmVO thvo);
-
+	
 	public long countFiltered(InfrmVO thvo);
+	
+	public long applyAppCountFiltered(InfrmVO thvo);
 
 	public List<InfrmVO> findSlice(InfrmVO thvo, int startRnum, int endRnum, String orderBy);
 	
+	public List<InfrmVO> applyAppfindSlice(InfrmVO thvo, int startRnum, int endRnum, String orderBy);
 	
 
 }

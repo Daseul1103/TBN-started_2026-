@@ -146,8 +146,19 @@ public class InfrmServiceImpl implements InfrmService{
 	}
 
 	@Override
+	public long applyAppCountFiltered(InfrmVO thvo){
+		return infrmMapper.applyAppCountFiltered(thvo);
+	}
+
+	@Override
 	public List<InfrmVO> findSlice(InfrmVO thvo, int startRnum, int endRnum, String orderBy){
 		return infrmMapper.findSlice(thvo,startRnum,endRnum,orderBy);
 	}
+	
+	@Override
+	public List<InfrmVO> applyAppfindSlice(InfrmVO thvo, int startRnum, int endRnum, String orderBy){
+		return infrmMapper.applyAppfindSlice(thvo,startRnum,endRnum,orderBy);
+	}
+
 
 }

@@ -148,7 +148,7 @@ public class InfrmController implements ApplicationContextAware {
 		return mav;
 	}
 	
-	//초기 검색버튼 활성화
+	// 통신원 관리 첫 진입 컨트롤러 
 	@RequestMapping(value= {"/informer/informerMain.do"})
 	public ModelAndView initMain(HttpServletRequest request) throws Exception {
 		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
@@ -166,8 +166,49 @@ public class InfrmController implements ApplicationContextAware {
 		mav.addObject("informerAreaList", this.areaOptService.selectAreaOpt1(avo));
 		return mav;
 	}
-
 	
+	
+	// 26-06-16 : 통신원 관리 > APP 통신원 관리 첫 진입 컨트롤러 
+	@RequestMapping(value= {"/informer/appInformerMain.do"})
+	public ModelAndView initAppMain(HttpServletRequest request) throws Exception {
+		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
+		ModelAndView mav = new ModelAndView(url);
+		// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
+		UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+		//지역관련
+		OptAreaVo avo = new OptAreaVo();
+		if(!(nlVo.getAuthCode().equals("999"))) {//999 관리자 권한
+			avo.setAreaCode(nlVo.getRegionId());
+		}
+		
+		mav.addObject("informerTypeList", infrmOptService.selectInft1(new OptInftVo()));
+		mav.addObject("informerRegionList", areaOptService.selectAreaOpt1(avo));
+		mav.addObject("informerAreaList", this.areaOptService.selectAreaOpt1(avo));
+		return mav;
+	}
+	
+	
+	
+	// 26-06-10 : 통신원 관리 > APP 통신원 관리 첫 진입 컨트롤러 
+	@RequestMapping(value= {"/informer/applyInformerMain.do"})
+	public ModelAndView initApplyMain(HttpServletRequest request) throws Exception {
+		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
+		ModelAndView mav = new ModelAndView(url);
+		// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
+		UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+		//지역관련
+		OptAreaVo avo = new OptAreaVo();
+		if(!(nlVo.getAuthCode().equals("999"))) {//999 관리자 권한
+			avo.setAreaCode(nlVo.getRegionId());
+		}
+			
+		mav.addObject("informerTypeList", infrmOptService.selectInft1(new OptInftVo()));
+		mav.addObject("informerRegionList", areaOptService.selectAreaOpt1(avo));
+		mav.addObject("informerAreaList", this.areaOptService.selectAreaOpt1(avo));
+		return mav;
+	}
+
+	// 일반 web 통신원 조회
 	@PostMapping("/infrm/datatable.do")
 	public ModelAndView listForDatatable(
 			@ModelAttribute("ifmVO") InfrmVO vo,
@@ -225,6 +266,90 @@ public class InfrmController implements ApplicationContextAware {
 	    mav.addObject("data", rows);
 	    return mav;
 	}
+	
+	
+	// app 가입신청 현황 조회
+	@PostMapping("/infrm/applyAppDatatable.do")
+	public ModelAndView listForApplyAppDatatable(
+	        @ModelAttribute("ifmVO") InfrmVO vo,
+	        @RequestParam(required = false) String sortName,
+	        @RequestParam(required = false) String sortDir,
+	        HttpServletRequest request
+	) {
+
+	    ModelAndView mav = new ModelAndView("jsonView");
+
+	    // DataTables 페이징
+	    int start = vo.getStart() != null ? vo.getStart() : 0;
+	    int length = vo.getLength() != null ? vo.getLength() : 100;
+
+	    int startR = start + 1;
+	    int endR = start + length;
+
+	    // 로그인 사용자 정보
+	    UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+
+	    // 최초 진입 시 사용자 지역코드 자동 설정
+	    if (vo.getSearchValue() == null || "".equals(vo.getSearchValue())) {
+	        vo.setAreaCode(nlVo.getRegionId());
+	    }
+
+	    // 허용 정렬 컬럼 (화이트리스트)
+	    Set<String> WL = new HashSet<>(Arrays.asList(
+	            "AREA_NAME",
+	            "ORG_NAME",
+	            "INFORMER_NAME",
+	            "PHONE_CELL",
+	            "STATUS_NAME",
+	            "APPLY_DATE"
+	    ));
+
+	    String orderBy;
+
+	    // 기본 정렬
+	    if (sortName == null || sortName.trim().isEmpty()
+	            || sortDir == null || sortDir.trim().isEmpty()) {
+
+	        orderBy = "APPLY_DATE DESC";
+	    }
+	    // 허용되지 않은 컬럼 차단
+	    else if (!WL.contains(sortName.toUpperCase())) {
+
+	        orderBy = "APPLY_DATE DESC";
+	    }
+	    // 정상 정렬
+	    else {
+
+	        String dir = "DESC";
+
+	        if ("asc".equalsIgnoreCase(sortDir)) {
+	            dir = "ASC";
+	        }
+
+	        orderBy = sortName + " " + dir;
+	    }
+
+	    // 디버깅 로그
+	    System.out.println("=================================");
+	    System.out.println("sortName : " + sortName);
+	    System.out.println("sortDir  : " + sortDir);
+	    System.out.println("orderBy  : " + orderBy);
+	    System.out.println("=================================");
+
+	    long filtered = infrmService.applyAppCountFiltered(vo);
+
+	    List<InfrmVO> rows = infrmService.applyAppfindSlice(vo, startR, endR, orderBy);
+
+	    mav.addObject("draw", vo.getDraw());
+	    mav.addObject("recordsTotal", filtered);
+	    mav.addObject("recordsFiltered", filtered);
+	    mav.addObject("data", rows);
+
+	    return mav;
+	}
+	
+	
+	
 	
 	// 25-03-28 : 스크롤 시 조회 기능
 	@RequestMapping(value="/informer/ifrmNextScroll.ajax") 

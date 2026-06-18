@@ -59,6 +59,70 @@
 		<result property="areaName" column="AREA_NAME"/>
 	</resultMap>
 	
+	
+	
+	
+	
+	
+	
+	<!-- 26-06-16 : app 통신원 가입신청 현황 map -->
+	<resultMap type="infrmVO" id="applyInformerMap">
+		<result property="informerId" column="INFORMER_ID"/>
+		<result property="actId" column="ACT_ID"/>
+		<result property="informerName" column="INFORMER_NAME"/>
+		<result property="orgId" column="ORG_ID"/>
+		<result property="orgName" column="ORG_NAME"/>
+		<result property="phoneCell" column="PHONE_CELL"/>
+		<result property="orgSubId" column="ORG_SUB_ID"/>
+		<result property="orgSubName" column="ORG_SNAME"/>
+		<result property="phoneHome" column="PHONE_HOME"/>
+		<result property="phoneOffice" column="PHONE_OFFICE"/>
+		<result property="informerType" column="INFORMER_TYPE"/>
+		<result property="informerTypeName" column="INFORMER_TYPE_NAME"/>
+		<result property="memo1" column="MEMO1"/>
+		<result property="memo" column="MEMO"/>
+		<result property="zipcode" column="ZIPCODE"/>
+		<result property="addressHome" column="ADDRESS_HOME"/>
+		<result property="address" column="ADDRESS"/>
+		<result property="zipcode2" column="ZIPCODE2"/>
+		<result property="addressOffice" column="ADDRESS_OFFICE"/>
+		<result property="birthday" column="BIRTHDAY"/>
+		<result property="carNum" column="CAR_NUM"/>
+		<result property="comments" column="COMMENTS"/>
+		<result property="regDate" column="REG_DATE"/>
+		<result property="delDate" column="DEL_DATE"/>
+		<result property="updDate" column="UPD_DATE"/>
+		<result property="localFilePath" column="PHOTO_FILE"/>
+		<result property="individualNameChina" column="INDIVIDUAL_NAME_CHINA"/>
+		<result property="carType" column="CAR_TYPE"/>
+		<result property="trsNo" column="TRS_NO"/>
+		<result property="lastSchool" column="LAST_SCHOOL"/>
+		<result property="areaCode" column="AREA_CODE"/>
+		<result property="honor" column="HONOR"/>
+		<result property="agree" column="AGREE"/>
+		<result property="flagBlacklist" column="FLAG_BLACKLIST"/>
+		<result property="memo2" column="MEMO2"/>
+		<result property="identifiDate" column="IDENTIFI_DATE"/>
+		<result property="flagService" column="FLAG_SERVICE"/>
+		<result property="startDate" column="START_DATE"/>
+		<result property="stopDate" column="STOP_DATE"/>
+		<result property="birthdayDiv" column="BIRTHDAY_DIV"/>
+		<result property="informerJob" column="INFORMER_JOB"/>
+		<result property="flagBroad" column="FLAG_BROAD"/>
+		<result property="flagAct" column="FLAG_ACT"/>
+		<result property="flagBest" column="FLAG_BEST"/>
+		<result property="areaName" column="AREA_NAME"/>
+		<!-- 26-06-16 : 신규 추가( app 통신원 가입신청 현황) -->
+		<result property="applyDate" column="APPLY_DATE"/>
+		<result property="addDetail" column="ADD_DETAIL"/>
+		<result property="applyId" column="APPLY_ID"/>
+		<result property="driverGroup" column="DRIVER_GROUP"/>
+		<result property="homeTel" column="HONE_TEL"/>
+		<result property="statusId" column="STATUS_ID"/>
+		<result property="statusName" column="STATUS_NAME"/>
+	</resultMap>
+	
+	
 	<!--  24-11-21 : 통신원 월별 제보건수 -->
 	<select id="monthReport" resultType="InfrmVO">
 	 <![CDATA[
@@ -901,7 +965,7 @@ SELECT * FROM (
       </choose>
     </if>
     <if test="vo.sDate != null and vo.eDate != null and vo.sDate != '' and vo.eDate != ''">
-      AND J2.REG_DATE BETWEEN #{vo.sDate} AND #{vo.eDate}
+      AND J2.REG_DATE BETWEEN #{vo.sDate} AND #{vo.eDate}findSlice
     </if>
 <![CDATA[
 	ORDER BY ${orderBy} nulls last
@@ -912,11 +976,99 @@ WHERE RN >= #{startRnum}
 ]]>
 </select>
 
+
+
+
+
+<!-- 26-06-16 : app 가입 신청 현황 조회 쿼리문 -->
+<select id="applyAppfindSlice" parameterType="map" resultMap="applyInformerMap">
+	<![CDATA[
+	SELECT * FROM (
+	  SELECT T.*, ROWNUM AS RN
+	  FROM (
+	    SELECT J3.*
+	         , NVL(D.ORG_NAME, '무소속') AS ORG_NAME
+	         , NVL(E.STATUS_NAME, '정보없음') AS STATUS_NAME
+	    FROM (
+	      SELECT J2.*
+	      FROM (
+	        SELECT A.APPLY_ID
+	             , A.APPLY_DATE
+	             , A.STATUS_ID
+	             , NVL(A.INFORMER_NAME,'정보없음') AS INFORMER_NAME
+	             , A.AREA_CODE
+	             , A.ORG_ID
+	             , REPLACE(B.AREA_NAME,'교통방송','') AS AREA_NAME
+	             , CASE
+	                    WHEN A.PHONE_CELL IS NULL OR A.PHONE_CELL = ''
+	                    THEN '정보없음'
+	                    ELSE REGEXP_REPLACE(
+	                             A.PHONE_CELL,
+	                             '(02|.{3})(.+)(.{4})',
+	                             '\1-\2-\3'
+	                         )
+	                END AS PHONE_CELL
+	             , A.APPLY_DATE AS REG_ORDER
+	        FROM INFORMER_APP A
+	        LEFT JOIN CODE_AREACODE B
+	               ON A.AREA_CODE = B.AREA_CODE
+	      ) J2
+	    ) J3
+	
+	    LEFT JOIN ORGANIZATION D
+	           ON J3.AREA_CODE = D.AREA_CODE
+	          AND J3.ORG_ID = D.ORG_ID
+	
+	    LEFT JOIN CODE_APPSTATUS E
+	           ON J3.STATUS_ID = E.STATUS_ID
+	
+	    WHERE 1 = 1
+	]]>
+	
+	    <if test="vo.areaCode != null and vo.areaCode != ''">
+	      AND J3.AREA_CODE = #{vo.areaCode}
+	    </if>
+	
+	    <if test="vo.orgId != null and vo.orgId != ''">
+	      AND J3.ORG_ID = #{vo.orgId}
+	    </if>
+	
+	    <if test="vo.searchValue != null and vo.searchValue != ''">
+	      <choose>
+	        <when test="vo.searchType == 'informerName'">
+	          AND J3.INFORMER_NAME LIKE '%' || #{vo.searchValue} || '%'
+	        </when>
+	
+	        <otherwise>
+	          AND J3.PHONE_CELL LIKE '%' || #{vo.searchValue} || '%'
+	        </otherwise>
+	      </choose>
+	    </if>
+	
+	    <if test="vo.sDate != null and vo.eDate != null and vo.sDate != '' and vo.eDate != ''">
+	      AND J3.APPLY_DATE BETWEEN #{vo.sDate} AND #{vo.eDate}
+	    </if>
+	
+	<![CDATA[
+	    ORDER BY ${orderBy} NULLS LAST
+	  ) T
+	  WHERE ROWNUM < #{endRnum}
+	)
+	WHERE RN >= #{startRnum}
+	]]>
+</select>
+
+
+
+
 	<select id="countAll" parameterType="infrmVO" resultType="long">
 	    SELECT COUNT(*) 
 	    FROM INFORMER 
 	</select>
 
+
+
+	<!-- 일반 통신원 관리 전체 행수 조회 -->
 	<select id="countFiltered" parameterType="infrmVO" resultType="long">
 		<![CDATA[
 		SELECT count(*) FROM (
@@ -998,5 +1150,80 @@ WHERE RN >= #{startRnum}
 		]]>
 	</select>
 	
+	
+	
+	
+	<!-- 26-06-16 : app 통신원 가입신청 현황 전체 행수 조회 -->
+	<select id="applyAppCountFiltered" parameterType="infrmVO" resultType="long">
+		<![CDATA[
+		SELECT COUNT(*)
+		FROM (
+		    SELECT J3.*
+		         , NVL(D.ORG_NAME, '무소속') AS ORG_NAME
+		         , NVL(E.STATUS_NAME, '정보없음') AS STATUS_NAME
+		    FROM (
+		        SELECT J2.*
+		        FROM (
+		            SELECT A.APPLY_ID
+		                 , A.APPLY_DATE
+		                 , A.STATUS_ID
+		                 , NVL(A.INFORMER_NAME,'정보없음') AS INFORMER_NAME
+		                 , A.AREA_CODE
+		                 , A.ORG_ID
+		                 , REPLACE(B.AREA_NAME,'교통방송','') AS AREA_NAME
+		                 , CASE
+		                        WHEN A.PHONE_CELL IS NULL OR A.PHONE_CELL = ''
+		                        THEN '정보없음'
+		                        ELSE REGEXP_REPLACE(
+		                                 A.PHONE_CELL,
+		                                 '(02|.{3})(.+)(.{4})',
+		                                 '\1-\2-\3'
+		                             )
+		                    END AS PHONE_CELL
+		                 , A.APPLY_DATE AS REG_ORDER
+		            FROM INFORMER_APP A
+		            LEFT JOIN CODE_AREACODE B
+		                   ON A.AREA_CODE = B.AREA_CODE
+		        ) J2
+		    ) J3
+		
+		    LEFT JOIN ORGANIZATION D
+		           ON J3.AREA_CODE = D.AREA_CODE
+		          AND J3.ORG_ID = D.ORG_ID
+		
+		    LEFT JOIN CODE_APPSTATUS E
+		           ON J3.STATUS_ID = E.STATUS_ID
+		
+		    WHERE 1 = 1
+		]]>
+		
+		    <if test="areaCode != null and areaCode != ''">
+		      AND J3.AREA_CODE = #{areaCode}
+		    </if>
+		
+		    <if test="orgId != null and orgId != ''">
+		      AND J3.ORG_ID = #{orgId}
+		    </if>
+		
+		    <if test="searchValue != null and searchValue != ''">
+		      <choose>
+		        <when test="searchType == 'informerName'">
+		          AND J3.INFORMER_NAME LIKE '%' || #{searchValue} || '%'
+		        </when>
+		
+		        <otherwise>
+		          AND J3.PHONE_CELL LIKE '%' || #{searchValue} || '%'
+		        </otherwise>
+		      </choose>
+		    </if>
+		
+		    <if test="sDate != null and eDate != null and sDate != '' and eDate != ''">
+		      AND J3.APPLY_DATE BETWEEN #{sDate} AND #{eDate}
+		    </if>
+		
+		<![CDATA[
+		)
+		]]>
+		</select>
 	
 </mapper>

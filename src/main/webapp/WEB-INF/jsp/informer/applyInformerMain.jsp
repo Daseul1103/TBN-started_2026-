@@ -130,84 +130,104 @@
 
 <script>
 $(function () {
-  const $form = $('#searchFrm'); // ← 수정됨
-  /* const nameMap = { 1:'INFORMER_ID', 2:'AREA_NAME', 3:'INFORMER_TYPE_NAME', 4:'ORG_NAME', 5:'INFORMER_NAME', 6:'PHONE_CELL', 7:'FLAG_ACT', 8:'REG_DATE' }; */
-  const nameMap = { 1:'ACT_ID', 2:'AREA_NAME', 3:'INFORMER_TYPE_NAME', 4:'ORG_NAME', 5:'INFORMER_NAME', 6:'PHONE_CELL', 7:'FLAG_ACT', 8:'REG_DATE' };
-	
-  // ★ 전역 노출: window.dt
-window.dt = createDataTable('#informerTable', {
-  order: [[8, 'desc']], // 화면 기본 정렬
-  ajax: {
-    url: '/infrm/datatable.do',
-    type: 'POST',
-    data: function (d) {
-      // 정렬 파라미터 평면화(컨트롤러용)
-      let sortName=null, sortDir=null;
-      if (Array.isArray(d.order) && d.order.length) {
-        const od = d.order[0], idx = od.column;
-        sortDir  = od.dir;
-        sortName = (d.columns && d.columns[idx] && d.columns[idx].name)
-                    ? d.columns[idx].name
-                    : nameMap[idx];
-      }
-	  // ★ Spring 바인딩 충돌 소스 제거
-	  delete d.order;
-	  delete d.columns;
-	  delete d.search;
 
-      const send = {
-     	    // ★ 정렬 평면 파라미터 추가
-     	    sortName: sortName,
-     	    sortDir:  sortDir,
+    const $form = $('#searchFrm');
 
-     	    // 검색 파라미터들
-     	    areaCode:     $('#areaCodeSel').val(),
-     	    informerType: $('#informerTypeSel').val(),
-     	    orgId:        $('#orgIdSel').val(),
-     	    flagAct:      $('#searchActYn').val(),
-     	    searchType:   $('#searchType').val(),
-     	    searchValue:  $('#searchValue').val()
-     	    
-      };
-      if ($('#dchker').is(':checked')) {
-        send.sDate = $('#sDate').val();
-        send.eDate = $('#eDate').val();
-      }
-      return $.extend({}, d, send);
-    }
-  },
-  columns: [
-    { data:null, orderable:false, name:'CHK',
-      render: d => '<input type="checkbox" name="Selection" value="'+ (d.informerId||'') +'">' },
-    { data:'actId',       name:'ACT_ID' },
-    { data:'areaName',         name:'AREA_NAME' },
-    { data:'informerTypeName', name:'INFORMER_TYPE_NAME' },
-    { data:'orgName',          name:'ORG_NAME' },
-    { data:'informerName',     name:'INFORMER_NAME' },
-    { data:'phoneCell',        name:'PHONE_CELL' },
-    { data:'flagAct',          name:'FLAG_ACT' },
-    {
-    	  data: 'regDate',
-    	  name: 'REG_DATE',
-    	  render: function (d, t, r) {
-    	      if (d === null || d === '' || d === undefined) {
-    	          return '정보 없음';
-    	      }
-    	      return d;
-    	  }
-    	}
-  ],
-  createdRow: function(row, data){
-    $(row).attr('data-informer-id', data.informerId).css('cursor','pointer');
-  }
-});
-  // 행 클릭 팝업
-  $('#informerTable tbody').on('click', 'tr', function(e){
-    if ($(e.target).is('input, a, button, label, select')) return;
-    const row = window.dt.row(this).data();
-    if (row) editInformer(row.informerId);
-  });
+    const nameMap = {
+        0: 'AREA_NAME',
+        1: 'ORG_NAME',
+        2: 'INFORMER_NAME',
+        3: 'PHONE_CELL',
+        4: 'STATUS_NAME',
+        5: 'APPLY_DATE'
+    };
 
+    window.dt = createDataTable('#informerTable', {
+
+        order: [[5, 'desc']],
+
+        ajax: {
+            url: '/infrm/applyAppDatatable.do',
+            type: 'POST',
+            data: function (d) {
+
+                let sortName = null;
+                let sortDir = null;
+
+                if (Array.isArray(d.order) && d.order.length) {
+
+                    const od = d.order[0];
+                    const idx = od.column;
+
+                    sortDir = od.dir;
+
+                    sortName =
+                        (d.columns &&
+                         d.columns[idx] &&
+                         d.columns[idx].name)
+                            ? d.columns[idx].name
+                            : nameMap[idx];
+                }
+
+                delete d.order;
+                delete d.columns;
+                delete d.search;
+
+                const send = {
+                    sortName: sortName,
+                    sortDir: sortDir,
+
+                    areaCode: $('#areaCodeSel').val(),
+                    orgId: $('#orgIdSel').val(),
+                    searchType: $('#searchType').val(),
+                    searchValue: $('#searchValue').val()
+                };
+
+                if ($('#dchker').is(':checked')) {
+                    send.sDate = $('#sDate').val();
+                    send.eDate = $('#eDate').val();
+                }
+
+                return $.extend({}, d, send);
+            }
+        },
+
+        columns: [
+            { data: 'areaName',     name: 'AREA_NAME' },
+            { data: 'orgName',      name: 'ORG_NAME' },
+            { data: 'informerName', name: 'INFORMER_NAME' },
+            { data: 'phoneCell',    name: 'PHONE_CELL' },
+            { data: 'statusName',   name: 'STATUS_NAME' },
+            {
+                data: 'applyDate',
+                name: 'APPLY_DATE',
+                render: function (d) {
+                    return d || '정보 없음';
+                }
+            }
+        ],
+
+        createdRow: function (row, data) {
+            $(row)
+                .attr('data-apply-id', data.applyId)
+                .css('cursor', 'pointer');
+        }
+    });
+
+    $('#informerTable tbody').on('click', 'tr', function (e) {
+
+        if ($(e.target).is('input, a, button, label, select')) {
+            return;
+        }
+
+        const row = window.dt.row(this).data();
+
+        if (row) {
+            console.log(row.applyId);
+            // editApply(row.applyId);
+        }
+    });
+  
   // 폼 submit → search()
   $('#searchFrm').on('submit', function(e){
     e.preventDefault();
@@ -317,11 +337,11 @@ function changePage(url){
     				<!-- 서브 메뉴 추가 -->
     				<div class="gnb_tab">
 						<ul class="lst_tab">
-							<li class="on"><a href="javascript:changePage('select')">통신원 관리</a></li>
+							<li><a href="javascript:changePage('select')">통신원 관리</a></li>
 							<li class="ns"></li>
 							<li><a href="javascript:changePage('selectApp')">APP 통신원 관리</a></li>
 							<li class="ns"></li>
-							<li><a href="javascript:changePage('standard')">APP 가입 신청 현황</a></li>
+							<li class="on"><a href="javascript:changePage('standard')">APP 가입 신청 현황</a></li>
 							<li class="ns"></li>
 						</ul>
 					</div>
@@ -373,16 +393,8 @@ function changePage(url){
                                              </select>
                                          </td>
 				                    <td>
-				                        <select class="table_sel" id="searchActYn" name="flagAct">
-				                            <option value="" ><c:out value="활동여부"/></option>
-				                            <option value="Y" ><c:out value="위촉"/></option>
-				                            <option value="N" ><c:out value="해촉"/></option>
-				                        </select>
-				                    </td>
-				                    <td>
 				                        <select class="table_sel" id="searchType" name="searchType">
 				                        	<option value="informerName" ><c:out value="이름"/></option>
-				                            <option value="actId" ><c:out value="제보자ID"/></option>
 				                            <option value="phoneCell" ><c:out value="전화번호"/></option>
 				                        </select>
 				                    </td>
@@ -429,15 +441,12 @@ function changePage(url){
 <table id="informerTable" class="display" style="width:100%">
   <thead>
   <tr>
-    <th>선택</th>
-    <th>ID</th>
     <th>방송국</th>
-    <th>유형</th>
     <th>소속기관</th>
     <th>이름</th>
-    <th>전화</th>
-    <th>활동여부</th>
-    <th>등록일</th>
+    <th>전화 번호</th>
+    <th>신청 현황</th>
+    <th>가입 신청일</th>
   </tr>
   </thead>
   <tbody></tbody>
@@ -450,7 +459,7 @@ function changePage(url){
         <!-- paging Box content -->
     </div>
     
-    <div>
+    <!-- <div>
 		<input type="hidden" value="0" id="showCtn">
 		<select id="addOptionSelect" style="display:none;">
 			<option value="none">-- 선택 --</option>
@@ -468,7 +477,7 @@ function changePage(url){
 			</button>
 			<div class="select-wrap">
 	
-			    <!-- 기본 -->
+			    기본
 			    <div class="section">
 			        <div class="section-title">기본</div>
 			        <div class="section-body scroll">
@@ -485,7 +494,7 @@ function changePage(url){
 			        </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 			    </div>
 			
-			    <!-- 추가사항 --> 
+			    추가사항 
 			    <div class="section">
 			        <div class="section-title">추가사항</div>
 			        <div class="section-body scroll2">
@@ -511,16 +520,16 @@ function changePage(url){
 			        </div>
 			    </div>
 			    <div class="buttonContainer" style="display:flex; justify-content: space-between;">
-			    	<!-- 전체 선택 버튼 -->
+			    	전체 선택 버튼
 			    	<div class="confirm-area">
 				        <button type="button" id="selectConfirmAllBtn">전체 선택</button>
 				    </div>
-			    	<!-- 전체 해제 버튼 -->
+			    	전체 해제 버튼
 			    	<div class="confirm-area">
 				        <button type="button" id="unChkConfirmAllBtn">전체 해제</button>
 				    </div>
 				    
-			        <!-- 확인 버튼 -->
+			        확인 버튼
 				    <div class="confirm-area">
 				        <button type="button" id="selectConfirmBtn">확인</button>
 				    </div>
@@ -528,17 +537,17 @@ function changePage(url){
 			</div>
 		</div>
 	</div>
-    <!--style="margin-right:15px;margin-top: 50px;"  -->
+    style="margin-right:15px;margin-top: 50px;" 
     <div class="btnBox" align="right" >
         <span onclick="editInformer();" class="editUser"><button type="button" style="border: none;"><img src="../images/btn_save1.png" alt="" style="cursor: pointer;width: 92px;height: 30px;background-size: cover; "></button></span>
-    </div>
+    </div> -->
 </div>
 </div>
 
 <script>
 
 $(document).ready(function(){
-	console.log("informerMain.jsp 진입");
+	console.log("app 가입신청 현황.jsp 진입");
                                                                           
 	
 	/* init(); */

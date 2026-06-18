@@ -64,8 +64,14 @@ public interface InfrmMapper{
 	public long countAll(InfrmVO thvo);
 
 	public long countFiltered (InfrmVO vo);
+	
+	public long applyAppCountFiltered(InfrmVO thvo);
 
 	public List<InfrmVO> findSlice
+	(@Param("vo") InfrmVO vo, @Param("startRnum") int startRnum, @Param("endRnum") int endRnum, @Param("orderBy") String orderBy);
+	
+	
+	public List<InfrmVO> applyAppfindSlice
 	(@Param("vo") InfrmVO vo, @Param("startRnum") int startRnum, @Param("endRnum") int endRnum, @Param("orderBy") String orderBy);
 	
 }

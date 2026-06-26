@@ -40,13 +40,28 @@ public interface InfrmService {
 	public String getInformerId(InfrmVO infrmVO) throws Exception;
 	
 	public int saveInformer(InfrmVO paramVO);
+	
+	public int saveInformerApp(InfrmVO paramVO);
+	
+	public int uptInformerApp(InfrmVO paramVO);
+	
+	
+	public int deleteApp(String applyId);
+	public int rejectApp(String applyId);
+	
 	public void saveInformerHist(InfrmVO paramVO);
 	public String getUpdateCode(InfrmVO paramVO);
+	
+	public void getAppUpdateCode(InfrmVO paramVO);
 	public int deleteInformer(InfrmVO paramVO);
 	public List<InfrmVO> getInformerHistory(InfrmVO ifmVO);
 	public List<InfrmVO> getInformerHistoryList(InfrmVO ifmVO);
 	
 	public InfrmVO detailInformer(InfrmVO thvo);
+	
+	// 26-06-19 : APP 통신원 가입 정보 가져오기
+	public InfrmVO detailApplyIfrm(InfrmVO thvo);
+	
 	public String chkPhone(InfrmVO ifmVO) throws Exception;
 	
 	
@@ -57,11 +72,21 @@ public interface InfrmService {
 	
 	public long countFiltered(InfrmVO thvo);
 	
+	public long countFilteredAPP(InfrmVO thvo);
+	
+	public List<InfrmVO> findSliceAPP(InfrmVO thvo, int startRnum, int endRnum, String orderby);
+	
 	public long applyAppCountFiltered(InfrmVO thvo);
 
 	public List<InfrmVO> findSlice(InfrmVO thvo, int startRnum, int endRnum, String orderBy);
 	
 	public List<InfrmVO> applyAppfindSlice(InfrmVO thvo, int startRnum, int endRnum, String orderBy);
 	
+	
+	
+	// 26-06-22 : APP 통신원 가입 현황 > 통신원 등록 > 통신원 중복 등록 검사
+	public int chkDupInfrm(String phoneCell) throws Exception;
+	
 
+	public void goCancle (String applyId) throws Exception;
 }

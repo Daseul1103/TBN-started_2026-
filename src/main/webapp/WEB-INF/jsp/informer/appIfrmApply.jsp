@@ -323,8 +323,7 @@
 	$(document).ready(function(){
 		
 		createSelect();
-		
-		
+
 		function createSelect() {
 			
 			// 오늘 년도 구하기
@@ -482,13 +481,17 @@
   				<!-- 통신원 등록 상단 헤더(타이틀, 버튼) -->
             	<div style="display: flex; padding-left: 20px; padding-top: 20px; justify-content: space-between; align-items: center;">
             		<div style="display: flex; align-items: baseline; border-left: 5px solid blue;">
-            			<h1 style="font-size: 28px; margin-right: 20px; margin-left: 5px;">통신원 등록</h1>
-            			<p style="font-size:15px;"><span style="color: rgba(47, 46, 47, 0.77);">통신원 관리 ></span> 통신원 등록</p>
+            			<h1 style="font-size: 28px; margin-right: 20px; margin-left: 5px;">APP 통신원 등록</h1>
+            			<p style="font-size:15px;"><span style="color: rgba(47, 46, 47, 0.77);">통신원 관리 ></span> APP 통신원 등록</p>
             		</div>
             		<div class="button-group">   
 					    <button class="btn btn-secondary" onclick="self.close();">
 					        <img src="/images/cancleInformer.svg" class="btn-icon"/>
 					        취소
+					    </button>
+					    
+					    <button class="btn btn-secondary" onclick="chkDupInfrm();">
+					        	중복 등록 검사
 					    </button>
 					
 					    <button class="btn btn-primary" onclick="saveInformer();" alt="등록" title="등록">
@@ -502,6 +505,7 @@
             	<!-- form 시작 -->
             	<form id="informerEditFrm" name="informerEditFrm" method="post" enctype="multipart/form-data">
             		<input type="hidden" id="pageDiv" name="pageDiv" value="${pageDiv}"></input>
+            		<input type="hidden" id="applyId" name="applyId" value="${informerInfo.applyId}"></input>
 	            	<!-- 통신원 등록 - 기본정보 입력란 -->
 	            	<div style="background-color: white;width: 1030px;height: 550px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
 	            		<!-- 기본정보 타이틀 -->
@@ -550,8 +554,7 @@
 								<tr>								
 								    <th>통신원 이름 <span style="color:red">*</span></th>								
 								    <td>
-										<input type="text" id="informerName" name="informerName" vlaue="${informerInfo.informerName}"/>
-										
+										<input type="text" id="informerName" name="informerName" value="${informerInfo.informerName}"/>
 								    </td>
 								    <th>통신원 ID <span style="color:red">*</span></th>
 								    <td>
@@ -676,7 +679,7 @@
 	            	<!-- 통신원 등록 - 기본정보 입력란 -->
 	            	
 	            	
-	            	<div style="background-color: white;width: 1030px;height: 450px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
+	            	<div style="background-color: white;width: 1030px;height: 500px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
 	            		<!-- 기본정보 타이틀 -->
 	            		<div style="display: flex; width: 1030px; height: 40px; align-items: center; margin-top: 10px; margin-bottom:5px;">
 		            		<!-- 기본정보 아이콘 -->
@@ -696,11 +699,11 @@
 								<tr>							
 								    <th>핸드폰 번호 <span style="color:red">*</span></th>								
 								    <td>
-								        <input type="text" id="phoneCell" name="phoneCell" style="font-weight: bold;" maxlength="11" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
+								        <input type="text" id="phoneCell" name="phoneCell" style="font-weight: bold;" maxlength="11" value="${informerInfo.phoneCell}" readonly/>
 								    </td>
-								    <th>집 전화번호</th>								
+								    <th>전화번호</th>								
 								    <td>
-								        <input type="text" id="phoneHome" name="phoneHome" style="" maxlength="13" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
+								        <input type="text" id="phoneHome" name="phoneHome" style="" maxlength="13" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)' value="${informerInfo.homeTel}"/>
 								    </td>
 								</tr>								
 								<tr>																    								
@@ -708,7 +711,7 @@
 								<tr>								
 								    <th>TRS</th>								
 								    <td>
-								        <input type="text" id="trsNo" name="trsNo" />
+								        <input type="text" id="trsNo" name="trsNo" value="${informerInfo.trsNo}"/>
 								    </td>	
 								    <th>회사 전화번호</th>
 								    <td>
@@ -716,15 +719,25 @@
 								    </td>							
 								</tr>
 								<tr>								
+								    <th>무선 HAM</th>								
+								    <td>
+								        <input type="text" id="hamNo" name="hamNo" value="${informerInfo.hamNo}"/>
+								    </td>
+								    <th>소속 운전자회</th>
+								    <td>
+								    	<input type="text" id="driverGroup" name="driverGroup"  maxlength="50" value="${informerInfo.driverGroup}"/>
+								    </td>								
+								</tr>		
+								<tr>								
 								    <th>차량 번호</th>								
 								    <td>
 								        <input type="text" id="carNum" name="carNum"  maxlength="15"/>
 								    </td>
 								    <th>차량 종류</th>
 								    <td>
-								    	<input type="text" id="carType" name="carType"  maxlength="15"/>
+								    	<input type="text" id="carType" name="carType"  maxlength="15" value="${informerInfo.carType}"/>
 								    </td>								
-								</tr>					
+								</tr>				
 							</table>
 							
 							<table class="form-table">
@@ -734,15 +747,15 @@
 								    <td>								        
                                         <input type="hidden" id="address" name="address"/>
                                         <input type="hidden" id="addressHome" name="addressHome"/>
-                                        <input type="text" id="adressHome3" name="zipcode" readonly></input>
-                                        <input type="text" id="addressHome1" name="addressHome1" style="margin-right:10px; width:230px;" readonly/>
+                                        <input type="text" id="adressHome3" name="zipcode" readonly value="${informerInfo.zipcode}"></input>
+                                        <input type="text" id="addressHome1" name="addressHome1" style="margin-right:10px; width:230px;"  value="${informerInfo.address}" readonly/>
                                         <input type="button" id="searchAddress1" name="searchAddress1" onclick="searchAddress(1);" style="width:70px;" value="주소검색"/>
 								    </td>								
 								</tr>
 								<tr>								
 								    <th>상세 주소</th>								
 								    <td>
-								        <input type="text" id="addressHome2" name="addressHome2" style="width:452px;"/>
+								        <input type="text" id="addressHome2" name="addressHome2" style="width:452px; " value="${informerInfo.addDetail}"/>
 								    </td>								
 								</tr>
 								<tr>		
@@ -831,11 +844,12 @@ $(document).ready(function(){
 
     //파일 관련하여 있으면 값 대입
     var tagFile = "${informerInfo.localFilePath}";
-    
     	
-    if(typeof tagHome !== "undefined" && tagHome !=""){
+/*     if(typeof tagHome !== "undefined" && tagHome !=""){
     	addressSp("addressHome",tagHome,"--");
-    }
+    } */
+    
+    
     if(typeof tagOfs !== "undefined" && tagOfs !=""){
     	addressSp("addressOffice",tagOfs,"--");
     }
@@ -998,189 +1012,222 @@ function searchAddress(num){
 /**
  * 통신원 저장
  */
+ 
+ 
+//중복 등록 검사 flag 변수
+var flagDupInfrm = false;
+var chkDupleFlag = false;
+var chkval = '${informerInfo.addDetail}';
+
+$('#addressHome2').val(chkval);
+
+console.log("반환 값 : " + chkval);
+	
 function saveInformer(){
 	 
-	//핸드폰 정규식
-	 var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
-	 //전화번호 정규식
-	 var regCall = /^[0-9]{2,3}-?[0-9]{3,4}-?[0-9]{4}/;
-	 //주민번호 정규식
-	 var regJumin = /^(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}$/;
-	 
-	 // 반드시 입력해야 할 항목이 추가 되면 작성 해야함.(필수항목)
-	 if($('#actId').val() == ""){
-        alert("통신원 ID를 입력하세요.");
-        $('#actId').focus();
-        return false;
-    }
-	 
-	if($('#informerName').val() == ""){
-        alert("통신원 이름을 입력하세요.");
-        $('#informerName').focus();
-        return false;
-    }
-	
-	if($('#phoneCell').val()== "" && $('#phoneHome').val()== "" && $('#phoneOffice').val()== ""){
-		alert("핸드폰/집/회사 번호중 하나는 필수값입니다");
-        $('#phoneCell').focus();
-        return false;
-	}
-	
-	
-	//핸드폰
-	if ($('#phoneCell').val() != "" ){
-		if(!regPhone.test($('#phoneCell').val())){
-	        alert("올바른 핸드폰번호 형식을 입력해주세요");
-	        $('#phoneCell').focus();
-	        return false;
-		} 
-    } 
-	
-	 //집전화
-	if ($('#phoneHome').val() != "" ){
-		if(!regCall.test($('#phoneHome').val())){
-			alert("올바른 전화번호 형식을 입력하세요");
-			$('#phoneHome').focus();
-			return false;
+	if(chkDupleFlag) {
+		if(flagDupInfrm){
+			//핸드폰 정규식
+			 var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+			 //전화번호 정규식
+			 var regCall = /^[0-9]{2,3}-?[0-9]{3,4}-?[0-9]{4}/;
+			 //주민번호 정규식
+			 var regJumin = /^(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}$/;
+			 
+			 // 반드시 입력해야 할 항목이 추가 되면 작성 해야함.(필수항목)
+			 if($('#actId').val() == ""){
+		        alert("통신원 ID를 입력하세요.");
+		        $('#actId').focus();
+		        return false;
+		    }
+			 
+			if($('#informerName').val() == ""){
+		        alert("통신원 이름을 입력하세요.");
+		        $('#informerName').focus();
+		        return false;
+		    }
+			
+			if($('#phoneCell').val()== "" && $('#phoneHome').val()== "" && $('#phoneOffice').val()== ""){
+				alert("핸드폰/집/회사 번호중 하나는 필수값입니다");
+		        $('#phoneCell').focus();
+		        return false;
+			}
+			
+			
+			//핸드폰
+			if ($('#phoneCell').val() != "" ){
+				if(!regPhone.test($('#phoneCell').val())){
+			        alert("올바른 핸드폰번호 형식을 입력해주세요");
+			        $('#phoneCell').focus();
+			        return false;
+				} 
+		    } 
+			
+			 //집전화
+			if ($('#phoneHome').val() != "" ){
+				if(!regCall.test($('#phoneHome').val())){
+					alert("올바른 전화번호 형식을 입력하세요");
+					$('#phoneHome').focus();
+					return false;
+				}
+			}
+			 //회사전화
+			if ($('#phoneOffice').val() != "" ){
+				if(!regCall.test($('#phoneOffice').val())){
+					alert("올바른 전화번호 형식을 입력하세요");
+					$('#phoneOffice').focus();
+					return false;
+				}
+			}
+			
+			//집주소 ( 모든 조건이 일치한 경우 )
+			if ($('#addressHome1').val() != "" && $('#addressHome2').val() != ""){
+				$("#address").val(addressChk("address","--"));
+				$("#addressHome").val(addressChk("addressHome"," "));
+			}
+			
+			// 집주소 ( 우편번호와 도로명 주소는 입력 된 상태인데, 상세 주소가 적히지 않은 경우 )
+			if ($('#addressHome1').val() != "" && $('#addressHome2').val() == "" ) {
+				alert("상세 주소를 입력해 주세요.");
+				$('#addressHome2').focus();
+				return false;
+			}
+			
+			// 집주소 ( 상세 주소는 적혀있는데, 우편번호와 도로명 주소는 입력되지 않은 경우 )
+			if($('#addressHome1').val() == "" && $('#addressHome2').val() != "") {
+				alert("우편번호 및 도로명 주소를 입력해 주세요");
+				return false;
+			}
+			
+			//회사주소
+			if ($('#addressOffice1').val() != "" && $('#addressOffice2').val() != ""){
+				$("#addressOffice").val(addressChk("addressOffice","--"));
+			}
+		    
+			// 회사 주소 ( 우편 번호와 도로명 주소는 입력 된 상태인데, 상세 주소가 적히지 않은 경우 )
+			if( $('#addressOffice1').val() != "" && $('#addressOffice2').val() == "" ) {
+				alert(" 상세 주소를 입력해 주세요. ");
+				$('#addressOffice2').focus();
+				return false;
+			}
+			
+			// 회사 주소 ( 상세 주소는 적혀있는데, 우편 번호와 도로명 주소는 입력되지 않은 경우 )
+			if( $('#addressOffice1').val() == "" && $('#addressOffice2').val() != "" ) {
+				alert(" 우편번호 및 도로명 주소를 입력해 주세요");
+				return false;
+			}
+		    
+			//통신원 이력관련
+			var histCode = '';
+		    if('${informerInfo.informerId}' == '' || '${informerInfo.informerId}' == null){
+		    	histCode = '0';
+		    } else {
+		    	if('${informerInfo.flagBroad}' == '0' && $('#flagBroad1').is(':checked')){
+		            histCode = '5';
+		        } else if('${informerInfo.flagBroad}' == '1' && $('#flagBroad0').is(':checked')){
+		            histCode = '6';
+		        }
+		    	
+		    	if('${informerInfo.informerType}' == '2' && $('#informerType').val() == '0'){
+		    		if(histCode != '' && histCode != null){
+		    			histCode += ',4';    			
+		    		} else {
+		    			histCode = '4';
+		    		}
+		    	}
+		    	
+		    	if('${informerInfo.areaCode}' != $('#areaCodeSel').val()){
+		    		if(histCode != '' && histCode != null){
+		                histCode += ',1';              
+		            } else {
+		                histCode = '1';
+		            }
+		    	}
+		    }
+		    
+		    if($('#honor').is(':checked')){
+		    	$('#honor').val('Y');
+		    }else{
+		    	$('#honor').val('N');
+		    }
+		    if($('#flagService').is(':checked')){
+		    	$('#flagService').val('Y');
+		    }else{
+		    	$('#flagService').val('N');
+		    }
+		    if($('#flagBest').is(':checked')){
+		    	$('#flagBest').val('Y');
+		    }else{
+		    	$('#flagBest').val('N');
+		    }
+		    
+		    var fileChg = false;
+		    if('${informerInfo.localFilePath}' != $('#localFilePath').val()){
+		    	fileChg = true;
+		    	//$('#birthday').val(date);
+		    }
+		    
+		    
+		    // 주석 처리 시 date에 하이픈 들어감 : 현재는 하이픈 제거 상태
+		    var date = $('#birthday').val().replace(/-/g,'');
+		    $('#birthday').val(date);
+		    
+		    var date = $('#identifiDate').val().replace(/-/g,'');
+		    $('#identifiDate').val(date);
+		    
+		    
+		    let queryString = $("#informerEditFrm").serialize();
+		    let addStr ="&histCode="+histCode+"&fileChg="+fileChg+"&flagBroad="+$('input[name="flagBroad"]:checked').val()+"&honor="+$('#honor').val()+"&flagService="+$('#flagService').val()+"&flagBest="+$('#flagBest').val();
+		    queryString+=addStr;
+		   	console.log(queryString);
+		    var options = {
+		            url:"/informer/saveInformerApp.do?"+queryString,
+		            type:"post",
+		            dataType: "json",
+		            data:queryString,
+		            async : false,
+		            success: function(res){
+		                if(res.cnt > 0){
+		                    alert("저장되었습니다.");
+		                    opener.search();
+		                    self.close();
+		                } else {
+		                	alert("저장에 실패했습니다.");
+		                }
+		            } ,
+		            error: function(res,error){
+		                alert("에러가 발생했습니다."+error);
+		            }
+		    };
+		    $('#informerEditFrm').ajaxSubmit(options);
+		} else {
+			var goCancle = confirm("이미 등록되어있는 통신원입니다. 반려 하시겠습니까?");
+			if(goCancle) {
+				var goCancleId = $('#applyId').val();
+				
+				$.ajax({
+					url : '/infrm/goCancle.do',
+					data : { "applyId" : goCancleId },
+					type : 'post',
+					success : function(data) {
+						alert("성공적으로 반려 처리 되었습니다.");
+						opener.search();
+	                    self.close();
+					}, error : function() {
+						console.log("데이터 전송에 오류 발생");
+					}
+				});
+			} else {
+				return false;
+			}
 		}
-	}
-	 //회사전화
-	if ($('#phoneOffice').val() != "" ){
-		if(!regCall.test($('#phoneOffice').val())){
-			alert("올바른 전화번호 형식을 입력하세요");
-			$('#phoneOffice').focus();
-			return false;
-		}
-	}
-	
-	//집주소 ( 모든 조건이 일치한 경우 )
-	if ($('#addressHome1').val() != "" && $('#addressHome2').val() != ""){
-		$("#address").val(addressChk("address","--"));
-		$("#addressHome").val(addressChk("addressHome"," "));
-	}
-	
-	// 집주소 ( 우편번호와 도로명 주소는 입력 된 상태인데, 상세 주소가 적히지 않은 경우 )
-	if ($('#addressHome1').val() != "" && $('#addressHome2').val() == "" ) {
-		alert("상세 주소를 입력해 주세요.");
-		$('#addressHome2').focus();
+	} else {
+		alert("중복 등록 검사를 진행하지 않았습니다. 버튼을 눌러 검사해 주세요");
 		return false;
 	}
+	 
+	 
 	
-	// 집주소 ( 상세 주소는 적혀있는데, 우편번호와 도로명 주소는 입력되지 않은 경우 )
-	if($('#addressHome1').val() == "" && $('#addressHome2').val() != "") {
-		alert("우편번호 및 도로명 주소를 입력해 주세요");
-		return false;
-	}
-	
-	//회사주소
-	if ($('#addressOffice1').val() != "" && $('#addressOffice2').val() != ""){
-		$("#addressOffice").val(addressChk("addressOffice","--"));
-	}
-    
-	// 회사 주소 ( 우편 번호와 도로명 주소는 입력 된 상태인데, 상세 주소가 적히지 않은 경우 )
-	if( $('#addressOffice1').val() != "" && $('#addressOffice2').val() == "" ) {
-		alert(" 상세 주소를 입력해 주세요. ");
-		$('#addressOffice2').focus();
-		return false;
-	}
-	
-	// 회사 주소 ( 상세 주소는 적혀있는데, 우편 번호와 도로명 주소는 입력되지 않은 경우 )
-	if( $('#addressOffice1').val() == "" && $('#addressOffice2').val() != "" ) {
-		alert(" 우편번호 및 도로명 주소를 입력해 주세요");
-		return false;
-	}
-    
-	//통신원 이력관련
-	var histCode = '';
-    if('${informerInfo.informerId}' == '' || '${informerInfo.informerId}' == null){
-    	histCode = '0';
-    } else {
-    	if('${informerInfo.flagBroad}' == '0' && $('#flagBroad1').is(':checked')){
-            histCode = '5';
-        } else if('${informerInfo.flagBroad}' == '1' && $('#flagBroad0').is(':checked')){
-            histCode = '6';
-        }
-    	
-    	if('${informerInfo.informerType}' == '2' && $('#informerType').val() == '0'){
-    		if(histCode != '' && histCode != null){
-    			histCode += ',4';    			
-    		} else {
-    			histCode = '4';
-    		}
-    	}
-    	
-    	if('${informerInfo.areaCode}' != $('#areaCodeSel').val()){
-    		if(histCode != '' && histCode != null){
-                histCode += ',1';              
-            } else {
-                histCode = '1';
-            }
-    	}
-    }
-    
-    if($('#honor').is(':checked')){
-    	$('#honor').val('Y');
-    }else{
-    	$('#honor').val('N');
-    }
-    if($('#flagService').is(':checked')){
-    	$('#flagService').val('Y');
-    }else{
-    	$('#flagService').val('N');
-    }
-    if($('#flagBest').is(':checked')){
-    	$('#flagBest').val('Y');
-    }else{
-    	$('#flagBest').val('N');
-    }
-    
-    var fileChg = false;
-    if('${informerInfo.localFilePath}' != $('#localFilePath').val()){
-    	fileChg = true;
-    	//$('#birthday').val(date);
-    }
-    
-    
-    // 주석 처리 시 date에 하이픈 들어감 : 현재는 하이픈 제거 상태
-    var date = $('#birthday').val().replace(/-/g,'');
-    $('#birthday').val(date);
-    
-    var date = $('#identifiDate').val().replace(/-/g,'');
-    $('#identifiDate').val(date);
-    
-    
-    let queryString = $("#informerEditFrm").serialize();
-    let addStr ="&histCode="+histCode+"&fileChg="+fileChg+"&flagBroad="+$('input[name="flagBroad"]:checked').val()+"&honor="+$('#honor').val()+"&flagService="+$('#flagService').val()+"&flagBest="+$('#flagBest').val();
-    queryString+=addStr;
-   	console.log(queryString);
-    var options = {
-            url:"/informer/saveInformer.do?"+queryString,
-            type:"post",
-            dataType: "json",
-            data:queryString,
-            async : false,
-            success: function(res){
-                if(res.cnt > 0){
-                    alert("저장되었습니다.");
-                    opener.search();
-                    self.close();
-                } else {
-                	if(res.badFileType != null){
-                		alert("사진파일 첨부는 이미지 파일만 가능합니다.")
-                	} else if(typeof res.createFileError !== "undefined" && res.createFileError){
-                	    alert("사진파일 저장에 실패했습니다.");
-                	} else if(typeof res.msg !== "undefined" && res.msg != null){
-                		alert(res.msg);
-                	}else {
-                		alert("저장에 실패했습니다.");
-                	}
-                }
-            } ,
-            error: function(res,error){
-                alert("에러가 발생했습니다."+error);
-            }
-    };
-    $('#informerEditFrm').ajaxSubmit(options);
 }
 
 /**
@@ -1273,6 +1320,55 @@ function setAddress(str, target){
  */
 function changePicture(obj){
 	$('#localFilePath').val((obj.val()).replace("C:\\fakepath\\", ""));
+}
+
+
+// 26-06-22 : 중복 등록 검사 기능
+function chkDupInfrm() {
+	console.log("중복 등록 검사 기능 진입");
+	
+	var phoneCellSend = $('#phoneCell').val();
+	chkDupleFlag = true;
+	
+	// ajax 요청하기
+	$.ajax({
+		url : '/infrm/chkDupInfrm.do',
+		data : { "phoneCell" : phoneCellSend },
+		type : 'post',
+		success : function(data) {
+			if(data.dupChkVal) {
+				console.log("중복 없음");
+				flagDupInfrm = true;
+				alert("등록 가능한 통신원입니다.");
+			} else {
+				console.log("중복 있음");
+				flagDupInfrm = false;
+				
+				var goCancle = confirm("이미 등록 되어있는 통신원 입니다. 반려 하시겠습니까?");
+				var goCancleId = $('#applyId').val();
+				
+				if(goCancle) {
+					$.ajax({
+						url : '/infrm/goCancle.do',
+						data : { "applyId" : goCancleId },
+						type : 'post',
+						success : function(data) {
+							alert("성공적으로 반려 처리 되었습니다.");
+							opener.search();
+		                    self.close();
+						}, error : function() {
+							console.log("데이터 전송에 오류 발생");
+						}
+					});
+				} else {
+					return false;
+				}
+			}
+			
+		}, error : function() {
+			console.log("데이터 전송에 오류 발생");
+		}
+	});
 }
 </script>
 </body>

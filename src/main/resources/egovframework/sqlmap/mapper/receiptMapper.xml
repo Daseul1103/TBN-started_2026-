@@ -620,10 +620,78 @@
          	ORDER BY RECEIPT_TIME DESC
 	</select>
 	
-	
-	
+	<select id="selectReceiptApp" resultType="receiptVO">
+	    SELECT *
+	    FROM RECEIPT_APP
+	    WHERE RECEIPT_ID IN
+	    <foreach collection="list" item="item" open="(" separator="," close=")">
+	        #{item.RECEIPT_ID}
+	    </foreach>
+	</select>
+
 	<!-- 모바일 앱 제보 => receipt_today로 이동(insert) -->
+	
 	<insert id="insertAppStatus">
+
+		INSERT ALL
+		
+		<foreach collection="list" item="item">
+		
+		INTO REPORT_RECEIPT_TODAY
+		(
+		    RECEIPT_ID,
+		    INDIVIDUAL_ID,
+		    INDIVIDUAL_NAME,
+		    MEMO,
+		    REGION_ID,
+		    REPORT_TYPE,
+		    R_TEL,
+		    X_COORDINATE,
+		    Y_COORDINATE,
+		    REPORTER_TYPE,
+		    FLAG_BROD,
+		    FLAG_SEND,
+		    FLAG_IMPORTANT,
+		    RECEIPT_DAY,
+		    RECEIPT_TIME,
+		    FLAG_DISASTOR,
+		    RECEPTION_ID,
+		    RECEPTION_NAME,
+		    INDIVIDUAL_TYPE
+		)
+		VALUES
+		(
+		    #{item.RECEIPT_ID},
+		    #{item.INFORMER_ID},
+		    #{item.INFORMER_NAME},
+		    #{item.COMMENT_TXT},
+		    #{item.AREA_CODE},
+		    #{item.REPORT_TYPE},
+		    #{item.PHONE_CELL},
+		    #{item.X_COORDINATE},
+		    #{item.Y_COORDINATE},
+		    #{item.REPORTER_TYPE},
+		    #{item.FLAG_BROD},
+		    #{item.FLAG_SEND},
+		    #{item.FLAG_IMPORTANT},
+		   	TO_DATE(
+			    SUBSTR(#{item.RECEIPT_DAY},1,10),
+			    'YYYY-MM-DD'
+			),
+		    #{item.RECEIPT_TIME},
+		    #{item.FLAG_DISASTOR},
+		    #{nlVo.userId},
+		    #{nlVo.userName},
+		    NVL(#{item.INFORMER_TYPE}, '2')
+		)
+		
+		</foreach>
+		
+		SELECT 1 FROM DUAL
+		
+		</insert>
+
+	<!-- <insert id="insertAppStatus">
 	    INSERT INTO REPORT_RECEIPT_TODAY (
 	        RECEIPT_ID, INDIVIDUAL_ID, INDIVIDUAL_NAME, MEMO, REGION_ID,
 	        REPORT_TYPE, R_TEL, X_COORDINATE, Y_COORDINATE, REPORTER_TYPE,
@@ -660,22 +728,10 @@
 	    <foreach collection="list" item="item" open="(" separator="," close=")">
 	        #{item.RECEIPT_ID}
 	    </foreach>
-	</insert>
-	
-	
-<!-- 	<insert id="insertAppStatus">
-		INSERT INTO REPORT_RECEIPT_TODAY (RECEIPT_ID, INDIVIDUAL_ID, INDIVIDUAL_NAME, MEMO, REGION_ID,
-		REPORT_TYPE, R_TEL, X_COORDINATE, Y_COORDINATE, REPORTER_TYPE, FLAG_BROD, FLAG_SEND, FLAG_IMPORTANT,
-		RECEIPT_DAY, RECEIPT_TIME, FLAG_DISASTOR,RECEPTION_ID, RECEPTION_NAME)
-		SELECT RECEIPT_ID, INFORMER_ID, INFORMER_NAME, COMMENT_TXT, AREA_CODE, REPORT_TYPE,
-		PHONE_CELL, X_COORDINATE, Y_COORDINATE, REPORTER_TYPE, FLAG_BROD,
-		FLAG_SEND, FLAG_IMPORTANT, RECEIPT_DAY, RECEIPT_TIME, FLAG_DISASTOR ,#{nlVo.userId}, #{nlVo.userName}
-		FROM RECEIPT_APP
-		WHERE RECEIPT_ID IN 
-		<foreach collection="list" item="item" open="(" separator="," close=")">
-	        #{item.RECEIPT_ID}
-	    </foreach>
 	</insert> -->
+	
+	
+
 	
 	
 	<!-- 모바일 앱 제보 flag update -->

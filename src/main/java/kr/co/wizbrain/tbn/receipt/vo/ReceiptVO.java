@@ -2,8 +2,8 @@ package kr.co.wizbrain.tbn.receipt.vo;
 
 public class ReceiptVO {
 	private String RECEIPT_ID;
-	//private String RECEIPT_DAY;//INSERT사용안함
-	//private String RECEIPT_TIME;//INSERT사용안함
+	private String RECEIPT_DAY; //INSERT사용안함
+	private String RECEIPT_TIME; //INSERT사용안함
 	private String INDIVIDUAL_ID;
 	private String INDIVIDUAL_NAME;
 	private String INDIVIDUAL_TYPE;
@@ -36,7 +36,7 @@ public class ReceiptVO {
 	private String FLAG_IMPORTANT;		//긴급접수
 	private String FLAG_DISASTOR;		//재난제보
 	
-	//private String FLAG_BROD;//INSERT사용안함
+	private String FLAG_BROD; // INSERT사용안함
 	private String R_TEL;
 	private String X_COORDINATE;		//X좌표
 	private String Y_COORDINATE;		//Y좌표
@@ -58,6 +58,9 @@ public class ReceiptVO {
 	private String ADDRESS_HOME;
 	private String ZIPCODE;
 	private String FLAG_BLACKLIST;
+	
+	private String COMMENT_TXT;
+	private String AREA_CODE;
 	
 	private int STAT1;
 	private int STAT2;
@@ -156,6 +159,70 @@ public class ReceiptVO {
 		FLAG_BLACKLIST = fLAG_BLACKLIST;
 	}
 	
+	
+	
+	
+	
+	public String getRECEIPT_DAY() {
+		return RECEIPT_DAY;
+	}
+
+
+
+	public void setRECEIPT_DAY(String rECEIPT_DAY) {
+		RECEIPT_DAY = rECEIPT_DAY;
+	}
+
+
+
+	public String getRECEIPT_TIME() {
+		return RECEIPT_TIME;
+	}
+
+
+
+	public void setRECEIPT_TIME(String rECEIPT_TIME) {
+		RECEIPT_TIME = rECEIPT_TIME;
+	}
+
+
+
+	public String getFLAG_BROD() {
+		return FLAG_BROD;
+	}
+
+
+
+	public void setFLAG_BROD(String fLAG_BROD) {
+		FLAG_BROD = fLAG_BROD;
+	}
+
+
+
+	public String getAREA_CODE() {
+		return AREA_CODE;
+	}
+
+
+
+	public void setAREA_CODE(String aREA_CODE) {
+		AREA_CODE = aREA_CODE;
+	}
+
+
+
+	public String getCOMMENT_TXT() {
+		return COMMENT_TXT;
+	}
+
+
+
+	public void setCOMMENT_TXT(String cOMMENT_TXT) {
+		COMMENT_TXT = cOMMENT_TXT;
+	}
+
+
+
 	public String getDLS_TEXT() {
 		return DLS_TEXT;
 	}

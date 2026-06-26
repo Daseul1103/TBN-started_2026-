@@ -116,7 +116,7 @@ public interface ReceiptService {
 	public List<ReceivedStatusVO> appStatusList(CriteriaVO cri) throws Exception;
 	
 	// 팝업 - 모바일 제보 => 금일 제보 테이블로 insert
-	public void insertAppStatus(List<ReceivedStatusVO> list, UserVO nlVo) throws Exception;
+	public void insertAppStatus(List<ReceiptVO> list, UserVO nlVo) throws Exception;
 	
 	// 팝업 - 모바일 제보 검증 flag update
 	public void updateAppStatus(List<ReceivedStatusVO> list) throws Exception;
@@ -124,6 +124,10 @@ public interface ReceiptService {
 	//팝업 - 검색
 	public List<ReceivedStatusVO> searchStatusList(ReceiptSearchVO vo) throws Exception;
 	//public List<ReceivedStatusVO> searchStatusList(CriteriaVO cri) throws Exception;
+	
+	
+	public List<ReceiptVO> selectReceiptApp(List<ReceivedStatusVO> list) throws Exception;
+	
 	
 	//팝업 - COUNT
 	public int countReceivedStatusList(CriteriaVO vo) throws Exception;

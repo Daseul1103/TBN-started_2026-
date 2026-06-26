@@ -544,6 +544,10 @@
             			<p style="font-size:15px;"><span style="color: rgba(47, 46, 47, 0.77);">통신원 관리 ></span> 상세 정보</p>
             		</div>
             		<div class="button-group">
+            			<button class="btn btn-danger" onclick="rejectedInformer();"/>
+					        철회
+					    </button>
+					    
 					    <button class="btn btn-secondary" onclick="changeAct('N');">
 					        <img src="/images/notuseInformer.svg" class="btn-icon"/>
 					        해촉
@@ -1007,6 +1011,7 @@
             	<form id="informerEditFrm" name="informerEditFrm" method="post" enctype="multipart/form-data">
             		<input type="hidden" id="pageDiv" name="pageDiv" value="${pageDiv}"></input>
             		<input type="hidden" id="informerId" name="informerId" value="${informerInfo.informerId}"></input>
+            		<input type="hidden" id="applyId" name="applyId" value="${informerInfo.applyId}"></input>
 	            	<!-- 통신원 등록 - 기본정보 입력란 -->
 	            	<div style="background-color: white;width: 1030px;height: 560px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
 	            		<!-- 기본정보 타이틀 -->
@@ -1216,8 +1221,18 @@
 								    </td>	
 								    <th>회사 전화번호</th>
 								    <td>
-								    	<input type="text" id="phoneOffice" name="phoneOffice" style="" maxlength="13" value="${informerInfo.phoneOffice}" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
+								    	<input type="text" id="phoneOffice" name="phoneOffice" style="" maxlength="13" onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)'/>
 								    </td>							
+								</tr>
+								<tr>								
+								    <th>무선 HAM</th>								
+								    <td>
+								        <input type="text" id="hamNo" name="hamNo" value="${informerInfo.hamNo}"/>
+								    </td>
+								    <th>소속 운전자회</th>
+								    <td>
+								    	<input type="text" id="driverGroup" name="driverGroup"  maxlength="50" value="${informerInfo.driverGroup}"/>
+								    </td>								
 								</tr>
 								<tr>								
 								    <th>차량 번호</th>								
@@ -1228,7 +1243,7 @@
 								    <td>
 								    	<input type="text" id="carType" name="carType"  maxlength="15" value="${informerInfo.carType}"/>
 								    </td>								
-								</tr>					
+								</tr>				
 							</table>
 							
 							<table class="form-table">
@@ -1659,7 +1674,7 @@ function saveInformer(){
     queryString+=addStr;
    	console.log(queryString);
     var options = {
-            url:"/informer/saveInformer.do?"+queryString,
+            url:"/informer/uptAppInformer.do?"+queryString,
             type:"post",
             dataType: "json",
             data:queryString,
@@ -1669,17 +1684,8 @@ function saveInformer(){
                     alert("저장되었습니다.");
                     opener.search();
                     self.close();
-                } else {
-                	if(res.badFileType != null){
-                		alert("사진파일 첨부는 이미지 파일만 가능합니다.")
-                	} else if(typeof res.createFileError !== "undefined" && res.createFileError){
-                	    alert("사진파일 저장에 실패했습니다.");
-                	} else if(typeof res.msg !== "undefined" && res.msg != null){
-                		alert(res.msg);
-                	}else {
-                		alert("저장에 실패했습니다.");
-                	}
-                }
+                } 
+                
             } ,
             error: function(res,error){
                 alert("에러가 발생했습니다."+error);
@@ -1729,6 +1735,39 @@ function changeAct(flag){
     };
     $.ajax(options);
 }
+
+
+// APP 통신원 철회 - informer 테이블에는 삭제되고, informer_app 테이블에서는 
+function rejectedInformer() {
+	var applyIdVal = $('#applyId').val();
+
+	var rejectChk = confirm("철회하면 등록 시 입력한 정보가 삭제 됩니다. 정말 철회하시겠습니까?");
+	
+	if(rejectChk) {
+		$.ajax({
+			url : '/infrm/rejectApp.do',
+			data : { "applyId" : applyIdVal},
+			type : 'post',
+			success : function(data) {
+				if(data.cnt > 0){
+					alert("성공적으로 철회 처리 되었습니다.");
+					opener.search();
+	                self.close();	
+				} else {
+					alert("저장에 실패했습니다.");
+				}
+			
+			}, error : function() {
+				console.log("데이터 전송에 오류 발생");
+			}
+		});
+	} else {
+		return false;
+	}
+}
+
+
+
 
 /**
  * 통신원 삭제

@@ -5,9 +5,14 @@ import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,15 +24,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import kong.unirest.HttpRequest;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import kr.co.wizbrain.tbn.cid.TcpAndWebClient;
-import kr.co.wizbrain.tbn.notice.vo.NoticeVO;
 import kr.co.wizbrain.tbn.receipt.service.ReceiptService;
 import kr.co.wizbrain.tbn.receipt.vo.AreaCodeVO;
 import kr.co.wizbrain.tbn.receipt.vo.AreaSubCodeVO;
@@ -46,13 +49,6 @@ import kr.co.wizbrain.tbn.receipt.vo.popup.EditVO;
 import kr.co.wizbrain.tbn.receipt.vo.popup.ReceiptSearchVO;
 import kr.co.wizbrain.tbn.receipt.vo.popup.ReceivedStatusVO;
 import kr.co.wizbrain.tbn.user.vo.UserVO;
-
-import java.util.HashMap;
-import java.util.Map;
-import org.springframework.web.bind.annotation.RequestBody;
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
-
 
 @Controller
 public class ReceiptController {
@@ -527,6 +523,10 @@ public class ReceiptController {
 	}
 	
 	
+	
+	
+	
+	
 	@RequestMapping("/receipt/appToToday.do")
 	  public ModelAndView addDownload(Model model, HttpServletRequest request, @RequestParam(value="ids") List<String> ids) throws Exception {
 		  ModelAndView mv = new ModelAndView("jsonView");  
@@ -542,8 +542,28 @@ public class ReceiptController {
 			  alist.add(awvo);
 		  }
 		  
+		  // 26-06-24 : 본부 요청으로 앱 팝업 -> 금일 접수 이동 시 좌표 값 암호화
+		  // 1. insert할 정보들의 좌표 값 가져오기 (select)
+		  List<ReceiptVO> receiptList = receiptService.selectReceiptApp(alist);
+		  
+		  
+		  //2.암호화 작업 -> getter로 값 삽입 하기
+		  for(ReceiptVO vo : receiptList){
+
+			    String x = vo.getX_COORDINATE();
+			    String y = vo.getY_COORDINATE();
+
+			    if(x != null && !"".equals(x)){
+			        vo.setX_COORDINATE(encryptAES(x));
+			    }
+
+			    if(y != null && !"".equals(y)){
+			        vo.setY_COORDINATE(encryptAES(y));
+			    }
+			}
+		  
 		  // today에 등록 시키기
-		  receiptService.insertAppStatus(alist,nlVo);
+		  receiptService.insertAppStatus(receiptList, nlVo);
 		  
 		  // chk flag 업데이트 시키기 => Y
 		  receiptService.updateAppStatus(alist);
@@ -1126,4 +1146,40 @@ public class ReceiptController {
 	    return mv;
 	}*/
 	
+	
+	
+	private String encryptAES(String plainText) throws Exception {
+
+	    String secretKey = "1234567890123456";
+
+	    SecretKeySpec keySpec =
+	            new SecretKeySpec(secretKey.getBytes("UTF-8"), "AES");
+
+	    Cipher cipher = Cipher.getInstance("AES");
+
+	    cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+
+	    byte[] encrypted =
+	            cipher.doFinal(plainText.getBytes("UTF-8"));
+
+	    return Base64.getEncoder().encodeToString(encrypted);
+	}
+	
+	
+	private String decryptAES(String encryptedText) throws Exception {
+
+	    String secretKey = "1234567890123456";
+
+	    SecretKeySpec keySpec =
+	            new SecretKeySpec(secretKey.getBytes("UTF-8"), "AES");
+
+	    Cipher cipher = Cipher.getInstance("AES");
+
+	    cipher.init(Cipher.DECRYPT_MODE, keySpec);
+
+	    byte[] decoded =
+	            Base64.getDecoder().decode(encryptedText);
+
+	    return new String(cipher.doFinal(decoded), "UTF-8");
+	}
 }

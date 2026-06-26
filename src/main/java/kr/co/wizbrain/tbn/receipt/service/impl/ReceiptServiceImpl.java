@@ -165,6 +165,11 @@ public class ReceiptServiceImpl implements ReceiptService{
 	public List<ReceivedStatusVO> searchStatusList(ReceiptSearchVO vo) throws Exception {
 		return receiptMapper.searchStatusList(vo);
 	}
+	
+	@Override
+	public List<ReceiptVO> selectReceiptApp(List<ReceivedStatusVO> list) throws Exception {
+		return receiptMapper.selectReceiptApp(list);
+	}
 
 	@Override
 	public int countReceivedStatusList(CriteriaVO cri) throws Exception {
@@ -187,7 +192,7 @@ public class ReceiptServiceImpl implements ReceiptService{
 	}
 	
 	@Override
-	public void insertAppStatus(List<ReceivedStatusVO> list, UserVO nlVo) throws Exception {
+	public void insertAppStatus(List<ReceiptVO> list, UserVO nlVo) throws Exception {
 		receiptMapper.insertAppStatus(list, nlVo);
 	}
 	

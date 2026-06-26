@@ -57,6 +57,9 @@
 		<result property="flagAct" column="FLAG_ACT"/>
 		<result property="flagBest" column="FLAG_BEST"/>
 		<result property="areaName" column="AREA_NAME"/>
+		<result property="hamNo" column="HAM_NO"/>
+		<result property="driverGroup" column="DRIVER_GROUP"/>
+		<result property="applyId" column="APPLY_ID"/>
 	</resultMap>
 	
 	
@@ -117,9 +120,11 @@
 		<result property="addDetail" column="ADD_DETAIL"/>
 		<result property="applyId" column="APPLY_ID"/>
 		<result property="driverGroup" column="DRIVER_GROUP"/>
-		<result property="homeTel" column="HONE_TEL"/>
+		<result property="homeTel" column="HOME_TEL"/>
 		<result property="statusId" column="STATUS_ID"/>
 		<result property="statusName" column="STATUS_NAME"/>
+		<result property="hamNo" column="HAM_NO"/>
+		<result property="appFlag" column="APP_FLAG"/>
 	</resultMap>
 	
 	
@@ -606,7 +611,10 @@
 		    A.FLAG_BEST,
 		    A.BIRTHDAY_DIV,
 		    A.INFORMER_JOB,
-		    A.FLAG_BROAD
+		    A.FLAG_BROAD,
+		    A.HAM_NO,
+		    A.DRIVER_GROUP,
+		    A.APPLY_ID
 		FROM INFORMER A
 		LEFT JOIN CODE_AREACODE B
 		    ON A.AREA_CODE = B.AREA_CODE
@@ -624,6 +632,37 @@
 		    AND A.INFORMER_ID = #{informerId}
 		</if>
 	</select>
+	
+	
+	<select id="detailApplyIfrm" parameterType="infrmVO" resultMap="applyInformerMap">
+		SELECT 
+		A.ADDRESS,
+		A.ADD_DETAIL,
+		A.APPLY_DATE,
+		A.APPLY_ID,
+		A.AREA_CODE,
+		A.BIRTHDAY,
+		A.CAR_TYPE,
+		A.DRIVER_GROUP,
+		A.HAM_NO,
+		A.HOME_TEL,
+		A.INFORMER_NAME,
+		A.ORG_ID,
+		A.PHONE_CELL,
+		A.TRS_NO,
+		A.ZIPCODE,
+		B.AREA_NAME,
+		D.ORG_NAME
+		FROM INFORMER_APP A
+		LEFT JOIN CODE_AREACODE B
+		    ON A.AREA_CODE = B.AREA_CODE
+		LEFT JOIN ORGANIZATION D
+			ON A.ORG_ID = D.ORG_ID
+			AND A.AREA_CODE = D.AREA_CODE
+		WHERE 1=1
+		AND A.APPLY_ID = #{applyId}
+	</select>
+	
 	
 	<!-- 신규ID -->
 	<select id="getNewId" parameterType="infrmVo" resultType="java.lang.String">
@@ -742,6 +781,224 @@
 			,#{zipcode2}
              ) 
 	</insert>
+	
+	
+	
+	<insert id="saveInformerApp" parameterType="infrmVo">
+ 		INSERT INTO INFORMER
+              (
+				INFORMER_ID
+				,ACT_ID
+				,INFORMER_NAME
+				,ORG_ID
+				,PHONE_CELL
+				,ORG_SUB_ID
+				,PHONE_HOME
+				,PHONE_OFFICE
+				,INFORMER_TYPE
+				,INFORMER_JOB
+				,MEMO1
+				,MEMO
+				,ADDRESS
+				,ADDRESS_HOME
+				,ADDRESS_OFFICE
+				,BIRTHDAY
+				,CAR_NUM
+				,REG_DATE
+				,UPD_DATE
+				<if test='localFilePath !=null and localFilePath neq ""'>
+				,PHOTO_FILE
+				</if>
+				,CAR_TYPE
+				,TRS_NO
+				,HAM_NO
+				,LAST_SCHOOL
+				,AREA_CODE
+				,HONOR
+				,MEMO2
+				,IDENTIFI_DATE
+				,FLAG_SERVICE
+				<if test='startDate !=null and startDate neq ""'>
+				,START_DATE
+				</if>
+				<if test='stopDate !=null and stopDate neq ""'>
+				,STOP_DATE
+				</if>
+				<if test='flagBest !=null and flagBest neq ""'>
+				,FLAG_BEST
+				</if>
+				,BIRTHDAY_DIV
+				,FLAG_BROAD
+				,ZIPCODE
+				,ZIPCODE2
+				,DRIVER_GROUP
+				,FLAG_APP
+				,APPLY_ID
+             )
+        VALUES
+             (
+			#{informerId}
+			,#{actId}
+			,#{informerName}
+			,#{orgId}
+			,#{phoneCell}
+			,#{orgSubId}
+			,#{phoneHome}
+			,#{phoneOffice}
+			,#{informerType}
+			,#{informerJob}
+			,#{memo1}
+			,#{memo}
+			,#{address}
+			,#{addressHome}
+			,#{addressOffice}
+			,#{birthday}
+			,#{carNum}
+			,TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+			,TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+			<if test='localFilePath !=null and localFilePath neq ""'>
+			,#{localFilePath}
+			</if>
+			,#{carType}
+			,#{trsNo}
+			,#{hamNo}
+			,#{lastSchool}
+			,#{areaCode}
+			,#{honor}
+			,#{memo2}
+			,#{identifiDate}
+			,#{flagService}
+			<if test='startDate !=null and startDate neq ""'>
+			,#{startDate}
+			</if>
+			<if test='stopDate !=null and stopDate neq ""'>
+			,#{stopDate}
+			</if>
+			<if test='flagBest !=null and flagBest neq ""'>
+			,#{flagBest}
+			</if>
+			,#{birthdayDiv}
+			,#{flagBroad}
+			,#{zipcode}
+			,#{zipcode2}
+			,#{driverGroup}
+			,'Y'
+			,#{applyId}
+             ) 
+	</insert>
+	
+	
+	<update id="goCancle" parameterType="java.lang.String">
+		UPDATE INFORMER_APP
+		SET STATUS_ID = '2'
+		WHERE APPLY_ID = #{applyId}
+	</update>
+	
+	<update id="uptInformerApp" parameterType="infrmVo">
+		UPDATE INFORMER SET 
+		AREA_CODE = #{areaCode}
+		,ACT_ID = #{actId}
+		,INFORMER_NAME = #{informerName}
+		<if test='orgId!=null'>
+		,ORG_ID = #{orgId}   
+		<!-- 25-12-04 : 현재 최고통신원이 추가되면서 ORGANIZATION 테이블을 참조하여 ORG_NAME을 가져올 경우 AND 조건에 IND_TYPE을 추가해야 함 -->
+		,ORG_NAME = (SELECT ORG_NAME FROM ORGANIZATION WHERE ORG_ID = #{orgId} AND AREA_CODE = #{areaCode} AND IND_TYPE = #{informerType})
+		</if>
+		<if test='orgSubId != null'>
+		,ORG_SUB_ID = #{orgSubId}
+		</if>
+		,PHONE_CELL = #{phoneCell}
+		<if test='informerJob != null'>
+		,INFORMER_JOB = #{informerJob}
+		</if>
+		<if test='flagAct != null'>
+		,FLAG_ACT = #{flagAct}
+		</if>
+		<if test='phoneHome != null'>
+		,PHONE_HOME = #{phoneHome}
+		</if>
+		<if test='phoneOffice != null'>
+		,PHONE_OFFICE = #{phoneOffice}
+		</if>
+		<if test='flagBroad != null'>
+		,FLAG_BROAD = #{flagBroad}
+		</if>
+		,INFORMER_TYPE = #{informerType}
+		<if test='memo != null'>
+		,MEMO = #{memo}
+		</if>
+		<if test='memo1 != null'>
+		,MEMO1 = #{memo1}
+		</if>
+		<if test='zipcode != null'>
+		,ZIPCODE = #{zipcode}
+		</if>
+		<if test='address != null'>
+		,ADDRESS = #{address}
+		</if>
+		<if test='addressHome != null'>
+		,ADDRESS_HOME = #{addressHome}
+		</if>
+		<if test='zipcode2 != null'>
+		,ZIPCODE2 = #{zipcode2}
+		</if>
+		<if test='addressOffice != null'>
+		,ADDRESS_OFFICE = #{addressOffice}
+		</if>
+		<if test='birthday != null'>
+		,BIRTHDAY = #{birthday}
+		</if>
+		<if test='carNum != null'>
+		,CAR_NUM = #{carNum}
+		</if>
+		<if test='memo2 != null'>
+		,MEMO2 = #{memo2}
+		</if>
+		<if test='localFilePath != null'>
+		,PHOTO_FILE = #{localFilePath}
+		</if>
+		<if test='individualNameChina != null'>
+		,INDIVIDUAL_NAME_CHINA = #{individualNameChina}
+		</if>
+		<if test='carType != null'>
+		,CAR_TYPE = #{carType}
+		</if>
+		<if test='trsNo != null'>
+		,TRS_NO = #{trsNo}
+		</if>
+		<if test='lastSchool != null'>
+		,LAST_SCHOOL = #{lastSchool}
+		</if>
+		<if test='identifiDate != null'>
+		,IDENTIFI_DATE = #{identifiDate}
+		</if>
+		<if test='agree != null'>
+		,AGREE = #{agree}
+		</if>
+		<if test='birthdayDiv != null'>
+		,BIRTHDAY_DIV = #{birthdayDiv}
+		</if>
+		<if test='honor != null'>
+		,HONOR = #{honor}
+		</if>
+		<if test='flagService != null'>
+		,FLAG_SERVICE = #{flagService}
+		</if>
+		<if test="flagBest != null and flagBest != ''">
+		,FLAG_BEST = #{flagBest}
+		</if>	
+		<if test="driverGroup != null and driverGroup != ''">
+		,DRIVER_GROUP = #{driverGroup}
+		</if>		
+		<if test="hamNo != null and hamNo != ''">
+		,HAM_NO = #{hamNo}
+		</if>
+        ,STOP_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        ,UPD_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+         WHERE INFORMER_ID =  #{informerId}  
+
+	</update>
+	
 	<!-- 통신원 변경 저장 -->
     <update id="updateInformer" parameterType="infrmVo">
         UPDATE INFORMER SET 
@@ -845,6 +1102,17 @@
     <delete id="deleteInformer" parameterType="infrmVo">
          delete from INFORMER WHERE INFORMER_ID = #{informerId}
     </delete>
+    
+    
+    
+    <select id="chkDupInfrm" resultType="java.lang.Integer">
+    	SELECT COUNT(*) FROM INFORMER
+    	WHERE 1=1
+    	AND PHONE_CELL = #{phoneCell}
+    </select>
+    
+    
+    
 	<!-- 사용자 정보 수정 -->
 	<update id="saveInformerHist" parameterType="infrmVo">
         INSERT INTO INFORMER_HISTORY
@@ -877,6 +1145,15 @@
     <select id="getUpdateCode" parameterType="infrmVo" resultType="java.lang.String">
         SELECT IR_COMMENT AS updateComment FROM informer_record WHERE IR_CODE=#{updateCode}
     </select>
+    
+    
+    <update id="getAppUpdateCode" parameterType="infrmVo">
+    	update informer_app
+    	set status_id = '0'
+    	where apply_id = #{applyId}
+    </update>
+    
+    
 	
      <!-- 이력 정보 -->
      <resultMap type="infrmVO" id="getInformerHistory">
@@ -893,89 +1170,175 @@
     </select>
     
     <select id="findSlice" parameterType="map" resultMap="informerMap">
-<![CDATA[
-SELECT * FROM (
-  SELECT T.*, ROWNUM AS RN
-  FROM (
-    SELECT J2.*
-    	 , CASE 
-		        WHEN J2.FLAG_ACT_SUB = 'Y' THEN '위촉'
-		        ELSE '해촉'
-		    END AS FLAG_ACT
-         , NVL(D.ORG_NAME, '무소속') AS ORG_NAME
-    FROM (
-      SELECT J1.*
-           , C.TYPE_NAME AS INFORMER_TYPE_NAME
-      FROM (
-        SELECT A.INFORMER_ID
-             , NVL(A.ACT_ID,'정보없음') AS ACT_ID
-             , NVL(A.INFORMER_NAME,'정보없음') AS INFORMER_NAME
-             , A.AREA_CODE
-             , A.ORG_ID
-             , REPLACE(B.AREA_NAME,'교통방송','') AS AREA_NAME
-             , CASE WHEN A.PHONE_CELL IS NULL OR A.PHONE_CELL = ''
-                    THEN CASE WHEN A.PHONE_HOME IS NULL OR A.PHONE_HOME = ''
-                              THEN REGEXP_REPLACE(A.PHONE_OFFICE,'(02|.{3})(.+)(.{4})','\1-\2-\3')
-                              ELSE REGEXP_REPLACE(A.PHONE_HOME  ,'(02|.{3})(.+)(.{4})','\1-\2-\3') END
-                    ELSE REGEXP_REPLACE(A.PHONE_CELL ,'(02|.{3})(.+)(.{4})','\1-\2-\3')
-               END AS PHONE_CELL
-             , A.INFORMER_TYPE
-             , A.FLAG_ACT AS FLAG_ACT_SUB
-             , A.REG_DATE
-             , NVL(A.ADDRESS_HOME,'미입력') AS ADDRESS_HOME
-             , NVL(A.ZIPCODE,'정보없음') AS ZIPCODE
-             ,A.REG_DATE AS REG_ORDER
-        FROM INFORMER A
-        LEFT JOIN CODE_AREACODE B ON A.AREA_CODE = B.AREA_CODE
-      ) J1
-      LEFT JOIN CODE_INFORMER_TYPE C ON J1.INFORMER_TYPE = C.TYPE_ID
-    ) J2
-    LEFT JOIN ORGANIZATION D
-      ON J2.AREA_CODE = D.AREA_CODE
-     AND J2.ORG_ID    = D.ORG_ID
-     AND J2.INFORMER_TYPE = D.IND_TYPE
-    WHERE 1=1
-]]>
-    <if test="vo.informerId != null and vo.informerId != ''">
-      AND J2.INFORMER_ID = #{vo.informerId}
-    </if>
-    <if test="vo.areaCode != null and vo.areaCode != ''">
-      AND J2.AREA_CODE = #{vo.areaCode}
-    </if>
-    <if test="vo.informerType != null and vo.informerType != ''">
-      AND J2.INFORMER_TYPE = #{vo.informerType}
-    </if>
-    <if test="vo.orgId != null and vo.orgId != ''">
-      AND J2.ORG_ID = #{vo.orgId}
-    </if>
-    <if test="vo.flagAct != null and vo.flagAct != ''">
-      AND J2.FLAG_ACT_SUB = #{vo.flagAct}
-    </if>
-    <if test="vo.searchValue != null and vo.searchValue != ''">
-      <choose>
-        <when test="vo.searchType == 'actId'">
-          AND J2.ACT_ID LIKE '%' || #{vo.searchValue} || '%'
-        </when>
-        <when test="vo.searchType == 'informerName'">
-          AND J2.INFORMER_NAME LIKE '%' || #{vo.searchValue} || '%'
-        </when>
-        <otherwise>
-          AND J2.PHONE_CELL LIKE '%' || #{vo.searchValue} || '%'
-        </otherwise>
-      </choose>
-    </if>
-    <if test="vo.sDate != null and vo.eDate != null and vo.sDate != '' and vo.eDate != ''">
-      AND J2.REG_DATE BETWEEN #{vo.sDate} AND #{vo.eDate}findSlice
-    </if>
-<![CDATA[
-	ORDER BY ${orderBy} nulls last
-  ) T
-  WHERE ROWNUM < #{endRnum}
-)
-WHERE RN >= #{startRnum}
-]]>
-</select>
+	<![CDATA[
+	SELECT * FROM (
+	  SELECT T.*, ROWNUM AS RN
+	  FROM (
+	    SELECT J2.*
+	    	 , CASE 
+			        WHEN J2.FLAG_ACT_SUB = 'Y' THEN '위촉'
+			        ELSE '해촉'
+			    END AS FLAG_ACT
+	         , NVL(D.ORG_NAME, '무소속') AS ORG_NAME
+	    FROM (
+	      SELECT J1.*
+	           , C.TYPE_NAME AS INFORMER_TYPE_NAME
+	      FROM (
+	        SELECT A.INFORMER_ID
+	             , NVL(A.ACT_ID,'정보없음') AS ACT_ID
+	             , NVL(A.INFORMER_NAME,'정보없음') AS INFORMER_NAME
+	             , A.AREA_CODE
+	             , A.ORG_ID
+	             , REPLACE(B.AREA_NAME,'교통방송','') AS AREA_NAME
+	             , CASE WHEN A.PHONE_CELL IS NULL OR A.PHONE_CELL = ''
+	                    THEN CASE WHEN A.PHONE_HOME IS NULL OR A.PHONE_HOME = ''
+	                              THEN REGEXP_REPLACE(A.PHONE_OFFICE,'(02|.{3})(.+)(.{4})','\1-\2-\3')
+	                              ELSE REGEXP_REPLACE(A.PHONE_HOME  ,'(02|.{3})(.+)(.{4})','\1-\2-\3') END
+	                    ELSE REGEXP_REPLACE(A.PHONE_CELL ,'(02|.{3})(.+)(.{4})','\1-\2-\3')
+	               END AS PHONE_CELL
+	             , A.INFORMER_TYPE
+	             , A.FLAG_ACT AS FLAG_ACT_SUB
+	             , A.REG_DATE
+	             , NVL(A.ADDRESS_HOME,'미입력') AS ADDRESS_HOME
+	             , NVL(A.ZIPCODE,'정보없음') AS ZIPCODE
+	             ,A.REG_DATE AS REG_ORDER
+	        FROM INFORMER A
+	        LEFT JOIN CODE_AREACODE B ON A.AREA_CODE = B.AREA_CODE
+	      ) J1
+	      LEFT JOIN CODE_INFORMER_TYPE C ON J1.INFORMER_TYPE = C.TYPE_ID
+	    ) J2
+	    LEFT JOIN ORGANIZATION D
+	      ON J2.AREA_CODE = D.AREA_CODE
+	     AND J2.ORG_ID    = D.ORG_ID
+	     AND J2.INFORMER_TYPE = D.IND_TYPE
+	    WHERE 1=1
+	]]>
+	    <if test="vo.informerId != null and vo.informerId != ''">
+	      AND J2.INFORMER_ID = #{vo.informerId}
+	    </if>
+	    <if test="vo.areaCode != null and vo.areaCode != ''">
+	      AND J2.AREA_CODE = #{vo.areaCode}
+	    </if>
+	    <if test="vo.informerType != null and vo.informerType != ''">
+	      AND J2.INFORMER_TYPE = #{vo.informerType}
+	    </if>
+	    <if test="vo.orgId != null and vo.orgId != ''">
+	      AND J2.ORG_ID = #{vo.orgId}
+	    </if>
+	    <if test="vo.flagAct != null and vo.flagAct != ''">
+	      AND J2.FLAG_ACT_SUB = #{vo.flagAct}
+	    </if>
+	    <if test="vo.searchValue != null and vo.searchValue != ''">
+	      <choose>
+	        <when test="vo.searchType == 'actId'">
+	          AND J2.ACT_ID LIKE '%' || #{vo.searchValue} || '%'
+	        </when>
+	        <when test="vo.searchType == 'informerName'">
+	          AND J2.INFORMER_NAME LIKE '%' || #{vo.searchValue} || '%'
+	        </when>
+	        <otherwise>
+	          AND J2.PHONE_CELL LIKE '%' || #{vo.searchValue} || '%'
+	        </otherwise>
+	      </choose>
+	    </if>
+	    <if test="vo.sDate != null and vo.eDate != null and vo.sDate != '' and vo.eDate != ''">
+	      AND J2.REG_DATE BETWEEN #{vo.sDate} AND #{vo.eDate}
+	    </if>
+	<![CDATA[
+		ORDER BY ${orderBy} nulls last
+	  ) T
+	  WHERE ROWNUM < #{endRnum}
+	)
+	WHERE RN >= #{startRnum}
+	]]>
+	</select>
 
+
+
+<select id="findSliceAPP" parameterType="map" resultMap="applyInformerMap">
+	<![CDATA[
+	SELECT * FROM (
+	  SELECT T.*, ROWNUM AS RN
+	  FROM (
+	    SELECT J2.*
+	    	 , CASE 
+			        WHEN J2.FLAG_ACT_SUB = 'Y' THEN '위촉'
+			        ELSE '해촉'
+			    END AS FLAG_ACT
+	         , NVL(D.ORG_NAME, '무소속') AS ORG_NAME
+	    FROM (
+	      SELECT J1.*
+	           , C.TYPE_NAME AS INFORMER_TYPE_NAME
+	      FROM (
+	        SELECT A.INFORMER_ID
+	             , NVL(A.ACT_ID,'정보없음') AS ACT_ID
+	             , NVL(A.INFORMER_NAME,'정보없음') AS INFORMER_NAME
+	             , A.AREA_CODE
+	             , A.ORG_ID
+	             , REPLACE(B.AREA_NAME,'교통방송','') AS AREA_NAME
+	             , CASE WHEN A.PHONE_CELL IS NULL OR A.PHONE_CELL = ''
+	                    THEN CASE WHEN A.PHONE_HOME IS NULL OR A.PHONE_HOME = ''
+	                              THEN REGEXP_REPLACE(A.PHONE_OFFICE,'(02|.{3})(.+)(.{4})','\1-\2-\3')
+	                              ELSE REGEXP_REPLACE(A.PHONE_HOME  ,'(02|.{3})(.+)(.{4})','\1-\2-\3') END
+	                    ELSE REGEXP_REPLACE(A.PHONE_CELL ,'(02|.{3})(.+)(.{4})','\1-\2-\3')
+	               END AS PHONE_CELL
+	             , A.INFORMER_TYPE
+	             , A.FLAG_ACT AS FLAG_ACT_SUB
+	             , A.REG_DATE
+	             , NVL(A.ADDRESS_HOME,'미입력') AS ADDRESS_HOME
+	             , NVL(A.ZIPCODE,'정보없음') AS ZIPCODE
+	             ,A.REG_DATE AS REG_ORDER
+	        FROM INFORMER A
+	        LEFT JOIN CODE_AREACODE B ON A.AREA_CODE = B.AREA_CODE
+	        WHERE A.FLAG_APP = 'Y'
+	      ) J1
+	      LEFT JOIN CODE_INFORMER_TYPE C ON J1.INFORMER_TYPE = C.TYPE_ID
+	    ) J2
+	    LEFT JOIN ORGANIZATION D
+	      ON J2.AREA_CODE = D.AREA_CODE
+	     AND J2.ORG_ID    = D.ORG_ID
+	     AND J2.INFORMER_TYPE = D.IND_TYPE
+	    WHERE 1=1
+	]]>
+	    <if test="vo.informerId != null and vo.informerId != ''">
+	      AND J2.INFORMER_ID = #{vo.informerId}
+	    </if>
+	    <if test="vo.areaCode != null and vo.areaCode != ''">
+	      AND J2.AREA_CODE = #{vo.areaCode}
+	    </if>
+	    <if test="vo.informerType != null and vo.informerType != ''">
+	      AND J2.INFORMER_TYPE = #{vo.informerType}
+	    </if>
+	    <if test="vo.orgId != null and vo.orgId != ''">
+	      AND J2.ORG_ID = #{vo.orgId}
+	    </if>
+	    <if test="vo.flagAct != null and vo.flagAct != ''">
+	      AND J2.FLAG_ACT_SUB = #{vo.flagAct}
+	    </if>
+	    <if test="vo.searchValue != null and vo.searchValue != ''">
+	      <choose>
+	        <when test="vo.searchType == 'actId'">
+	          AND J2.ACT_ID LIKE '%' || #{vo.searchValue} || '%'
+	        </when>
+	        <when test="vo.searchType == 'informerName'">
+	          AND J2.INFORMER_NAME LIKE '%' || #{vo.searchValue} || '%'
+	        </when>
+	        <otherwise>
+	          AND J2.PHONE_CELL LIKE '%' || #{vo.searchValue} || '%'
+	        </otherwise>
+	      </choose>
+	    </if>
+	    <if test="vo.sDate != null and vo.eDate != null and vo.sDate != '' and vo.eDate != ''">
+	      AND J2.REG_DATE BETWEEN #{vo.sDate} AND #{vo.eDate}
+	    </if>
+	<![CDATA[
+		ORDER BY ${orderBy} nulls last
+	  ) T
+	  WHERE ROWNUM < #{endRnum}
+	)
+	WHERE RN >= #{startRnum}
+	]]>
+	</select>
 
 
 
@@ -1023,6 +1386,7 @@ WHERE RN >= #{startRnum}
 	           ON J3.STATUS_ID = E.STATUS_ID
 	
 	    WHERE 1 = 1
+	      AND J3.STATUS_ID IN ('1', '2', '3')
 	]]>
 	
 	    <if test="vo.areaCode != null and vo.areaCode != ''">
@@ -1056,7 +1420,7 @@ WHERE RN >= #{startRnum}
 	)
 	WHERE RN >= #{startRnum}
 	]]>
-</select>
+	</select>
 
 
 
@@ -1066,8 +1430,88 @@ WHERE RN >= #{startRnum}
 	    FROM INFORMER 
 	</select>
 
-
-
+	<select id="countFilteredAPP" parameterType="infrmVO" resultType="long">
+		<![CDATA[
+		SELECT count(*) FROM (
+		  SELECT T.*, ROWNUM AS RN
+		  FROM (
+		    SELECT J2.*
+		    , CASE 
+		        WHEN J2.FLAG_ACT_SUB = 'Y' THEN '위촉'
+		        ELSE '해촉'
+		    END AS FLAG_ACT
+		         , NVL(D.ORG_NAME, '무소속') AS ORG_NAME
+		    FROM (
+		      SELECT J1.*
+		           , C.TYPE_NAME AS INFORMER_TYPE_NAME
+		      FROM (
+		        SELECT A.INFORMER_ID
+		             , NVL(A.ACT_ID,'정보없음') AS ACT_ID
+		             , NVL(A.INFORMER_NAME,'정보없음') AS INFORMER_NAME
+		             , A.AREA_CODE
+		             , A.ORG_ID
+		             , REPLACE(B.AREA_NAME,'교통방송','') AS AREA_NAME
+		             , CASE WHEN A.PHONE_CELL IS NULL OR A.PHONE_CELL = ''
+		                    THEN CASE WHEN A.PHONE_HOME IS NULL OR A.PHONE_HOME = ''
+		                              THEN REGEXP_REPLACE(A.PHONE_OFFICE,'(02|.{3})(.+)(.{4})','\1-\2-\3')
+		                              ELSE REGEXP_REPLACE(A.PHONE_HOME  ,'(02|.{3})(.+)(.{4})','\1-\2-\3') END
+		                    ELSE REGEXP_REPLACE(A.PHONE_CELL ,'(02|.{3})(.+)(.{4})','\1-\2-\3')
+		               END AS PHONE_CELL
+		             , A.INFORMER_TYPE
+		             , A.FLAG_ACT AS FLAG_ACT_SUB
+		             , NVL(A.REG_DATE,'정보없음') AS REG_DATE
+		             , NVL(A.ADDRESS_HOME,'미입력') AS ADDRESS_HOME
+		             , NVL(A.ZIPCODE,'정보없음') AS ZIPCODE
+		             ,A.REG_DATE AS REG_ORDER
+		        FROM INFORMER A	
+		        LEFT JOIN CODE_AREACODE B ON A.AREA_CODE = B.AREA_CODE
+		        WHERE A.FLAG_APP = 'Y'
+		      ) J1
+		      LEFT JOIN CODE_INFORMER_TYPE C ON J1.INFORMER_TYPE = C.TYPE_ID
+		    ) J2
+		    LEFT JOIN ORGANIZATION D
+		      ON J2.AREA_CODE = D.AREA_CODE
+		     AND J2.ORG_ID    = D.ORG_ID
+		     AND J2.INFORMER_TYPE = D.IND_TYPE
+		    WHERE 1=1
+		]]>
+		    <if test="informerId != null and informerId != ''">
+		      AND J2.INFORMER_ID = #{informerId}
+		    </if>
+		    <if test="areaCode != null and areaCode != ''">
+		      AND J2.AREA_CODE = #{areaCode}
+		    </if>
+		    <if test="informerType != null and informerType != ''">
+		      AND J2.INFORMER_TYPE = #{informerType}
+		    </if>
+		    <if test="orgId != null and orgId != ''">
+		      AND J2.ORG_ID = #{orgId}
+		    </if>
+		    <if test="flagAct != null and flagAct != ''">
+		      AND J2.FLAG_ACT_SUB = #{flagAct}
+		    </if>
+		    <if test="searchValue != null and searchValue != ''">
+		      <choose>
+		        <when test="searchType == 'actId'">
+		          AND J2.ACT_ID LIKE '%' || #{searchValue} || '%'
+		        </when>
+		        <when test="searchType == 'informerName'">
+		          AND J2.INFORMER_NAME LIKE '%' || #{searchValue} || '%'
+		        </when>
+		        <otherwise>
+		          AND J2.PHONE_CELL LIKE '%' || #{searchValue} || '%'
+		        </otherwise>
+		      </choose>
+		    </if>
+		    <if test="sDate != null and eDate != null and sDate != '' and eDate != ''">
+		      AND J2.REG_DATE BETWEEN #{sDate} AND #{eDate}
+		    </if>
+		<![CDATA[
+		  ) T
+		)
+		]]>
+	</select>
+	
 	<!-- 일반 통신원 관리 전체 행수 조회 -->
 	<select id="countFiltered" parameterType="infrmVO" resultType="long">
 		<![CDATA[
@@ -1195,6 +1639,7 @@ WHERE RN >= #{startRnum}
 		           ON J3.STATUS_ID = E.STATUS_ID
 		
 		    WHERE 1 = 1
+		    AND J3.STATUS_ID IN ('1','2','3')
 		]]>
 		
 		    <if test="areaCode != null and areaCode != ''">
@@ -1225,5 +1670,24 @@ WHERE RN >= #{startRnum}
 		)
 		]]>
 		</select>
+		
+		
+		
+		
+		<!-- APP 통신원 철회 시 통신원 테이블에서 정보 삭제 -->
+		<delete id="deleteApp" >
+			DELETE FROM INFORMER
+			WHERE APPLY_ID = #{applyId}		
+		</delete>
+		
+		
+		<!-- APP 통신원 철회 시 APP 통신원 테이블에서 상태 코드 수정 -->
+		<update id="rejectApp" >
+			UPDATE INFORMER_APP
+			SET STATUS_ID = '3'
+			WHERE APPLY_ID = #{applyId}		
+		</update>
+		
+		
 	
 </mapper>

@@ -138,7 +138,7 @@ $(function () {
 window.dt = createDataTable('#informerTable', {
   order: [[8, 'desc']], // 화면 기본 정렬
   ajax: {
-    url: '/infrm/datatable.do',
+    url: '/infrm/appDatatable.do',
     type: 'POST',
     data: function (d) {
       // 정렬 파라미터 평면화(컨트롤러용)
@@ -450,7 +450,7 @@ function changePage(url){
         <!-- paging Box content -->
     </div>
     
-    <div>
+    <!-- <div>
 		<input type="hidden" value="0" id="showCtn">
 		<select id="addOptionSelect" style="display:none;">
 			<option value="none">-- 선택 --</option>
@@ -468,7 +468,7 @@ function changePage(url){
 			</button>
 			<div class="select-wrap">
 	
-			    <!-- 기본 -->
+			    기본
 			    <div class="section">
 			        <div class="section-title">기본</div>
 			        <div class="section-body scroll">
@@ -485,7 +485,7 @@ function changePage(url){
 			        </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 			    </div>
 			
-			    <!-- 추가사항 --> 
+			    추가사항 
 			    <div class="section">
 			        <div class="section-title">추가사항</div>
 			        <div class="section-body scroll2">
@@ -511,23 +511,23 @@ function changePage(url){
 			        </div>
 			    </div>
 			    <div class="buttonContainer" style="display:flex; justify-content: space-between;">
-			    	<!-- 전체 선택 버튼 -->
+			    	전체 선택 버튼
 			    	<div class="confirm-area">
 				        <button type="button" id="selectConfirmAllBtn">전체 선택</button>
 				    </div>
-			    	<!-- 전체 해제 버튼 -->
+			    	전체 해제 버튼
 			    	<div class="confirm-area">
 				        <button type="button" id="unChkConfirmAllBtn">전체 해제</button>
 				    </div>
 				    
-			        <!-- 확인 버튼 -->
+			        확인 버튼
 				    <div class="confirm-area">
 				        <button type="button" id="selectConfirmBtn">확인</button>
 				    </div>
 			    </div>
 			</div>
 		</div>
-	</div>
+	</div> -->
     <!--style="margin-right:15px;margin-top: 50px;"  -->
     <div class="btnBox" align="right" >
         
@@ -654,7 +654,7 @@ function editInformer(str){
     }
     console.log("변수 :" + param);
     
-    var url = "/informer/editInformer.do" + param;
+    var url = "/informer/editAppInformer.do" + param;
     var windowName = "통신원등록";
     var left = Math.ceil((window.screen.width - popupW)/2);
     var top = Math.ceil((window.screen.height - popupH)/2);

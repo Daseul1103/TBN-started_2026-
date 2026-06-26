@@ -224,7 +224,7 @@ $(function () {
 
         if (row) {
             console.log(row.applyId);
-            // editApply(row.applyId);
+            editApply(row.applyId);
         }
     });
   
@@ -651,7 +651,7 @@ $(document).ready(function(){
 /**
  * 통신원 수정 팝업
  */
-function editInformer(str){
+function editApply(str){
     var param = "";
     var popupW = 1100;  // 팝업 넓이
     var popupH = 900;  // 팝업 높이
@@ -663,8 +663,8 @@ function editInformer(str){
     }
     console.log("변수 :" + param);
     
-    var url = "/informer/editInformer.do" + param;
-    var windowName = "통신원등록";
+    var url = "/informer/editApply.do" + param;
+    var windowName = "APP 통신원등록";
     var left = Math.ceil((window.screen.width - popupW)/2);
     var top = Math.ceil((window.screen.height - popupH)/2);
     popObj = window.open(url, windowName, 'width=' + popupW +  ', height=' + popupH +  ', left=' + left +  ', top=' + top + ', toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no');

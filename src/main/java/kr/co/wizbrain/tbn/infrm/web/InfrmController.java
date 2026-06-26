@@ -269,82 +269,145 @@ public class InfrmController implements ApplicationContextAware {
 	
 	
 	// app 가입신청 현황 조회
-	@PostMapping("/infrm/applyAppDatatable.do")
-	public ModelAndView listForApplyAppDatatable(
+		@PostMapping("/infrm/applyAppDatatable.do")
+		public ModelAndView listForApplyAppDatatable(
+		        @ModelAttribute("ifmVO") InfrmVO vo,
+		        @RequestParam(required = false) String sortName,
+		        @RequestParam(required = false) String sortDir,
+		        HttpServletRequest request
+		) {
+
+		    ModelAndView mav = new ModelAndView("jsonView");
+
+		    // DataTables 페이징
+		    int start = vo.getStart() != null ? vo.getStart() : 0;
+		    int length = vo.getLength() != null ? vo.getLength() : 100;
+
+		    int startR = start + 1;
+		    int endR = start + length;
+
+		    // 로그인 사용자 정보
+		    UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+
+		    // 최초 진입 시 사용자 지역코드 자동 설정
+		    if (vo.getSearchValue() == null || "".equals(vo.getSearchValue())) {
+		        vo.setAreaCode(nlVo.getRegionId());
+		    }
+
+		    // 허용 정렬 컬럼 (화이트리스트)
+		    Set<String> WL = new HashSet<>(Arrays.asList(
+		            "AREA_NAME",
+		            "ORG_NAME",
+		            "INFORMER_NAME",
+		            "PHONE_CELL",
+		            "STATUS_NAME",
+		            "APPLY_DATE"
+		    ));
+
+		    String orderBy;
+
+		    // 기본 정렬
+		    if (sortName == null || sortName.trim().isEmpty()
+		            || sortDir == null || sortDir.trim().isEmpty()) {
+
+		        orderBy = "APPLY_DATE DESC";
+		    }
+		    // 허용되지 않은 컬럼 차단
+		    else if (!WL.contains(sortName.toUpperCase())) {
+
+		        orderBy = "APPLY_DATE DESC";
+		    }
+		    // 정상 정렬
+		    else {
+
+		        String dir = "DESC";
+
+		        if ("asc".equalsIgnoreCase(sortDir)) {
+		            dir = "ASC";
+		        }
+
+		        orderBy = sortName + " " + dir;
+		    }
+
+		    // 디버깅 로그
+		    System.out.println("=================================");
+		    System.out.println("sortName : " + sortName);
+		    System.out.println("sortDir  : " + sortDir);
+		    System.out.println("orderBy  : " + orderBy);
+		    System.out.println("=================================");
+
+		    long filtered = infrmService.applyAppCountFiltered(vo);
+
+		    List<InfrmVO> rows = infrmService.applyAppfindSlice(vo, startR, endR, orderBy);
+
+		    mav.addObject("draw", vo.getDraw());
+		    mav.addObject("recordsTotal", filtered);
+		    mav.addObject("recordsFiltered", filtered);
+		    mav.addObject("data", rows);
+
+		    return mav;
+		}
+	
+	
+	
+	
+	
+	@PostMapping("/infrm/appDatatable.do")
+	public ModelAndView listForAppDatatable(
 	        @ModelAttribute("ifmVO") InfrmVO vo,
 	        @RequestParam(required = false) String sortName,
 	        @RequestParam(required = false) String sortDir,
 	        HttpServletRequest request
 	) {
 
-	    ModelAndView mav = new ModelAndView("jsonView");
+		ModelAndView mav = new ModelAndView("jsonView");
 
-	    // DataTables 페이징
-	    int start = vo.getStart() != null ? vo.getStart() : 0;
+	    int start  = vo.getStart()  != null ? vo.getStart()  : 0;
 	    int length = vo.getLength() != null ? vo.getLength() : 100;
-
 	    int startR = start + 1;
-	    int endR = start + length;
+	    int endR   = start + length;
 
-	    // 로그인 사용자 정보
-	    UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
-
-	    // 최초 진입 시 사용자 지역코드 자동 설정
-	    if (vo.getSearchValue() == null || "".equals(vo.getSearchValue())) {
-	        vo.setAreaCode(nlVo.getRegionId());
-	    }
-
-	    // 허용 정렬 컬럼 (화이트리스트)
+	    // 화이트리스트 (화면별 허용 컬럼만)
 	    Set<String> WL = new HashSet<>(Arrays.asList(
-	            "AREA_NAME",
-	            "ORG_NAME",
-	            "INFORMER_NAME",
-	            "PHONE_CELL",
-	            "STATUS_NAME",
-	            "APPLY_DATE"
+	        "INFORMER_ID","AREA_NAME","INFORMER_TYPE_NAME","ORG_NAME",
+	        "INFORMER_NAME","PHONE_CELL","ZIPCODE","FLAG_ACT","REG_ORDER"
 	    ));
-
-	    String orderBy;
-
-	    // 기본 정렬
-	    if (sortName == null || sortName.trim().isEmpty()
-	            || sortDir == null || sortDir.trim().isEmpty()) {
-
-	        orderBy = "APPLY_DATE DESC";
+	    // 현재 세션에 대해 로그인한 사용자 정보를 가져옴
+		UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+	    // 첫 진입이라면
+		if(vo.getSearchValue() == null) {
+			// 모든 사용자 지역 코드 삽입
+			vo.setAreaCode(nlVo.getRegionId());
+		} 
+	    
+	    // 재사용 헬퍼: BaseVO에서 안전한 ORDER BY 생성
+	    String orderBy ="";
+	    
+	    /*26-04-27 : 테이블에서 통신원 ID 정렬 안됨에 따라 일부 수정 전 코드*/
+/*	    if(sortName.equals("")||sortDir.equals("")) {
+	    	orderBy="REG_ORDER DESC";
+	    } else {
+	    	orderBy=sortName+" "+sortDir;
+	    }*/
+	    
+	    /*26-04-27 : 테이블에서 통신원 ID 정렬 안됨에 따라 일부 수정한 코드*/
+	    if (sortName == null || sortName.equals("") || sortDir == null || sortDir.equals("")) {
+	        orderBy = "REG_ORDER DESC";
+	    } else if ("ACT_ID".equals(sortName)) {
+	        orderBy = "CASE WHEN REGEXP_LIKE(ACT_ID, '^[0-9]+$') THEN TO_NUMBER(ACT_ID) END " 
+	                  + sortDir;
+	    } else {
+	        orderBy = sortName + " " + sortDir;
 	    }
-	    // 허용되지 않은 컬럼 차단
-	    else if (!WL.contains(sortName.toUpperCase())) {
 
-	        orderBy = "APPLY_DATE DESC";
-	    }
-	    // 정상 정렬
-	    else {
-
-	        String dir = "DESC";
-
-	        if ("asc".equalsIgnoreCase(sortDir)) {
-	            dir = "ASC";
-	        }
-
-	        orderBy = sortName + " " + dir;
-	    }
-
-	    // 디버깅 로그
-	    System.out.println("=================================");
-	    System.out.println("sortName : " + sortName);
-	    System.out.println("sortDir  : " + sortDir);
-	    System.out.println("orderBy  : " + orderBy);
-	    System.out.println("=================================");
-
-	    long filtered = infrmService.applyAppCountFiltered(vo);
-
-	    List<InfrmVO> rows = infrmService.applyAppfindSlice(vo, startR, endR, orderBy);
+	    //long total    = infrmService.countAll(vo);
+	    long filtered = infrmService.countFilteredAPP(vo); // WHERE만 동일, 페이징 X
+	    List<InfrmVO> rows = infrmService.findSliceAPP(vo, startR, endR, orderBy);
 
 	    mav.addObject("draw", vo.getDraw());
 	    mav.addObject("recordsTotal", filtered);
 	    mav.addObject("recordsFiltered", filtered);
 	    mav.addObject("data", rows);
-
 	    return mav;
 	}
 	
@@ -515,6 +578,151 @@ public class InfrmController implements ApplicationContextAware {
 		
 		return mv;
 	}
+	
+	
+	
+	@RequestMapping("/informer/editAppInformer.do")
+	public ModelAndView editAppUser(HttpServletRequest request, @ModelAttribute("ifmVO") InfrmVO ifmVO, RedirectAttributes redirectAttributes) throws Exception {
+
+		ModelAndView mv = new ModelAndView();
+		
+		InfrmVO thvo = new InfrmVO();
+		UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+		OptInftVo iTypeVo = new OptInftVo();
+		OptAreaVo areaVo = new OptAreaVo();
+		
+		List<OptAreaVo> aList = new ArrayList<>();//소속방송국
+		List<OptInftVo> t1List = new ArrayList<>();//통신원유형
+		List<OptInftVo> t2List = new ArrayList<OptInftVo>();//기관
+		List<OptInftVo> t3List = new ArrayList<OptInftVo>();//세부기관
+		
+
+		aList=areaOptService.selectAreaOpt1(areaVo);
+		//통신원유형
+		t1List = infrmOptService.selectInft1(new OptInftVo());
+
+		mv.setViewName("/informer/informerAppNew");
+			
+		mv.addObject("pageDiv", "update");
+		thvo.setInformerId(request.getParameter("pr1"));
+		
+		thvo=infrmService.detailInformer(thvo);
+			
+		areaVo.setAreaCode(nlVo.getRegionId());
+		thvo.setAreaCode(nlVo.getRegionId());
+		iTypeVo.setAreaCode(thvo.getAreaCode());
+			
+		iTypeVo.setIfmId1(thvo.getInformerType());
+		t2List=infrmOptService.selectInft2(iTypeVo);//기관
+		if(thvo.getOrgId()==null||thvo.getOrgId().equals("")) {//통신원 소속기관이 무소속일 경우
+			if(t2List.size()!=0) {//무소속인데 기관목록은 존재할 경우
+				iTypeVo.setIfmId2(t2List.get(0).getIfmId2());
+			}else{//해당 통신원종류 하위기관 미존재시
+					
+			}
+		}else {//기관이 무소속이 아닐경우
+			iTypeVo.setIfmId2(thvo.getOrgId());
+		}
+		t3List=infrmOptService.selectInft3(iTypeVo);//세부기관
+		
+		mv.addObject("informerInfo", thvo);//통신원정보
+		mv.addObject("informerAreaList", aList);//소속방송국
+		mv.addObject("informerTypeList",t1List);//통신원유형
+		mv.addObject("informerOrgList",t2List);//기관
+		mv.addObject("informerOrgSubList",t3List);//세부기관
+		
+		return mv;
+	}
+	
+	
+	
+	// 26-06-19 : APP 통신원 가입신청 현황 -> 통신원 등록 팝업 띄우기
+	@RequestMapping("/informer/editApply.do")
+	public ModelAndView editApplyUser(HttpServletRequest request, @ModelAttribute("ifmVO") InfrmVO ifmVO, RedirectAttributes redirectAttributes) throws Exception {
+		/*ModelAndView mv = new ModelAndView("/informer/informerNew");*/
+		ModelAndView mv = new ModelAndView();
+		
+		InfrmVO thvo = new InfrmVO();
+		UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+		OptInftVo iTypeVo = new OptInftVo();
+		OptAreaVo areaVo = new OptAreaVo();
+		
+		List<OptAreaVo> aList = new ArrayList<>();//소속방송국
+		List<OptInftVo> t1List = new ArrayList<>();//통신원유형
+		List<OptInftVo> t2List = new ArrayList<OptInftVo>();//기관
+		List<OptInftVo> t3List = new ArrayList<OptInftVo>();//세부기관
+
+		aList=areaOptService.selectAreaOpt1(areaVo);
+		//통신원유형
+		t1List = infrmOptService.selectInft1(new OptInftVo());
+
+			mv.setViewName("/informer/appIfrmApply");
+			
+			mv.addObject("pageDiv", "new");
+			
+			thvo.setApplyId(request.getParameter("pr1"));
+			thvo=infrmService.detailApplyIfrm(thvo);
+			
+			
+			/*26-04-13 : 현재 로그인 된 사용자의 소속에 따라 소속 기관, 소속기관(세부) 드롭박스 오류 해결*/
+			iTypeVo.setAreaCode(nlVo.getRegionId());
+			areaVo.setAreaCode(nlVo.getRegionId());
+/*			thvo.setAreaCode(nlVo.getRegionId());*/
+			
+			iTypeVo.setIfmId1(t1List.get(0).getIfmId1());
+			t2List=infrmOptService.selectInft2(iTypeVo);//기관
+			
+			if(t2List.size()!=0) {
+				iTypeVo.setIfmId2(t2List.get(0).getIfmId2());
+			}
+			t3List=infrmOptService.selectInft3(iTypeVo);//세부기관
+
+			
+			/*26-04-16 : 본부 요청으로 진입 시 자동으로 id 생성*/
+			thvo.setActId(infrmService.creActId(thvo));
+			
+			
+		mv.addObject("informerInfo", thvo);//통신원정보
+		mv.addObject("informerAreaList", aList);//소속방송국
+		mv.addObject("informerTypeList",t1List);//통신원유형
+		mv.addObject("informerOrgList",t2List);//기관
+		mv.addObject("informerOrgSubList",t3List);//세부기관
+
+		return mv;
+	}
+	
+	
+	@RequestMapping(value="/infrm/chkDupInfrm.do")
+	public ModelAndView chkDupInfrm(@RequestParam("phoneCell")String phoneCell) throws Exception {
+		int dupChk = infrmService.chkDupInfrm(phoneCell);
+		
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+		boolean dupChkVal;
+		// 중복 있음
+		if(dupChk >= 1) {
+			dupChkVal = false;
+		} else {
+			dupChkVal = true;
+		}
+		
+		mav.addObject("dupChkVal",dupChkVal);
+		return mav;
+	}
+	
+		
+		
+		
+
+	@RequestMapping(value="/infrm/goCancle.do")
+	public ModelAndView goCancle(@RequestParam("applyId")String applyId) throws Exception {
+		infrmService.goCancle(applyId);
+		
+		ModelAndView mav = new ModelAndView("jsonView");
+		return mav;
+	}
+	
+	
 	//등록에서 지역코드,통신원타입 클릭 시
 	@RequestMapping("/informer/reSel.do")
 	public ModelAndView reSel
@@ -662,6 +870,92 @@ public class InfrmController implements ApplicationContextAware {
 	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
 	    }
 	}
+	
+
+	@RequestMapping(value="/infrm/rejectApp.do", method=RequestMethod.POST)
+	public @ResponseBody ModelAndView rejectApp(HttpServletRequest req, HttpServletResponse res
+			,@RequestParam("applyId")String applyId) throws Exception {
+		try {
+
+			ModelAndView mv = new ModelAndView("jsonView");
+
+			int cnt = infrmService.deleteApp(applyId); // 통신원 테이블에서 해당 통신원 정보 삭제(delete)
+			int cnt2 = infrmService.rejectApp(applyId); // informer_app에서 상태 코드 변경(update)
+			
+			if(cnt >= 1 && cnt2 >=1) {
+				cnt = 1;
+			} else {
+				cnt = 0;
+			}
+			
+			mv.addObject("cnt", cnt);
+
+			return mv;
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
+	        logger.error(e.toString(),e);  
+	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+	    }
+	}	
+		
+	@RequestMapping(value="/informer/uptAppInformer.do", method=RequestMethod.POST)
+	public @ResponseBody ModelAndView uptAppInformer(HttpServletRequest req, HttpServletResponse res
+			,@RequestParam(required=false, value="histCode") String histCode
+			,@RequestParam(required=false, value="fileChg") String fileChg
+			,@RequestParam(required=false, value="createFileError") String createFileError
+			,@RequestParam(value="file", required=false) MultipartFile imgFile
+			,@ModelAttribute("ifmVO") InfrmVO ifmVO) throws Exception {
+		try {
+
+			ModelAndView mv = new ModelAndView("jsonView");
+
+			int cnt = infrmService.uptInformerApp(ifmVO);
+
+			mv.addObject("cnt", cnt);
+
+			return mv;
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
+	        logger.error(e.toString(),e);  
+	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+	    }
+	}
+	
+	// 26-06-22 : APP 통신원  등록
+	@RequestMapping(value="/informer/saveInformerApp.do", method=RequestMethod.POST)
+	public @ResponseBody ModelAndView saveAppInformer(HttpServletRequest req, HttpServletResponse res
+			,@RequestParam(required=false, value="histCode") String histCode
+			,@RequestParam(required=false, value="fileChg") String fileChg
+			,@RequestParam(required=false, value="createFileError") String createFileError
+			,@RequestParam(value="file", required=false) MultipartFile imgFile
+			,@ModelAttribute("ifmVO") InfrmVO ifmVO) throws Exception {
+		try {
+
+			ModelAndView mv = new ModelAndView("jsonView");
+			
+			ifmVO.setInformerId(infrmService.getNewId(ifmVO));
+			int cnt = infrmService.saveInformerApp(ifmVO);
+			
+			infrmService.getAppUpdateCode(ifmVO);
+			
+			mv.addObject("cnt", cnt);
+
+			return mv;
+		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
+	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)
+	        // 로그 레벨 ERROR로 예외의 문자열만 기록 
+	        logger.error(e.toString(),e);  
+	        throw e; // 잡은 예외를 다시 던져서(재전파) 상위(Spring 예외처리기 등)에서 처리하게 함
+	    }
+	}
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 통신원 활동여부(해촉, 위촉)

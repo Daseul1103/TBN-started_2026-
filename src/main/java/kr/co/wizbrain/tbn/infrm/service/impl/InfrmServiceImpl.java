@@ -82,7 +82,45 @@ public class InfrmServiceImpl implements InfrmService{
 		
 		return cnt;
 	}
+	
+	
+	@Override
+	public int saveInformerApp(InfrmVO paramVO) {
+		int cnt = 0;
+		cnt = infrmMapper.saveInformerApp(paramVO);
+		
+		return cnt;
+	}
+	
+	
+	@Override
+	public int uptInformerApp(InfrmVO paramVO) {
+		int cnt = 0;
+		cnt = infrmMapper.uptInformerApp(paramVO);
+		
+		return cnt;
+	}
 
+	@Override
+	public int deleteApp(String applyId) {
+		int cnt = 0;
+		cnt = infrmMapper.deleteApp(applyId);
+		
+		return cnt;
+	}
+	
+
+	@Override
+	public int rejectApp(String applyId) {
+		int cnt = 0;
+		cnt = infrmMapper.rejectApp(applyId);
+		
+		return cnt;
+	}
+	
+	
+	
+	
 	@Override
 	public void saveInformerHist(InfrmVO paramVO) {
 		infrmMapper.saveInformerHist(paramVO);
@@ -94,8 +132,23 @@ public class InfrmServiceImpl implements InfrmService{
 	}
 
 	@Override
+	public void getAppUpdateCode(InfrmVO paramVO) {
+		infrmMapper.getAppUpdateCode(paramVO);
+	}
+	
+	@Override
 	public int deleteInformer(InfrmVO paramVO) {
 		return infrmMapper.deleteInformer(paramVO);
+	}
+	
+	@Override
+	public int chkDupInfrm(String phoneCell) throws Exception {
+		return infrmMapper.chkDupInfrm(phoneCell);
+	}
+	
+	@Override
+	public void goCancle (String applyId) throws Exception {
+		infrmMapper.goCancle(applyId);
 	}
 
 	@Override
@@ -118,6 +171,12 @@ public class InfrmServiceImpl implements InfrmService{
 	@Override
 	public InfrmVO detailInformer(InfrmVO thvo) {
 		return infrmMapper.detailInformer(thvo);
+	}
+
+	
+	@Override
+	public InfrmVO detailApplyIfrm(InfrmVO thvo) {
+		return infrmMapper.detailApplyIfrm(thvo);
 	}
 
 	@Override
@@ -145,6 +204,18 @@ public class InfrmServiceImpl implements InfrmService{
 		return infrmMapper.countFiltered(thvo);
 	}
 
+	@Override
+	public long countFilteredAPP(InfrmVO thvo){
+		return infrmMapper.countFilteredAPP(thvo);
+	}
+	
+	
+	@Override
+	public List<InfrmVO> findSliceAPP(InfrmVO thvo, int startRnum, int endRnum, String orderby) {
+		return infrmMapper.findSliceAPP(thvo,startRnum,endRnum,orderby);
+	}
+	
+	
 	@Override
 	public long applyAppCountFiltered(InfrmVO thvo){
 		return infrmMapper.applyAppCountFiltered(thvo);

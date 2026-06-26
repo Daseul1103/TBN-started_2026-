@@ -43,12 +43,21 @@ public interface InfrmMapper{
 	public int saveInformer(InfrmVO paramVO);
 	
 	public int updateInformer(InfrmVO paramVO);
+	
+	public int saveInformerApp(InfrmVO paramVO);
+	
+	public int uptInformerApp(InfrmVO paramVO);
+	
+	public int deleteApp(String applyId);
+	public int rejectApp(String applyId );
 
 	public void updateActId(InfrmVO paramVO);
 
 	public void saveInformerHist(InfrmVO paramVO);
 
 	public String getUpdateCode(InfrmVO paramVO);
+	
+	public void getAppUpdateCode(InfrmVO paramVO);
 
 	public int deleteInformer(InfrmVO paramVO);
 
@@ -57,6 +66,8 @@ public interface InfrmMapper{
 	public List<InfrmVO> getInformerHistoryList(InfrmVO ifmVO);
 
 	public InfrmVO detailInformer(InfrmVO thvo);
+	
+	public InfrmVO detailApplyIfrm(InfrmVO thvo);
 
 	// 24-11-21 : 통신원 월별 제보건수
 	public List<InfrmVO> monthReport(@Param("selectYear1") String selectYear1,@Param("selectYear2") String selectYear2,@Param("informerId") String informerId);
@@ -64,6 +75,10 @@ public interface InfrmMapper{
 	public long countAll(InfrmVO thvo);
 
 	public long countFiltered (InfrmVO vo);
+	
+	public long countFilteredAPP(InfrmVO thvo);
+	
+	public List<InfrmVO> findSliceAPP(@Param("vo") InfrmVO vo, @Param("startRnum") int startRnum, @Param("endRnum") int endRnum, @Param("orderBy") String orderBy); 
 	
 	public long applyAppCountFiltered(InfrmVO thvo);
 
@@ -73,5 +88,10 @@ public interface InfrmMapper{
 	
 	public List<InfrmVO> applyAppfindSlice
 	(@Param("vo") InfrmVO vo, @Param("startRnum") int startRnum, @Param("endRnum") int endRnum, @Param("orderBy") String orderBy);
+	
+	// 26-06-22 : APP 통신원 가입 현황 > 통신원 등록 > 통신원 중복 등록 검사
+	public int chkDupInfrm(String phoneCell) throws Exception;
+	
+	public void goCancle (String applyId) throws Exception;
 	
 }

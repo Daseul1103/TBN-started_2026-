@@ -102,8 +102,7 @@
 	            select t1.*, 
 	                   t2.org_name as org_name 
 	            from (
-	                select informer_id, act_id, informer_name, area_code, org_id, 
-	                       REGEXP_REPLACE(phone_cell, '(02|.{3})(.+)(.{4})', '\1-\2-\3') as PHONE_CELL
+	                select informer_id, act_id, informer_name, area_code, org_id, PHONE_CELL
 	                from informer 
 	                WHERE area_code=#{AREA_CODE}
 	            ) t1 
@@ -181,7 +180,7 @@
 	        C.INFORMER_NAME, 
 	        DECODE(B.AW_TYPE, '0', '교통제보우수자', '1', '주요정보제공우수자', '2', '실적증가자') AS AW_TYPE, 
 	        B.AW_NAME, 
-	        REGEXP_REPLACE(C.PHONE_CELL, '(02|.{3})(.+)(.{4})', '\1-\2-\3') as PHONE_CELL, 
+	        C.PHONE_CELL, 
 	        TO_CHAR(TO_DATE(B.REG_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS REG_DATE, 
 	        B.RPT_GRADE, 
 	        B.MAIN_GRADE, 
@@ -313,7 +312,7 @@
 	                    informer_name,
 	                    area_code,
 	                    org_id,
-	                    REGEXP_REPLACE(phone_cell, '(02|.{3})(.+)(.{4})', '\1-\2-\3') as PHONE_CELL 
+	                    PHONE_CELL 
 	                from informer 
 	                WHERE area_code = #{AREA_CODE}
 	            ) t1 
@@ -340,7 +339,7 @@
 	        C.INFORMER_NAME, 
 	        DECODE(B.AW_TYPE, '0', '교통제보우수자', '1', '주요정보제공우수자', '2', '실적증가자') AS AW_TYPE, 
 	        B.AW_NAME, 
-	        REGEXP_REPLACE(C.PHONE_CELL, '(02|.{3})(.+)(.{4})', '\1-\2-\3') as PHONE_CELL, 
+	        C.PHONE_CELL,
 	        TO_CHAR(TO_DATE(B.REG_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS REG_DATE, 
 	        B.RPT_GRADE, 
 	        B.MAIN_GRADE, 

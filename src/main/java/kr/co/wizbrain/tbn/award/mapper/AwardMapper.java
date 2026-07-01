@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import egovframework.rte.psl.dataaccess.mapper.Mapper;
 import kr.co.wizbrain.tbn.award.vo.AwardVO;
+import kr.co.wizbrain.tbn.comm.RecordDto;
 
 @Mapper("awardMapper")
 public interface AwardMapper{
@@ -30,8 +31,8 @@ public interface AwardMapper{
 
 	List<AwardVO> getAwardList(AwardVO awvo);
 
-	List getAwardInformerList2(AwardVO paramVO);
+	List<RecordDto> getAwardInformerList2(AwardVO paramVO);
 
-	List selectUserAwardList2(AwardVO paramVO);
+	List<RecordDto> selectUserAwardList2(AwardVO paramVO);
 	
 }

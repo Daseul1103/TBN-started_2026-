@@ -67,6 +67,12 @@ public interface InfrmMapper{
 
 	public InfrmVO detailInformer(InfrmVO thvo);
 	
+	public int encryptAllInformer();
+	
+	public List<InfrmVO> selectAllInformer();
+	
+	public int updateEncryptInformer(InfrmVO vo);
+	
 	public InfrmVO detailApplyIfrm(InfrmVO thvo);
 
 	// 24-11-21 : 통신원 월별 제보건수

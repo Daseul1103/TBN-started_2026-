@@ -191,11 +191,11 @@ public class MileageController extends BaseController{
 	}
 
 	
-	// 5. 굿 제보 통신원 선정 
+	// 5. 굿 제보 마일리지> 굿 제보 통신원 선정 
 	@RequestMapping(value="/mileage/excellenceIfrmMainsearch.do") 
 	public ModelAndView excelleneceSearch (@ModelAttribute("MileageVO") MileageVO MileageVO, Model model,
 			HttpServletRequest request) throws Exception {
-		logger.debug("▶▶ 우수 통신원 조회로 이동");
+		logger.debug("▶▶ 굿 제보 통신원 선정으로 이동");
 		ModelAndView mav = new ModelAndView("/mileage/excellenceIfrmList");// ModelAndView 객체 생성
 		
 		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0]; // 이동할 페이지 url 추출

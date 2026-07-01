@@ -1,9 +1,12 @@
 package kr.co.wizbrain.tbn.infrm.service.impl;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -74,6 +77,35 @@ public class InfrmServiceImpl implements InfrmService{
 	public int saveInformer(InfrmVO paramVO) {
 		int cnt = 0;
 		
+		
+		// 26-06-30 : 개인정보 암호화 
+		try {
+
+	        if(paramVO.getInformerName() != null && !"".equals(paramVO.getInformerName())) {
+	            paramVO.setInformerName(encryptAES(paramVO.getInformerName()));
+	        }
+
+	        if(paramVO.getPhoneCell() != null && !"".equals(paramVO.getPhoneCell())) {
+	            paramVO.setPhoneCell(encryptAES(paramVO.getPhoneCell()));
+	        }
+
+	        if(paramVO.getAddress() != null && !"".equals(paramVO.getAddress())) {
+	            paramVO.setAddress(encryptAES(paramVO.getAddress()));
+	        }
+	        
+	        if(paramVO.getAddressHome() != null && !"".equals(paramVO.getAddressHome())) {
+	            paramVO.setAddressHome(encryptAES(paramVO.getAddressHome()));
+	        }
+
+	        if(paramVO.getBirthday() != null && !"".equals(paramVO.getBirthday())) {
+	            paramVO.setBirthday(encryptAES(paramVO.getBirthday()));
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("개인정보 암호화 실패", e);
+	    }
+		
+		
 		if(paramVO.getPageDiv().equals("new")){
 			cnt = infrmMapper.saveInformer(paramVO);
 		}else {
@@ -87,6 +119,35 @@ public class InfrmServiceImpl implements InfrmService{
 	@Override
 	public int saveInformerApp(InfrmVO paramVO) {
 		int cnt = 0;
+		
+		// 26-06-30 : 개인정보 암호화(전화번호, 주소, 이름, 생년월일)
+		
+		try {
+
+	        if(paramVO.getInformerName() != null && !"".equals(paramVO.getInformerName())) {
+	            paramVO.setInformerName(encryptAES(paramVO.getInformerName()));
+	        }
+
+	        if(paramVO.getPhoneCell() != null && !"".equals(paramVO.getPhoneCell())) {
+	            paramVO.setPhoneCell(encryptAES(paramVO.getPhoneCell()));
+	        }
+
+	        if(paramVO.getAddress() != null && !"".equals(paramVO.getAddress())) {
+	            paramVO.setAddress(encryptAES(paramVO.getAddress()));
+	        }
+	        
+	        if(paramVO.getAddressHome() != null && !"".equals(paramVO.getAddressHome())) {
+	            paramVO.setAddressHome(encryptAES(paramVO.getAddressHome()));
+	        }
+
+	        if(paramVO.getBirthday() != null && !"".equals(paramVO.getBirthday())) {
+	            paramVO.setBirthday(encryptAES(paramVO.getBirthday()));
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("개인정보 암호화 실패", e);
+	    }
+		
 		cnt = infrmMapper.saveInformerApp(paramVO);
 		
 		return cnt;
@@ -170,7 +231,70 @@ public class InfrmServiceImpl implements InfrmService{
 
 	@Override
 	public InfrmVO detailInformer(InfrmVO thvo) {
-		return infrmMapper.detailInformer(thvo);
+		InfrmVO vo = infrmMapper.detailInformer(thvo);
+		
+		try {
+
+	        if(vo != null) {
+
+	            if(vo.getInformerName() != null && !"".equals(vo.getInformerName()))
+	                vo.setInformerName(decryptAES(vo.getInformerName()));
+
+	            if(vo.getPhoneCell() != null && !"".equals(vo.getPhoneCell()))
+	                vo.setPhoneCell(decryptAES(vo.getPhoneCell()));
+
+	            if(vo.getAddress() != null && !"".equals(vo.getAddress()))
+	                vo.setAddress(decryptAES(vo.getAddress()));
+	            
+	            if(vo.getAddressHome() != null && !"".equals(vo.getAddressHome()))
+	                vo.setAddressHome(decryptAES(vo.getAddressHome()));
+
+	            if(vo.getBirthday() != null && !"".equals(vo.getBirthday()))
+	                vo.setBirthday(decryptAES(vo.getBirthday()));
+
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("개인정보 복호화 실패", e);
+	    }
+		
+		return vo;
+	}
+	
+	@Override
+	public int encryptAllInformer() {
+
+	    List<InfrmVO> list = infrmMapper.selectAllInformer();
+
+	    int cnt = 0;
+
+	    for(InfrmVO vo : list){
+
+	        try{
+
+	            if(vo.getInformerName() != null && !vo.getInformerName().isEmpty())
+	                vo.setInformerName(encryptAES(vo.getInformerName()));
+
+	            if(vo.getPhoneCell() != null && !vo.getPhoneCell().isEmpty())
+	                vo.setPhoneCell(encryptAES(vo.getPhoneCell()));
+
+	            if(vo.getAddress() != null && !vo.getAddress().isEmpty())
+	                vo.setAddress(encryptAES(vo.getAddress()));
+	            
+	            if(vo.getAddressHome() != null && !vo.getAddressHome().isEmpty())
+	                vo.setAddressHome(encryptAES(vo.getAddressHome()));
+
+	            if(vo.getBirthday() != null && !vo.getBirthday().isEmpty())
+	                vo.setBirthday(encryptAES(vo.getBirthday()));
+
+	            cnt += infrmMapper.updateEncryptInformer(vo);
+
+	        }catch(Exception e){
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return cnt;
 	}
 
 	
@@ -223,7 +347,29 @@ public class InfrmServiceImpl implements InfrmService{
 
 	@Override
 	public List<InfrmVO> findSlice(InfrmVO thvo, int startRnum, int endRnum, String orderBy){
-		return infrmMapper.findSlice(thvo,startRnum,endRnum,orderBy);
+
+	    List<InfrmVO> list = infrmMapper.findSlice(thvo, startRnum, endRnum, orderBy);
+
+	    try {
+	        for(InfrmVO vo : list){
+
+	            if(vo.getInformerName() != null && !"".equals(vo.getInformerName()))
+	                vo.setInformerName(decryptAES(vo.getInformerName()));
+
+	            if(vo.getPhoneCell() != null && !"".equals(vo.getPhoneCell()))
+	                vo.setPhoneCell(decryptAES(vo.getPhoneCell()));
+
+	            if(vo.getAddress() != null && !"".equals(vo.getAddress()))
+	                vo.setAddress(decryptAES(vo.getAddress()));
+
+	            if(vo.getBirthday() != null && !"".equals(vo.getBirthday()))
+	                vo.setBirthday(decryptAES(vo.getBirthday()));
+	        }
+	    } catch (Exception e) {
+	        throw new RuntimeException("개인정보 복호화 실패", e);
+	    }
+
+	    return list;
 	}
 	
 	@Override
@@ -231,5 +377,40 @@ public class InfrmServiceImpl implements InfrmService{
 		return infrmMapper.applyAppfindSlice(thvo,startRnum,endRnum,orderBy);
 	}
 
+	
+	private String encryptAES(String plainText) throws Exception {
+
+	    String secretKey = "1234567890123456";
+
+	    SecretKeySpec keySpec =
+	            new SecretKeySpec(secretKey.getBytes("UTF-8"), "AES");
+
+	    Cipher cipher = Cipher.getInstance("AES");
+
+	    cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+
+	    byte[] encrypted =
+	            cipher.doFinal(plainText.getBytes("UTF-8"));
+
+	    return Base64.getEncoder().encodeToString(encrypted);
+	}
+	
+	
+	private String decryptAES(String encryptedText) throws Exception {
+
+	    String secretKey = "1234567890123456";
+
+	    SecretKeySpec keySpec =
+	            new SecretKeySpec(secretKey.getBytes("UTF-8"), "AES");
+
+	    Cipher cipher = Cipher.getInstance("AES");
+
+	    cipher.init(Cipher.DECRYPT_MODE, keySpec);
+
+	    byte[] decoded =
+	            Base64.getDecoder().decode(encryptedText);
+
+	    return new String(cipher.doFinal(decoded), "UTF-8");
+	}
 
 }

@@ -319,8 +319,8 @@ function changePage(url){
 						<ul class="lst_tab">
 							<li class="on"><a href="javascript:changePage('select')">통신원 관리</a></li>
 							<li class="ns"></li>
-							<li><a href="javascript:changePage('selectApp')">APP 통신원 관리</a></li>
-							<li class="ns"></li>
+							<!-- <li><a href="javascript:changePage('selectApp')">APP 통신원 관리</a></li>
+							<li class="ns"></li> -->
 							<li><a href="javascript:changePage('standard')">APP 가입 신청 현황</a></li>
 							<li class="ns"></li>
 						</ul>
@@ -532,6 +532,10 @@ function changePage(url){
     <div class="btnBox" align="right" >
         <span onclick="editInformer();" class="editUser"><button type="button" style="border: none;"><img src="../images/btn_save1.png" alt="" style="cursor: pointer;width: 92px;height: 30px;background-size: cover; "></button></span>
     </div>
+    
+    <button type="button" id="btnEncrypt">
+    개인정보 암호화
+</button>
 </div>
 </div>
 
@@ -581,6 +585,29 @@ $(document).ready(function(){
 	$('#unChkConfirmAllBtn').on('click', function() {
 		$('.section-body.scroll2 input[type="checkbox"]').prop('checked', false);
 	});
+	
+	
+	
+	$("#btnEncrypt").click(function(){
+
+	    if(!confirm("기존 통신원 개인정보를 모두 암호화하시겠습니까?")){
+	        return;
+	    }
+
+	    $.ajax({
+	        url : "/informer/encryptInformer.do",
+	        type : "POST",
+	        success : function(res){
+	            alert(res);
+	        },
+	        error : function(){
+	            alert("암호화 실패");
+	        }
+	    });
+
+	});
+	
+	
 	
 	
 	//$('#listDiv').load('/informer/informerList.do?sDate='+fromDate+'&eDate='+toDate+''+'&eDate='+flagAct='+'Y');

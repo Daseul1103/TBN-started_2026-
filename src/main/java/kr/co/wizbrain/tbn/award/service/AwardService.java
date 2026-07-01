@@ -4,6 +4,7 @@ import java.util.List;
 
 import kr.co.wizbrain.tbn.award.vo.AwardVO;
 import kr.co.wizbrain.tbn.comm.ParamsDto;
+import kr.co.wizbrain.tbn.comm.RecordDto;
 
 public interface AwardService{
 	
@@ -25,7 +26,7 @@ public interface AwardService{
 	
 	public List<AwardVO> getAwardList(AwardVO awvo);
 
-	List getAwardInformerList2(AwardVO paramVO);
+	List<RecordDto> getAwardInformerList2(AwardVO paramVO);
 
-	List selectUserAwardList2(AwardVO paramVO);
+	List<RecordDto> selectUserAwardList2(AwardVO paramVO);
 }

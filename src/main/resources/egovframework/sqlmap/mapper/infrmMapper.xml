@@ -592,7 +592,7 @@
 		    A.ADDRESS,
 		    A.ZIPCODE2,
 		    A.ADDRESS_OFFICE,
-		    TO_CHAR(TO_DATE(A.BIRTHDAY,'YY/MM/DD'), 'YYYY.MM.DD') AS BIRTHDAY,
+		   	A.BIRTHDAY,
 		    A.CAR_NUM,
 		    A.COMMENTS,
 		    A.DEL_DATE,
@@ -1190,12 +1190,7 @@
 	             , A.AREA_CODE
 	             , A.ORG_ID
 	             , REPLACE(B.AREA_NAME,'교통방송','') AS AREA_NAME
-	             , CASE WHEN A.PHONE_CELL IS NULL OR A.PHONE_CELL = ''
-	                    THEN CASE WHEN A.PHONE_HOME IS NULL OR A.PHONE_HOME = ''
-	                              THEN REGEXP_REPLACE(A.PHONE_OFFICE,'(02|.{3})(.+)(.{4})','\1-\2-\3')
-	                              ELSE REGEXP_REPLACE(A.PHONE_HOME  ,'(02|.{3})(.+)(.{4})','\1-\2-\3') END
-	                    ELSE REGEXP_REPLACE(A.PHONE_CELL ,'(02|.{3})(.+)(.{4})','\1-\2-\3')
-	               END AS PHONE_CELL
+	             , A.PHONE_CELL AS PHONE_CELL
 	             , A.INFORMER_TYPE
 	             , A.FLAG_ACT AS FLAG_ACT_SUB
 	             , A.REG_DATE
@@ -1688,6 +1683,32 @@
 			WHERE APPLY_ID = #{applyId}		
 		</update>
 		
+		
+		
+		
+		<!-- 26-06-30 : 개인정보(핸드폰 번호, 주소, 생년월일, 이름) 암호화 -->
+		<select id="selectAllInformer" resultMap="informerMap">
+		    SELECT
+		        INFORMER_ID,
+		        INFORMER_NAME,
+		        PHONE_CELL,
+		        ADDRESS,
+		        ADDRESS_HOME,
+		        BIRTHDAY
+		    FROM INFORMER
+		</select>
+		
+		
+		
+		<update id="updateEncryptInformer" parameterType="InfrmVO">
+		    UPDATE INFORMER
+		       SET INFORMER_NAME = #{informerName},
+		           PHONE_CELL    = #{phoneCell},
+		           ADDRESS       = #{address},
+		           ADDRESS_HOME  = #{addressHome},
+		           BIRTHDAY      = #{birthday}
+		     WHERE INFORMER_ID = #{informerId}
+		</update>
 		
 	
 </mapper>

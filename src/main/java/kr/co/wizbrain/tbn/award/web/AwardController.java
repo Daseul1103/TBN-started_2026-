@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.wizbrain.tbn.award.service.AwardService;
 import kr.co.wizbrain.tbn.award.vo.AwardVO;
+import kr.co.wizbrain.tbn.comm.RecordDto;
 import kr.co.wizbrain.tbn.infrm.service.InfrmService;
 import kr.co.wizbrain.tbn.option.service.AreaOptService;
 import kr.co.wizbrain.tbn.option.vo.OptAreaVo;
@@ -56,6 +57,8 @@ public class AwardController{
 		return url;
 	}
 	
+	
+	
 	/**
 	 * 시상관리 메인
 	 * @param model
@@ -64,61 +67,74 @@ public class AwardController{
 	 */
 	@RequestMapping(value= {"/informer/award/awardMain.do","/informer/award/awardUserMain.do"})
 	public ModelAndView awardMain(HttpServletRequest request,Model model) throws Exception {
+		
 		ModelAndView mv = new ModelAndView("jsonView");
 		OptAreaVo areaVo = new OptAreaVo();
 		AwardVO avo = new AwardVO();
+		
 		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
+		
 		// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
      	UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+     	
 		if(!(nlVo.getAuthCode().equals("999"))) {//999 관리자 권한
 			avo.setAREA_CODE(nlVo.getRegionId());
 			areaVo.setAreaCode(nlVo.getRegionId());
 		}
+		
 		List<OptAreaVo> alist = areaOptService.selectAreaOpt1(areaVo);
+		
 		//최초 지역코드 idx 맨 처음 (부산교통방송)
-		String fArea= alist.get(0).getAreaCode();
+		String fArea= alist.get(0).getAreaCode();		
 		avo.setAREA_CODE(fArea);
+		
 		List<AwardVO> awardGrade = awardService.selectGrade(avo);
+		
 		mv.addObject("informerRegionList", alist);
 		mv.addObject("awardGrade", awardGrade.get(0));
+		
 		//수상자선정인지 수상자 조회인지 분기처리
 		mv.setViewName(url);
+		
 		return mv;
 	}
 	
-	/**
-	 * 시상 대상자 목록
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	
+	
+	
+	// 시상 관리 > 수상자선정 조회
 	@RequestMapping("/informer/award/awardInformerList.do")
 	public ModelAndView awardList(@ModelAttribute("AwardVO") AwardVO paramVO,HttpServletRequest request) throws Exception {
+		
 		ModelAndView mv = new ModelAndView("/informer/award/awardInformerList");
+		
 		if(!(paramVO.getALL_PER().equals("") || paramVO.getMAIN_PER().equals("") || paramVO.getADD_PER().equals(""))) {
 			awardService.updateGrade(paramVO);
 		}
 		
+		
+		// 26-06 : 개인정보 암호화 작업 완료
         List<AwardVO> awardInformerList = awardService.getAwardInformerList(paramVO);
      
         mv.addObject("awardInformerList", awardInformerList);
         mv.addObject("awardInformerListSize", awardInformerList.size());
         mv.addObject("params", paramVO);
+        
         int awardCnt = awardService.selectAwardCnt();
 		mv.addObject("awardCnt", awardCnt);
         
 		return mv;
 	}
 	
-	/**
-	 * 시상 저장
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	
+	
+	
+	// 시상 관리 > 수상자 선정(등록)
 	@RequestMapping("/informer/award/awardInformerSave.do")
 	public ModelAndView awardInformerSave(Model model,HttpServletRequest req,@ModelAttribute("AwardVO") AwardVO paramVO) throws Exception {
+		
 		ModelAndView mv = new ModelAndView("jsonView");  
+		
 		String[] Selection = req.getParameterValues("Selection");
 		logger.debug("Selection===>"+Selection[0]);
 
@@ -127,39 +143,49 @@ public class AwardController{
 		
 		for (int i = 0; i < Selection.length; i++) {
 			AwardVO awvo = new AwardVO();
+			
 			String[] str = Selection[i].split("%%");
+			
 			awvo.setINFORMER_ID(str[0]);
 			awvo.setRPT_GRADE(str[1]);
 			awvo.setMAIN_GRADE(str[2]);
 			awvo.setADD_GRADE(str[3]);
 			awvo.setALL_RANK(str[4]);
+			
 			alist.add(awvo);
 		}
 
+		
+		// 개인정보 암호화 대상 x
 		awardService.saveAward(paramVO,alist);
 		
 		mv.addObject("msg", "success");
+		
 		return mv;
 	}
 	
-	/**
-	 * 시상관리 수상자 조회
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	
+	
+	
+	// 시상 관리 > 수상자 조회
 	@RequestMapping("/informer/award/selectUserAwardList.do")
-	public ModelAndView selectUserAwardList(HttpServletRequest request,Model model,@ModelAttribute("AwardVO") AwardVO paramVO) throws Exception {
+	public ModelAndView selectUserAwardList(HttpServletRequest request,Model model, @ModelAttribute("AwardVO") AwardVO paramVO) throws Exception {
+		
 		ModelAndView mv = new ModelAndView("/informer/award/awardUserList");
+		
 		// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
      	UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
-      //지역관련
+     	
+       //지역관련
 		OptAreaVo avo = new OptAreaVo();
+		
 		if(!(nlVo.getAuthCode().equals("999"))) {//999 관리자 권한
 			avo.setAreaCode(nlVo.getRegionId());
 			paramVO.setREGION_ID(nlVo.getRegionId());
 		}
-        List awardInformerList = awardService.selectUserAwardList(paramVO);
+		
+		// 26-06 : 개인정보 암호화 작업 완료
+        List<AwardVO> awardInformerList = awardService.selectUserAwardList(paramVO);
         
         mv.addObject("awardInformerList", awardInformerList);
         mv.addObject("awardInformerListSize", awardInformerList.size());
@@ -172,13 +198,17 @@ public class AwardController{
 	
 	
 	
-	// 수상자 선정 엑셀 다운로드
+	// 시상 관리 > 수상자 선정 엑셀 다운로드
 	@RequestMapping("/informer/award/excelDownloadInformerList.do")
 	public String exselDownload(Model model,@ModelAttribute("AwardVO") AwardVO paramVO) throws Exception {
-		logger.debug("★★★"+paramVO);
-		List awardInformerList = awardService.getAwardInformerList2(paramVO);
+		
+		logger.debug("★★★"+paramVO);	
+		
+		// 26-06 : 개인정보 암호화 완료
+		List<RecordDto> awardInformerList = awardService.getAwardInformerList2(paramVO);
 		
 		model.addAttribute("fileName", "수상자선정.xls");
+		
 		model.addAttribute("columnTitles", new String[]{
 				"순위"
 				,"ID"
@@ -193,6 +223,7 @@ public class AwardController{
 				,"전월점수"
 				,"총점"
 		});
+		
 		model.addAttribute("columnNames", new String[]{
 				"RNUM",
 				"ACT_ID",
@@ -207,6 +238,7 @@ public class AwardController{
 				"ADD_GRADE",
 				"ALL_RANK",
 		});
+		
 		model.addAttribute("exportData", awardInformerList);
 		
 		return "hssfView";
@@ -218,9 +250,13 @@ public class AwardController{
 	// 수상자 조회 엑셀 다운로드
 	@RequestMapping("/informer/award/excelDownloadUserList.do")
 	public String exselDownloadUserList(Model model,@ModelAttribute("AwardVO") AwardVO paramVO) throws Exception {
-		List awardInformerList = awardService.selectUserAwardList2(paramVO);
+		logger.debug("★★★"+paramVO);
+		
+		// 26-06 : 개인정보 암호화 완료
+		List<RecordDto> awardInformerList = awardService.selectUserAwardList2(paramVO);
 		
 		model.addAttribute("fileName", "수상자.xls");
+		
 		model.addAttribute("columnTitles", new String[]{
 				"방송국",
 				"소속", 
@@ -232,6 +268,7 @@ public class AwardController{
 				"총점", 
 				"등록일"  
 		});
+		
 		model.addAttribute("columnNames", new String[]{
 				"REGION_NM",
 				"ORG_NAME",
@@ -243,6 +280,7 @@ public class AwardController{
 				"ALL_RANK",
 				"REG_DATE"
 		});
+		
 		model.addAttribute("exportData", awardInformerList);
 		
 		return "hssfView";
@@ -250,23 +288,26 @@ public class AwardController{
 	
 	
 	
-	/**
-	 * 시상자 제외
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 */
+	
+	// 시상 관리 > 수상자 선정 제외
 	@RequestMapping("/informer/award/deleteAward.do")
 	public ModelAndView deleteAward(Model model,HttpServletRequest req,@ModelAttribute("AwardVO") AwardVO paramVO) throws Exception {
+		
 		ModelAndView mv = new ModelAndView("jsonView");
 		
 		String[] Selection = req.getParameterValues("Selection");
 		logger.debug("Selection===>"+Selection[0]);
-
+		
+		// 개인정보 암호화 대상 x
 		awardService.deleteAward(Selection);
 		
 		mv.addObject("msg", "success");
 		return mv;
+		
 	}
+	
+	
+	
+	
 	
 }

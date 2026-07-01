@@ -59,6 +59,8 @@ public interface InfrmService {
 	
 	public InfrmVO detailInformer(InfrmVO thvo);
 	
+	public int encryptAllInformer();
+	
 	// 26-06-19 : APP 통신원 가입 정보 가져오기
 	public InfrmVO detailApplyIfrm(InfrmVO thvo);
 	

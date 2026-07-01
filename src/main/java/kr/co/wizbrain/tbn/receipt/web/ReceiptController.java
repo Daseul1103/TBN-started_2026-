@@ -101,7 +101,7 @@ public class ReceiptController {
 	}
 	
 	
-	//전화온 테이블에셔 전화 받았을 시  
+	//전화온 테이블에서 전화 받았을 시  
 	//받은 데이터를 삭제하고(통신원 목록에 해당 데이터를 띄울시) delete
 	//그 데이터는 수신목록에 띄워야 하니까 insert -> 23 01 17 cid에서 처리하도록 수정
 	@RequestMapping("/receipt/deletePickUpInfo.ajax")
@@ -168,7 +168,10 @@ public class ReceiptController {
 //		writer.close();
 //		return mv;
 //	}
-	//수신전화 목록
+	
+	
+	
+	// 제보접수 > 수신 전화 목록
 	@RequestMapping("/receipt/pickupCallList.do")
 	public ModelAndView pickupCallList(HttpServletRequest request,ReceiveCallVO vo) throws Exception {
 		//logger.info("------------------pickupCallList진입------------------");
@@ -468,7 +471,7 @@ public class ReceiptController {
 	
 	
 	
-	// 금일 제보 접수 첫 진입 및 조회
+	// 제보접수 > 금일 제보 접수 첫 진입 및 조회
 	@RequestMapping("/receipt/receivedStatusList.do")
 	public ModelAndView receivedStatusList(CriteriaVO cri) throws Exception{
 		logger.info("------------------receivedStatusList진입------------------");

@@ -319,8 +319,8 @@ function changePage(url){
 						<ul class="lst_tab">
 							<li><a href="javascript:changePage('select')">통신원 관리</a></li>
 							<li class="ns"></li>
-							<li class="on"><a href="javascript:changePage('selectApp')">APP 통신원 관리</a></li>
-							<li class="ns"></li>
+							<!-- <li class="on"><a href="javascript:changePage('selectApp')">APP 통신원 관리</a></li>
+							<li class="ns"></li> -->
 							<li><a href="javascript:changePage('standard')">APP 가입 신청 현황</a></li>
 							<li class="ns"></li>
 						</ul>

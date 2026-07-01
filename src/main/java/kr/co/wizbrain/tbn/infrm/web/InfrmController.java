@@ -798,33 +798,6 @@ public class InfrmController implements ApplicationContextAware {
 			
 			//221129 경로관련 로직 변경
 			String fdir = "resources/picture/"+ifmVO.getInformerId()+"/";
-			//String dir = req.getServletContext().getRealPath(fdir);
-			//context.getServletContext().getRealPath("/")+ "picture/" + paramVO.getInformerId()+ "/";
-
-			
-			/*기존 소스*/
-			/*if(Boolean.parseBoolean(fileChg)){									// 사진이 변경된 경우만 저장.
-				if(req instanceof MultipartHttpServletRequest){ 										// req 객체와 MultipartHttpServletRequest타입이 같다면,
-					MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req; 	// req를 MultipartHttpServletRequest타입으로 캐스팅.
-					MultipartFile imgFile = multipartRequest.getFile("file"); 					// 화면으로 부터 전달 받은 컨텐츠를 얻어옴.
-					if(imgFile != null){
-						if(imgFile.getContentType().startsWith("image")){
-							saveFileInfo(imgFile, ifmVO);
-							
-							if(createFileError != null && !createFileError.equals("")){
-								mv.addObject("createFileError", "createFileError");
-								return mv;
-							}
-						}else{
-							mv.addObject("badFileType", "badFileType");
-							return mv;
-						}
-					}
-				} else {
-					res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected multipart request");
-				}
-			}*/
-			
 			
 			/*변경 후 소스*/
 			if(Boolean.parseBoolean(fileChg)){  // 사진 변경 시만
@@ -1067,6 +1040,33 @@ public class InfrmController implements ApplicationContextAware {
 		this.context = (WebApplicationContext) applicationContext;
 	}
 	
+	
+	
+	
+	// 26-06-30 : 개인정보 암호화 처리에 따른 기존 데이터 암호화 일괄 처리 기능 (추후 삭제 예정)
+	@RequestMapping(value="/informer/encryptInformer.do")
+	public ModelAndView encryptInformer() {
+
+	    ModelAndView mav = new ModelAndView("jsonView");
+
+	    try {
+
+	        int cnt = infrmService.encryptAllInformer();
+
+	        mav.addObject("result", "success");
+	        mav.addObject("cnt", cnt);
+	        mav.addObject("msg", cnt + "건 암호화 완료");
+
+	    } catch(Exception e) {
+
+	        e.printStackTrace();
+
+	        mav.addObject("result", "fail");
+	        mav.addObject("msg", "암호화 실패");
+	    }
+
+	    return mav;
+	}
 	
 	
 }

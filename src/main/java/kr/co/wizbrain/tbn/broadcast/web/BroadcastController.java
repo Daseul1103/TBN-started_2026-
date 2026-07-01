@@ -112,6 +112,9 @@ public class BroadcastController {
 		return mv;
 	}
 	
+	
+	
+	// PD/CASTER 첫 진입 시 방송 목록 조회
 	@RequestMapping("/broadcast/selectBroadcastList.do")
 	public ModelAndView selectBroadcastList(CriteriaVO cri) throws Exception {
 		logger.debug("▶▶▶▶▶▶▶.selectBroadcastList 컨트롤러 진입");
@@ -130,6 +133,9 @@ public class BroadcastController {
 		System.out.println("(Broad)todaysListSize: " + todaysList.size());
 		return mv;
 	}
+	
+	
+	
 	
 	@RequestMapping("/producer/broadImsList.do")
 	public ModelAndView broadImsList() throws Exception {
@@ -183,6 +189,8 @@ public class BroadcastController {
 		return mv;
 	}
 	
+	
+	// PD/CASTER 화면에서 조회 시 실행
 	@RequestMapping("/broadcast/searchBroadcastList.do")
 	public ModelAndView searchBroadcastList(BroadSearchVO vo) throws Exception {
 		logger.debug("▶▶▶▶▶▶▶.searchBroadcastList 컨트롤러 진입");

@@ -39,6 +39,9 @@ public class BroadcastController {
 	@Resource(name="receiptService")
 	private ReceiptService receiptService;
 	
+	
+	
+	
 	//(broadcast)주소에 맞게 매핑
 	@RequestMapping(value="/broadcast/*.do")
 	public ModelAndView broadcastUrlMapping(HttpSession httpSession, HttpServletRequest request,Model model) throws Exception{
@@ -59,6 +62,9 @@ public class BroadcastController {
 		return mv;
 	}
 		
+	
+	
+	
 	//(PD)주소에 맞게 매핑
 	@RequestMapping(value="/producer/*.do")
 	public ModelAndView producerUrlMapping(HttpSession httpSession, HttpServletRequest request,Model model) throws Exception{
@@ -74,6 +80,10 @@ public class BroadcastController {
 		mv.setViewName(url);
 		return mv;
 	}
+	
+	
+	
+	
 	
 	//(Caster)주소에 맞게 매핑
 	@RequestMapping(value="/caster/*.do")
@@ -91,12 +101,16 @@ public class BroadcastController {
 		return mv;
 	}
 	
+	
+	
+	
+	
 	@RequestMapping("/broadcast/countBroadcastList.ajax")
 	public ModelAndView countBroadcastList(CriteriaVO cri) throws Exception {
 		logger.debug("▶▶▶▶▶▶▶.countBroadcastList 컨트롤러 진입");
 		ModelAndView mv = new ModelAndView("jsonView");
 		
-		//int total = receiptService.countReceivedStatusList(cri);
+		// 카운트용 쿼리문이라서 informer(개인정보 부분만) 삭제 - 쿼리문만 일부 변경 / 개인정보 암호화 대상 X
 		int total = broadcastService.countBroadcastList(cri);
 		System.out.println("total: " + total);
 		

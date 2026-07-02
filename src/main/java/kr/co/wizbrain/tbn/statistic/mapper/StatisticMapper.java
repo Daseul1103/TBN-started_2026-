@@ -8,6 +8,7 @@ import egovframework.rte.psl.dataaccess.mapper.Mapper;
 import egovframework.rte.psl.dataaccess.util.EgovMap;
 import kr.co.wizbrain.tbn.award.vo.AwardVO;
 import kr.co.wizbrain.tbn.comm.ParamsDto;
+import kr.co.wizbrain.tbn.comm.RecordDto;
 import kr.co.wizbrain.tbn.infrm.vo.InfrmVO;
 import kr.co.wizbrain.tbn.option.vo.OptInftVo;
 import kr.co.wizbrain.tbn.option.vo.OptRptVo;
@@ -164,7 +165,7 @@ public interface StatisticMapper{
 	public List statDateCal(ParamsDto params);
 
 	// 1-2)
-	public List orgOrgSub(ParamsDto params);
+	public List<RecordDto> orgOrgSub(ParamsDto params);
 	
 	public List timeBroadData (ParamsDto params);
 	

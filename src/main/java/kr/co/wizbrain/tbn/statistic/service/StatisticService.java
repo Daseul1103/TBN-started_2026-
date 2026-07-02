@@ -4,6 +4,7 @@ import java.util.List;
 
 import kr.co.wizbrain.tbn.award.vo.AwardVO;
 import kr.co.wizbrain.tbn.comm.ParamsDto;
+import kr.co.wizbrain.tbn.comm.RecordDto;
 import kr.co.wizbrain.tbn.infrm.vo.InfrmVO;
 import kr.co.wizbrain.tbn.option.vo.OptInftVo;
 import kr.co.wizbrain.tbn.receipt.vo.popup.ReceiptSearchVO;
@@ -149,7 +150,7 @@ public interface StatisticService {
 	public List statDateCal(ParamsDto params);
 	
 	// 1-2)
-	public List orgOrgSub(ParamsDto params);
+	public List<RecordDto> orgOrgSub(ParamsDto params);
 
 
 	

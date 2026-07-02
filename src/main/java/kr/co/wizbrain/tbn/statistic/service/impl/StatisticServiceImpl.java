@@ -1,15 +1,18 @@
 package kr.co.wizbrain.tbn.statistic.service.impl;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.stereotype.Service;
 
-import egovframework.rte.psl.dataaccess.util.EgovMap;
 import kr.co.wizbrain.tbn.award.vo.AwardVO;
 import kr.co.wizbrain.tbn.comm.ParamsDto;
+import kr.co.wizbrain.tbn.comm.RecordDto;
 import kr.co.wizbrain.tbn.infrm.vo.InfrmVO;
 import kr.co.wizbrain.tbn.option.vo.OptInftVo;
 import kr.co.wizbrain.tbn.receipt.vo.popup.ReceiptSearchVO;
@@ -94,8 +97,39 @@ public class StatisticServiceImpl implements StatisticService{
 	// 24-11-19 : 제보자별 제보현황
 	@Override
 	public List informerReport(ParamsDto params) throws Exception {
-		return statisticMapper.informerReport(params);
+		List<HashMap<String, Object>> list = statisticMapper.informerReport(params);
+
+	    try {
+
+	        for (HashMap<String, Object> record : list) {
+
+	            // 통신원이름
+	            String name = (String) record.get("통신원이름");
+	            if (name == null || "".equals(name)) {
+	                record.put("통신원이름", "미기재");
+	            } else {
+	                record.put("통신원이름", decryptAES(name));
+	            }
+
+	            // 연락처
+	            String phone = (String) record.get("연락처");
+	            if (phone == null || "".equals(phone)) {
+	                record.put("연락처", "미기재");
+	            } else {
+	                phone = decryptAES(phone);
+	                phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+	                record.put("연락처", phone);
+	            }
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("개인정보 복호화 실패", e);
+	    }
+
+	    return list;
 	}
+	
+	
 	
 	// 24-11-20 : 제보자별 제보현황 - 총 인원수
 	@Override
@@ -117,13 +151,74 @@ public class StatisticServiceImpl implements StatisticService{
 	}
 	
 	// 연간 제보자별 제보현황
-		public List yearReceipt(ParamsDto params) throws Exception {
-			return statisticMapper.yearReceipt(params);
+	public List yearReceipt(ParamsDto params) throws Exception {
+		List<HashMap<String, Object>> list = statisticMapper.yearReceipt(params);
+
+		try {
+
+		    for (HashMap<String, Object> record : list) {
+
+		        // 이름
+		        String name = (String) record.get("INFORMER_NAME");
+
+		        if (name == null || "".equals(name)) {
+		            record.put("INFORMER_NAME", "미기재");
+		        } else {
+		            record.put("INFORMER_NAME", decryptAES(name));
+		        }
+
+		        // 전화번호
+		        String phone = (String) record.get("PHONE_CELL");
+
+		        if (phone == null || "".equals(phone)) {
+		            record.put("PHONE_CELL", "미기재");
+		        } else {
+		            phone = decryptAES(phone);
+		            phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+		            record.put("PHONE_CELL", phone);
+		        }
+
+		     }
+
+		} catch (Exception e) {
+		    throw new RuntimeException("개인정보 복호화 실패", e);
 		}
+
+		return list;
+	}
 		
-		public List totalList(ParamsDto params) throws Exception {
-			return statisticMapper.totalList(params);
+	public List totalList(ParamsDto params) throws Exception {
+		List<HashMap<String, Object>> list = statisticMapper.totalList(params);
+
+		try {
+			for (HashMap<String, Object> record : list) {
+
+				String name = (String) record.get("INFORMER_NAME");
+
+				if (name == null || "".equals(name)) {
+				    record.put("INFORMER_NAME", "미기재");
+				} else {
+				    record.put("INFORMER_NAME", decryptAES(name));
+				}
+
+				String phone = (String) record.get("PHONE_CELL");
+
+				if (phone == null || "".equals(phone)) {
+				    record.put("PHONE_CELL", "미기재");
+				} else {
+				    phone = decryptAES(phone);
+				    phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+				    record.put("PHONE_CELL", phone);
+				}
+			}
+				
+		} catch (Exception e) {
+		    throw new RuntimeException("개인정보 복호화 실패", e);
 		}
+			
+			
+		return list;
+	}
 		
 		public List totalListOrg(ParamsDto params) throws Exception {
 			return statisticMapper.totalListOrg(params);
@@ -208,7 +303,39 @@ public class StatisticServiceImpl implements StatisticService{
 	// 라. 무제보자 현황
 	@Override
 	public List muJeboList(ParamsDto params) {
-		return statisticMapper.muJeboList(params);
+		List<HashMap<String, Object>> list = statisticMapper.muJeboList(params);
+
+	    try {
+
+	        for (HashMap<String, Object> record : list) {
+
+	            // 이름 복호화
+	            String name = (String) record.get("INFORMER_NAME");
+
+	            if (name == null || "".equals(name)) {
+	                record.put("INFORMER_NAME", "미기재");
+	            } else {
+	                record.put("INFORMER_NAME", decryptAES(name));
+	            }
+
+	            // 휴대폰 번호 복호화
+	            String phone = (String) record.get("PHONE_CELL");
+
+	            if (phone == null || "".equals(phone)) {
+	                record.put("PHONE_CELL", "미기재");
+	            } else {
+	                phone = decryptAES(phone);
+	                phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+	                record.put("PHONE_CELL", phone);
+	            }
+
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("통신원 정보 복호화 실패", e);
+	    }
+
+	    return list;
 	}
 	
 	
@@ -258,8 +385,39 @@ public class StatisticServiceImpl implements StatisticService{
 	
 	// 1-2)
 	@Override
-	public List orgOrgSub(ParamsDto params) {
-		return statisticMapper.orgOrgSub(params);
+	public List<RecordDto> orgOrgSub(ParamsDto params) {
+		List<RecordDto> list = statisticMapper.orgOrgSub(params);
+
+		try {
+			for (RecordDto record : list) {
+
+			    String name = (String) record.get("INFORMER_NAME");
+			    if (name != null && !"".equals(name)) {
+			        record.put("INFORMER_NAME", decryptAES(name));
+			    }
+
+			    String phone = (String) record.get("PHONE_CELL");
+			    if (phone != null && !"".equals(phone)) {
+
+			        phone = decryptAES(phone);
+
+			        // 화면에 하이픈 표시
+			        phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+
+			        record.put("PHONE_CELL", phone);
+			    }
+			    
+			    String birthday = (String) record.get("BIRTHDAY");
+			    if (birthday != null && !"".equals(birthday)) {
+			        record.put("BIRTHDAY", decryptAES(birthday));
+			    }
+			}
+		} catch (Exception e) {
+		    throw new RuntimeException("개인정보 복호화 실패", e);
+		}
+		
+		return list;
+		
 	}
 	
 	
@@ -300,15 +458,67 @@ public class StatisticServiceImpl implements StatisticService{
 	// 1-1) 제보자 리스트
 	@Override
 	public List monInfrmList(ParamsDto params) {
-		/*return statisticMapper.muJeboList(params);*/
-		return statisticMapper.monInfrmList(params);
+		List<HashMap<String, Object>> list = statisticMapper.monInfrmList(params);
+
+	    try {
+
+	        for (HashMap<String, Object> record : list) {
+
+	            // 이름 복호화
+	            String name = (String) record.get("INFORMER_NAME");
+
+	            if (name == null || "".equals(name)) {
+	                record.put("INFORMER_NAME", "미기재");
+	            } else {
+	                record.put("INFORMER_NAME", decryptAES(name));
+	            }
+
+	            // 휴대폰 번호 복호화
+	            String phone = (String) record.get("PHONE_CELL");
+
+	            if (phone == null || "".equals(phone)) {
+	                record.put("PHONE_CELL", "미기재");
+	            } else {
+	                phone = decryptAES(phone);
+	                phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+	                record.put("PHONE_CELL", phone);
+	            }
+
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("통신원 정보 복호화 실패", e);
+	    }
+
+	    return list;
 	}
 	
 	// 1-2) 월별 건수
 	@Override
 	public List monInfrmCnt(ParamsDto params) {
-		return statisticMapper.monInfrmCnt(params);
-	}
+		 List<HashMap<String, Object>> list = statisticMapper.monInfrmCnt(params);
+
+		    try {
+
+		        for (HashMap<String, Object> record : list) {
+
+		            // 이름 복호화
+		            String name = (String) record.get("INFORMER_NAME");
+
+		            if (name == null || "".equals(name)) {
+		                record.put("INFORMER_NAME", "미기재");
+		            } else {
+		                record.put("INFORMER_NAME", decryptAES(name));
+		            }
+
+		        }
+
+		    } catch (Exception e) {
+		        throw new RuntimeException("통신원 정보 복호화 실패", e);
+		    }
+
+		    return list;
+		}
 	
 	
 	
@@ -384,8 +594,48 @@ public class StatisticServiceImpl implements StatisticService{
 	// 1-1) 제보자 유형별 건수
 	@Override
 	public List krGasMonCnt(ParamsDto params) {
-		return statisticMapper.krGasMonCnt(params);
-	}
+		 List<HashMap<String, Object>> list = statisticMapper.krGasMonCnt(params);
+
+		    try {
+
+		        for (HashMap<String, Object> record : list) {
+
+		            // ==========================
+		            // 이름 복호화
+		            // ==========================
+		            String name = (String) record.get("INFORMER_NAME");
+
+		            if ("sum".equals(name)) {
+		                // 합계 행은 복호화하지 않음
+		            } else if (name == null || "".equals(name)) {
+		                record.put("INFORMER_NAME", "미기재");
+		            } else {
+		                record.put("INFORMER_NAME", decryptAES(name));
+		            }
+
+		            // ==========================
+		            // 전화번호 복호화
+		            // ==========================
+		            String phone = (String) record.get("PHONE_CELL");
+
+		            if ("sum".equals(phone)) {
+		                // 합계 행은 복호화하지 않음
+		            } else if (phone == null || "".equals(phone)) {
+		                record.put("PHONE_CELL", "미기재");
+		            } else {
+		                phone = decryptAES(phone);
+		                phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+		                record.put("PHONE_CELL", phone);
+		            }
+
+		        }
+
+		    } catch (Exception e) {
+		        throw new RuntimeException("한국가스기술공사 월별 통계 복호화 실패", e);
+		    }
+
+		    return list;
+		}
 	
 	
 	
@@ -396,7 +646,47 @@ public class StatisticServiceImpl implements StatisticService{
 	// 1-1) 제보자 유형별 건수
 	@Override
 	public List korLxMonCnt(ParamsDto params) {
-		return statisticMapper.korLxMonCnt(params);
+		List<HashMap<String, Object>> list = statisticMapper.korLxMonCnt(params);
+
+	    try {
+
+	        for (HashMap<String, Object> record : list) {
+
+	            // ==========================
+	            // 이름 복호화
+	            // ==========================
+	            String name = (String) record.get("INFORMER_NAME");
+
+	            if ("sum".equals(name)) {
+	                // 합계 행은 복호화하지 않음
+	            } else if (name == null || "".equals(name)) {
+	                record.put("INFORMER_NAME", "미기재");
+	            } else {
+	                record.put("INFORMER_NAME", decryptAES(name));
+	            }
+
+	            // ==========================
+	            // 휴대폰 번호 복호화
+	            // ==========================
+	            String phone = (String) record.get("PHONE_CELL");
+
+	            if ("sum".equals(phone)) {
+	                // 합계 행은 복호화하지 않음
+	            } else if (phone == null || "".equals(phone)) {
+	                record.put("PHONE_CELL", "미기재");
+	            } else {
+	                phone = decryptAES(phone);
+	                phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+	                record.put("PHONE_CELL", phone);
+	            }
+
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("국토정보공사 월별 통계 복호화 실패", e);
+	    }
+
+	    return list;
 	}
 	
 	
@@ -408,7 +698,48 @@ public class StatisticServiceImpl implements StatisticService{
 	// 1) 일자별 제보 건수
 	@Override
 	public List dayReceipt(ParamsDto params) {
-		return statisticMapper.dayReceipt(params);
+		List<HashMap<String, Object>> list = statisticMapper.dayReceipt(params);
+
+	    try {
+
+	        for (HashMap<String, Object> record : list) {
+
+	            // 이름
+	            String name = (String) record.get("INFORMER_NAME");
+
+	            if (name == null || "".equals(name)) {
+	                record.put("INFORMER_NAME", "미기재");
+	            } else {
+	                record.put("INFORMER_NAME", decryptAES(name));
+	            }
+
+	            // 휴대폰 번호
+	            String phone = (String) record.get("PHONE_CELL");
+
+	            if (phone == null || "".equals(phone)) {
+	                record.put("PHONE_CELL", "미기재");
+	            } else {
+	                phone = decryptAES(phone);
+	                phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+	                record.put("PHONE_CELL", phone);
+	            }
+
+	            // 생년월일
+	            String birthday = (String) record.get("BIRTHDAY");
+
+	            if (birthday == null || "".equals(birthday)) {
+	                record.put("BIRTHDAY", "미기재");
+	            } else {
+	                record.put("BIRTHDAY", decryptAES(birthday));
+	            }
+
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("일별 접수 통계 복호화 실패", e);
+	    }
+
+	    return list;
 	}
 	
 	
@@ -420,7 +751,48 @@ public class StatisticServiceImpl implements StatisticService{
 	// 1) 일자별 제보 건수
 	@Override
 	public List volunteer(ParamsDto params) {
-		return statisticMapper.volunteer(params);
+		List<HashMap<String, Object>> list = statisticMapper.volunteer(params);
+
+	    try {
+
+	        for (HashMap<String, Object> record : list) {
+
+	            // 이름
+	            String name = (String) record.get("INFORMER_NAME");
+
+	            if (name == null || "".equals(name)) {
+	                record.put("INFORMER_NAME", "미기재");
+	            } else {
+	                record.put("INFORMER_NAME", decryptAES(name));
+	            }
+
+	            // 전화번호
+	            String phone = (String) record.get("PHONE_CELL");
+
+	            if (phone == null || "".equals(phone)) {
+	                record.put("PHONE_CELL", "미기재");
+	            } else {
+	                phone = decryptAES(phone);
+	                phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+	                record.put("PHONE_CELL", phone);
+	            }
+
+	            // 생년월일
+	            String birthday = (String) record.get("BIRTHDAY");
+
+	            if (birthday == null || "".equals(birthday)) {
+	                record.put("BIRTHDAY", "미기재");
+	            } else {
+	                record.put("BIRTHDAY", decryptAES(birthday));
+	            }
+
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("개인정보 복호화 실패", e);
+	    }
+
+	    return list;
 	}
 	
 	
@@ -444,9 +816,43 @@ public class StatisticServiceImpl implements StatisticService{
 	
 	
 	// 타. 모바일 앱 제보 통계
+	
+	// receipt_app 암호화 하고 작업해야할 듯 함
 	@Override
 	public List receiptAppStat(ParamsDto params) {
-		return statisticMapper.receiptAppStat(params);
+		List<HashMap<String, Object>> list = statisticMapper.receiptAppStat(params);
+
+	    try {
+
+	        for (HashMap<String, Object> record : list) {
+
+	            // 이름 복호화
+	            String name = (String) record.get("INFORMER_NAME");
+
+	            if (name == null || "".equals(name)) {
+	                record.put("INFORMER_NAME", "미기재");
+	            } else {
+	                record.put("INFORMER_NAME", decryptAES(name));
+	            }
+
+	            // 휴대폰 번호 복호화
+	            String phone = (String) record.get("PHONE_CELL");
+
+	            if (phone == null || "".equals(phone)) {
+	                record.put("PHONE_CELL", "미기재");
+	            } else {
+	                phone = decryptAES(phone);
+	                phone = phone.replaceAll("(02|.{3})(.+)(.{4})", "$1-$2-$3");
+	                record.put("PHONE_CELL", phone);
+	            }
+
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("개인정보 복호화 실패", e);
+	    }
+
+	    return list;
 	}
 	
 	
@@ -512,4 +918,41 @@ public class StatisticServiceImpl implements StatisticService{
 		return statisticMapper.orgType(params);
 	}
 	
+	
+	
+	
+	private String encryptAES(String plainText) throws Exception {
+
+	    String secretKey = "1234567890123456";
+
+	    SecretKeySpec keySpec =
+	            new SecretKeySpec(secretKey.getBytes("UTF-8"), "AES");
+
+	    Cipher cipher = Cipher.getInstance("AES");
+
+	    cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+
+	    byte[] encrypted =
+	            cipher.doFinal(plainText.getBytes("UTF-8"));
+
+	    return Base64.getEncoder().encodeToString(encrypted);
+	}
+	
+	
+	private String decryptAES(String encryptedText) throws Exception {
+
+	    String secretKey = "1234567890123456";
+
+	    SecretKeySpec keySpec =
+	            new SecretKeySpec(secretKey.getBytes("UTF-8"), "AES");
+
+	    Cipher cipher = Cipher.getInstance("AES");
+
+	    cipher.init(Cipher.DECRYPT_MODE, keySpec);
+
+	    byte[] decoded =
+	            Base64.getDecoder().decode(encryptedText);
+
+	    return new String(cipher.doFinal(decoded), "UTF-8");
+	}
 }

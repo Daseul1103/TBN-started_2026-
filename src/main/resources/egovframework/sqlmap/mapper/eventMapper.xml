@@ -132,6 +132,8 @@
 		<result property="flagAct" column="FLAG_ACT"/>
 		<result property="areaName" column="AREA_NAME"/>
 	</resultMap>
+	
+	
 	<select id="getAttendanceList" parameterType="eventVo" resultMap="getAttendanceList">
         SELECT K.INFORMER_ID, K.ACT_ID, K.FLAG_ACT, K.area_code, D.city as AREA_NAME, K.INFORMER_NAME, K.PHONE_CELL, K.ADDRESS_HOME
 		  FROM (SELECT C.INFORMER_ID, C.ACT_ID, C.FLAG_ACT, C.area_code, C.INFORMER_NAME, C.PHONE_CELL, C.ADDRESS_HOME
@@ -194,6 +196,8 @@
 		<result property="flagAct" column="FLAG_ACT"/>
 		<result property="areaName" column="AREA_NAME"/>
 	</resultMap>
+	
+	
 	<select id="getInformerList4Event" parameterType="eventVo" resultMap="getInformerList4Event">
         SELECT A.INFORMER_ID, A.ACT_ID, FLAG_ACT, A.AREA_CODE,B.city as AREA_NAME, A.INFORMER_NAME, A.PHONE_CELL
 		  FROM INFORMER A 
@@ -224,10 +228,10 @@
 					AND A.ACT_ID LIKE '%'||#{searchValue}||'%'
 				</when>
 				<when test="searchType eq 'informerName'">
-					AND A.INFORMER_NAME LIKE '%'||#{searchValue}||'%'
+					AND A.INFORMER_NAME = #{searchValue}
 				</when>
 				<otherwise>
-					AND A.phone_cell LIKE '%'||#{searchValue}||'%'
+					AND A.PHONE_CELL = #{searchValue}
 				</otherwise>					        
 		    </choose>
 		</if>
@@ -283,6 +287,7 @@
          WHERE EVENT_ID = #{EVENT_ID}
     </update>
     
+    
     <update id="saveAttendance">
         INSERT INTO EVENT_RECIPIENT
              (
@@ -297,6 +302,7 @@
       </foreach>  
              
     </update>
+    
     
     <update id="updateAttendance" parameterType="eventVo">
         UPDATE EVENT_RECIPIENT SET 
@@ -345,17 +351,7 @@
 	    ORDER BY EVENT_ID DESC
 	  </select>
         
-	  
-	  <!--  파일 등록  -->
-	<!--   <insert id="insertFile" parameterType="kr.co.wizbrain.tbn.event.vo.eFileVO">
-	    INSERT INTO EVENT_FILE_INFO 
-	    (FILE_ID, FILE_NAME, FILE_DIR, REG_DT,EVENT_ID)
-	    VALUES 
-	    <foreach collection="list" item="item" index="index" separator=",">
-	        (DBMS_RANDOM.STRING('X', 20), #{item.fileName}, #{item.fileDir}, SYSDATE, #{item.eventId})
-	    </foreach>
-	    
-		</insert> -->
+
 		
 		<insert id="insertFile" parameterType="kr.co.wizbrain.tbn.event.vo.eFileVO">
 			INSERT ALL

@@ -5,7 +5,7 @@
 <mapper namespace="kr.co.wizbrain.tbn.mileage.mapper.MileageMapper">
 
 	<!-- 굿 제보 마일리지 조회 -->
-	<select id="mileList" parameterType="kr.co.wizbrain.tbn.mileage.vo.MileageVO" resultType="java.util.Map">
+	<select id="mileList" parameterType="kr.co.wizbrain.tbn.mileage.vo.MileageVO" resultType="kr.co.wizbrain.tbn.mileage.vo.MileageVO">
 	    
 	    SELECT 
 		    j1.*,
@@ -52,7 +52,7 @@
 	
 
 	<!-- 우수 통신원 조회 -->
-	<select id="excellenceList" parameterType="kr.co.wizbrain.tbn.mileage.vo.MileageVO" resultType="java.util.Map">
+	<select id="excellenceList" parameterType="kr.co.wizbrain.tbn.mileage.vo.MileageVO" resultType="kr.co.wizbrain.tbn.mileage.vo.MileageVO">
 
 	    SELECT 
 	        j1.informer_id,
@@ -306,9 +306,9 @@
 	                    row_number() over(order by to_number(a.ADD_CNT) desc) as rnum 
 	                </otherwise>
 	            </choose>
-	           		,a.ind_id as informer_id,nvl(b.act_id,'없음') as act_id,nvl(b.informer_name,'미등록시민') as informer_name
+	           		,a.ind_id as informer_id,nvl(b.act_id,'없음') as act_id,b.informer_name
 		            ,a.area_code2 as area_code,b.org_id,b.org_name,a.ind_type2 as ind_type
-                    ,nvl(b.phone_cell,REGEXP_REPLACE(substr(a.ind_id,5,15), '(02|.{3})(.+)(.{4})', '\1-\2-\3')) as phone_cell
+                    ,b.phone_cell
 		            ,a.mon_cnt,a.rpt_grade,a.main_cnt,a.main_grade,a.add_cnt,a.add_grade,a.all_rank
 	        from (
 	            select 
@@ -349,7 +349,7 @@
 	            ,t2.ind_type as ind_type 
 	            from (
 	                select informer_id, act_id, informer_name, area_code, org_id, 
-	                       REGEXP_REPLACE(phone_cell, '(02|.{3})(.+)(.{4})', '\1-\2-\3') as PHONE_CELL
+	                       phone_cell
 	                from informer 
 	                WHERE area_code=#{AREA_CODE}
 	            ) t1 
@@ -418,9 +418,9 @@
 	                    row_number() over(order by to_number(a.ADD_CNT) desc) as rnum 
 	                </otherwise>
 	            </choose>
-	           		,a.ind_id as informer_id,nvl(b.act_id,'없음') as act_id,nvl(b.informer_name,'미등록시민') as informer_name
+	           		,a.ind_id as informer_id,nvl(b.act_id,'없음') as act_id,b.informer_name
 		            ,a.area_code2 as area_code,b.org_id,b.org_name,a.ind_type2 as ind_type
-                    ,nvl(b.phone_cell,REGEXP_REPLACE(substr(a.ind_id,5,15), '(02|.{3})(.+)(.{4})', '\1-\2-\3')) as phone_cell
+                    ,b.phone_cell
 		            ,a.mon_cnt,a.rpt_grade,a.main_cnt,a.main_grade,a.add_cnt,a.add_grade,a.all_rank
 	        from (
 	            select 
@@ -461,7 +461,7 @@
 	            ,t2.ind_type as ind_type 
 	            from (
 	                select informer_id, act_id, informer_name, area_code, org_id, 
-	                       REGEXP_REPLACE(phone_cell, '(02|.{3})(.+)(.{4})', '\1-\2-\3') as PHONE_CELL
+	                       phone_cell
 	                from informer 
 	                WHERE area_code=#{AREA_CODE}
 	            ) t1 
@@ -511,19 +511,9 @@
 	        D.ORG_NAME, 
 	        C.ACT_ID, 
 	        
-	        CASE 
-			    WHEN c.informer_id IS NULL AND INSTR(B.AW_ID, '_') > 0 
-			    THEN '미등록시민'
-			    ELSE C.INFORMER_NAME
-			END AS INFORMER_NAME,
+	        C.INFORMER_NAME,
 	        <!-- 전화번호 -->
-	        CASE 
-			    WHEN c.informer_id IS NULL AND INSTR(B.AW_ID, '_') > 0 
-			    THEN  REGEXP_REPLACE(
-	        			SUBSTR(SUBSTR(B.AW_ID, INSTR(B.AW_ID, '_') + 1), 1, LENGTH(SUBSTR(B.AW_ID, INSTR(B.AW_ID, '_') + 1)) - 14)
-	        			, '(02|.{3})(.+)(.{4})', '\1-\2-\3')
-			    ELSE REGEXP_REPLACE(C.PHONE_CELL, '(02|.{3})(.+)(.{4})', '\1-\2-\3')
-			END as PHONE_CELL,
+	        C.PHONE_CELL,
 	        <!-- 미등록시민 끝-->
 	         
 	        DECODE(B.AW_TYPE, '0', '교통제보우수자', '1', '주요정보제공우수자', '2', '실적증가자') AS AW_TYPE, 
@@ -590,19 +580,9 @@
 	        D.ORG_NAME, 
 	        C.ACT_ID, 
 	        
-	        CASE 
-			    WHEN c.informer_id IS NULL AND INSTR(B.AW_ID, '_') > 0 
-			    THEN '미등록시민'
-			    ELSE C.INFORMER_NAME
-			END AS INFORMER_NAME,
+	        C.INFORMER_NAME,
 	        <!-- 전화번호 -->
-	        CASE 
-			    WHEN c.informer_id IS NULL AND INSTR(B.AW_ID, '_') > 0 
-			    THEN  REGEXP_REPLACE(
-	        			SUBSTR(SUBSTR(B.AW_ID, INSTR(B.AW_ID, '_') + 1), 1, LENGTH(SUBSTR(B.AW_ID, INSTR(B.AW_ID, '_') + 1)) - 14)
-	        			, '(02|.{3})(.+)(.{4})', '\1-\2-\3')
-			    ELSE REGEXP_REPLACE(C.PHONE_CELL, '(02|.{3})(.+)(.{4})', '\1-\2-\3')
-			END as PHONE_CELL,
+	        C.PHONE_CELL,
 	        <!-- 미등록시민 끝-->
 	         
 	        DECODE(B.AW_TYPE, '0', '교통제보우수자', '1', '주요정보제공우수자', '2', '실적증가자') AS AW_TYPE, 
@@ -683,7 +663,7 @@
 	
 	
 	<!-- 최고 통신원 기본 정보 조회 (변경 후) -->
-	<select id="bestIfrmList" resultType="java.util.Map" parameterType="kr.co.wizbrain.tbn.mileage.vo.MileageVO">
+	<select id="bestIfrmList" resultType="kr.co.wizbrain.tbn.mileage.vo.MileageVO" parameterType="kr.co.wizbrain.tbn.mileage.vo.MileageVO">
 		WITH ALL_CNT AS (
 		    SELECT IND_ID, SUM(MON_CNT) AS ALL_POINT
 		    FROM STAT_TBN_MONRPT
@@ -703,49 +683,7 @@
 		ORDER BY ALL_POINT DESC
 	</select>
 	
-	<!-- 기존 쿼리로 조회 시 사용 쿼리문
-	<select id="bestIfrmList" resultType="java.util.Map" parameterType="kr.co.wizbrain.tbn.mileage.vo.MileageVO">
-		SELECT a.*,b.cnt as ALL_POINT
-		FROM 
-		(
-		    select t1.*,t2.city as AREA_NAME from 
-		    (
-		        SELECT informer_id,informer_name,area_code,org_name,reg_date
-		        FROM informer
-		        WHERE reg_date IS NOT NULL
-		        and informer_type=0
-		          AND REGEXP_LIKE(reg_date, '^\d{4}-\d{2}-\d{2}$')
-		          and reg_date <![CDATA[ <= ]]> to_char(ADD_MONTHS(SYSDATE, -240),'YYYY-MM-DD')
-		    )t1 
-		    inner join (select * from code_areacode)t2
-		    on t1.area_code=t2.area_code
-		) a
-		INNER JOIN (
-		    SELECT individual_id,cnt
-		    FROM (
-		        SELECT individual_id, COUNT(*) AS cnt
-		        FROM report_receipt
-		        WHERE receipt_day <![CDATA[ >= ]]> ADD_MONTHS(SYSDATE, -60)
-		          AND individual_id IS NOT NULL
-		        GROUP BY individual_id
-		    ) t
-		    WHERE t.cnt <![CDATA[ >= ]]> 5000
-		) b
-		ON a.informer_id = b.individual_id
-		order by b.cnt desc
-	</select> -->
-	
-	
-	<!-- 최고 통신원 전체 제보건수 조회 -->
-<!-- 	<select id="bestIfrmCnt" resultType="java.util.Map">
-    select individual_id as informer_id, count(*) as all_point
-    from report_receiptz
-    where individual_id in
-    <foreach item="item" index="index" collection="bestIfrmList" open="(" separator="," close=")">
-        #{item.INFORMER_ID}
-    </foreach>
-    group by individual_id
-</select> -->
+
 	
 
 </mapper>

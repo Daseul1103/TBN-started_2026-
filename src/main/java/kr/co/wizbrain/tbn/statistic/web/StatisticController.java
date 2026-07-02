@@ -230,19 +230,19 @@ public class StatisticController extends BaseController{
 			List rptMDatatype = new ArrayList();	
 			
 			// 시간대별 데이터 가져오기
-			timeData = statisticService.timeBroadData(params);
+			timeData = statisticService.timeBroadData(params); // 개인정보 암호화 대상 X
 			// 제보자별 현황
-			ifrmData = statisticService.informerTypeAll(params);;
+			ifrmData = statisticService.informerTypeAll(params);; // 개인정보 암호화 대상 X
 			// 제보유형 현황
-			rptTData = statisticService.reportTypeAll(params);
+			rptTData = statisticService.reportTypeAll(params); // 개인정보 암호화 대상 X
 			// 제보수단별 현황
-			rptMData = statisticService.reportmeanTypeAll(params);
+			rptMData = statisticService.reportmeanTypeAll(params); // 개인정보 암호화 대상 X
 			// 제보자별 현황
-			ifrmDatatype = statisticService.selectInfrm();
+			ifrmDatatype = statisticService.selectInfrm(); // 개인정보 암호화 대상 X
 			// 제보유형 현황
-			rptTDatatype = statisticService.selectRpt();
+			rptTDatatype = statisticService.selectRpt(); // 개인정보 암호화 대상 X
 			// 제보수단별 현황
-			rptMDatatype =  statisticService.selectRtt();
+			rptMDatatype =  statisticService.selectRtt(); // 개인정보 암호화 대상 X
 			
 			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
 			String titleDate = "(" + params.getString("stdt") + "~" + params.getString("edt") + ")";
@@ -277,6 +277,8 @@ public class StatisticController extends BaseController{
 		
 		ParamsDto params = getParams(true);
 		try {
+			
+			// 개인정보 암호화 대상 X
 			List Data = statisticService.extrBro(params);//2. 긴급교통정보_방송현황분석
 			
 			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
@@ -306,6 +308,8 @@ public class StatisticController extends BaseController{
 		
 		ParamsDto params = getParams(true);
 		try {
+			
+			// 개인정보 암호화 대상 X
 			List Data = statisticService.disastorStat(params);	//무 제보자 통신원 목록
 			
 			/*26-04-16 : 본부 요청으로 파일 다운로드 명에 시작일 및 종료일 포함*/
@@ -334,13 +338,26 @@ public class StatisticController extends BaseController{
 	public String receiptUse(Model model,HttpServletRequest request) throws Exception {
 		ParamsDto params = getParams(true);
 		try {
+			
+			// 개인정보 암호화 대상 X
 			List headList = statisticService.selectInfrm();	//제보자 유형 title
+			
+			// 개인정보 암호화 대상 X
 			List useAllList = statisticService.informerTypeAll(params);	//제보자 유형별 건수
+			
+			// 개인정보 암호화 대상 X
 			List useOurOther = statisticService.informerTypeOurOther(params);	//제보자 유형별 자국/타국 건수
+			
+			// 개인정보 암호화 대상 X
 			List useDaily = statisticService.receiptUseDaily(params);	//일별 상세
-				
+			
+			// 개인정보 암호화 대상 X
 			List regionHead = statisticService.selectInfrm();	//방송국 title
+			
+			// 개인정보 암호화 대상 X
 			List sumMonth = statisticService.monthSendYNA07A08(params);	// 월별 합계
+			
+			// 개인정보 암호화 대상 X
 			List Data = statisticService.dailyRegionSendYNA07A08(params);	// 일별 방송국별 데이터
 				
 			int eSize = headList.size(); // 통신원 유형 크기
@@ -383,15 +400,19 @@ public class StatisticController extends BaseController{
 	public String orgOrgSub(Model model,HttpServletRequest request) throws Exception {
 		
 		ParamsDto params = getParams(true);
-		//문자열        
+		//문자열     
+		// 개인정보 암호화 대상 X
 		List eraList =  statisticService.statDateCal(params); 
 		params.add("chkArr", eraList);
+		
 		List sheetNames = new ArrayList();//기관별 시트명
 		List informerListMain =new ArrayList(); //왼쪽 통신원부 
 		List cntListMain =new ArrayList(); //오른쪽 건수
 		
-		List orgOrgSubList = new ArrayList();
+		List<RecordDto> orgOrgSubList = new ArrayList();
 		
+		
+		// 26-07 : 암호화 작업 완료
 		orgOrgSubList = statisticService.orgOrgSub(params);
 		
 		RecordDto record = (RecordDto) orgOrgSubList.get(0);
@@ -403,11 +424,13 @@ public class StatisticController extends BaseController{
 		model.addAttribute("fileName", "통신원 중소 분류별 통계"+params.getString("city")+ titleDate + ".xls");
 		model.addAttribute("titleName", "통신원 중소 분류별 통계"+params.getString("city")+".xls");
 		model.addAttribute("sheetNames1", "통신원 중소 분류별 통계");
+		
 		//해당 부분은 위 부분과 대조하여 검토
 		model.addAttribute("orgOrgSub", orgOrgSubList);
 		model.addAttribute("eraList", eraList);
 		model.addAttribute("start_date", params.get("start_date"));
 		model.addAttribute("org_id", params.get("org_id"));
+		
 		return "hssfExcel";
 	}
 	
@@ -421,6 +444,8 @@ public class StatisticController extends BaseController{
 		ParamsDto params = getParams(true);
 
 		try {
+			
+			//26-07 : 개인정보 암호화 작업 완료
 		    List dataList = statisticService.informerReport(params);
 		    int allInformer = dataList.size();
 
@@ -453,11 +478,14 @@ public class StatisticController extends BaseController{
 		ParamsDto params = getParams(true);
 		try {
 			// 시상관리 % 가져오기
+			// 개인정보 암호화 대상 X
 			List<AwardVO> perList = statisticService.perList(params);
 	
 			// 최대 값(total) 가져오기
+			// 26-07 : 개인정보 암호화 작업 완료
 			List totalList = statisticService.totalList(params);
 					
+			// 26-07 : 개인정보 암호화 작업 완료
 			List dataList = statisticService.yearReceipt(params); // 엑셀에 사용할 데이터 리스트 가져오기
 			
 			int allInformer = dataList.size(); // 총 인원수 구해오기 
@@ -494,11 +522,14 @@ public class StatisticController extends BaseController{
 		ParamsDto params = getParams(true);
 		try {
 			// 시상관리 % 가져오기
+			// 개인정보 암호화 대상 X
 			List<AwardVO> perList = statisticService.perList(params);
 					
+			// 개인정보 암호화 대상 X
 			List dataList = statisticService.yearOrgStat(params); // 엑셀에 사용할 데이터 리스트 가져오기
 			
 			// 최대 값(total) 가져오기
+			// 개인정보 암호화 대상 X
 			List totalList = statisticService.totalListOrg(params);
 						
 			int allInformer = dataList.size(); // 총 인원수 구해오기 
@@ -540,7 +571,9 @@ public class StatisticController extends BaseController{
 		List cntListMain =new ArrayList(); //오른쪽 건수
 		
 		List vltList = new ArrayList();
+		
 		//flagService
+		// 26-07 : 개인정보 암호화 작업 완료
 		vltList = statisticService.volunteer(params);
 		
 		//List orgType = statisticService.orgType(params);//지역별 통신원 하부 기관 조회
@@ -606,15 +639,13 @@ public class StatisticController extends BaseController{
 	public String muJebo(Model model,HttpServletRequest request) throws Exception {
 		
 		ParamsDto params = getParams(true);
-		/*int monthCnt = Integer.parseInt(params.getString("start_date").substring(4,6));
-		List<Integer> monList = new ArrayList<>();
-		//1월부터 해당월까지의 무제보자
-		for (int i = 0; i < monthCnt; i++) {
-			monList.add(i);
-		}
-		params.add("monList", monList);*/
+
 		try {
+			
+			// 26-07 : 개인정보 암호화 작업 완료
 			List headList = statisticService.monInfrmList(params);	//제보자 리스트
+			
+			// 26-07 : 개인정보 암호화 작업 완료
 			List Data = statisticService.monInfrmCnt(params);	//월별 건수
 
 			model.addAttribute("mapping", "muJebo");
@@ -650,6 +681,7 @@ public class StatisticController extends BaseController{
 			List monthInformerMain = new ArrayList();
 			List monthInformer1InformMain = new ArrayList();
 			
+			// 개인정보 암호화 대상 X
 			List informerType = statisticService.selectInfrm();	//제보자 유형 title
 			
 			List nullCatch = new ArrayList();
@@ -658,10 +690,20 @@ public class StatisticController extends BaseController{
 				RecordDto record = (RecordDto) informerType.get(i);
 				params.remove("informer_type");
 				params.add("informer_type",record.get("CODE"));
+				
+				// 개인정보 암호화 대상 X
 				List monthReceipt = statisticService.monthReceipt(params);		//월별 전체 수집건수
+				
+				// 개인정보 암호화 대상 X
 				List monthOurReceipt = statisticService.monthOurReceipt(params); //월별 자국 수집건수
+				
+				// 개인정보 암호화 대상 X
 				List monthOtherReceipt = statisticService.monthOtherReceipt(params); //월별 타국 수집건수
+				
+				// 개인정보 암호화 대상 X
 				List monthInformer = statisticService.monthInformer(params); //월별 제보자 수
+				
+				// 개인정보 암호화 대상 X
 				List monthInformer1Inform = statisticService.monthInformer1Inform(params); //월별 1건이상 제보자 수
 				
 				
@@ -748,6 +790,8 @@ public class StatisticController extends BaseController{
 				monList.add(i);
 			}
 			params.add("monList", monList);
+			
+			// 개인정보 암호화 대상 X
 			List Data = statisticService.nationalIncident(params);	
 			// start_date=20260501
 			model.addAttribute("mapping", "nationalIncident");
@@ -782,6 +826,8 @@ public class StatisticController extends BaseController{
 		}
 		params.add("monList", monList);*/
 		try {
+			
+			// 26-07 : 개인정보 암호화 작업 완료
 			List headList = statisticService.muJeboList(params);	//무 제보자 통신원 목록
 			List Data = statisticService.muJeboList(params);	//무 제보자 통신원 목록
 			
@@ -813,6 +859,8 @@ public class StatisticController extends BaseController{
 		try {
 			int monthCnt = Integer.parseInt(params.getString("start_date").substring(4,6));
 			
+			
+			// 개인정보 암호화 대상 X
 			List Data = statisticService.informerStats(params);	//교통정보 수집원 현황
 			
 			model.addAttribute("mapping", "standardInformer");
@@ -840,6 +888,8 @@ public class StatisticController extends BaseController{
 	public String krGas(Model model,HttpServletRequest request) throws Exception {
 		ParamsDto params = getParams(true);
 		try {
+			
+			// 26-07 : 개인정보 암호화 작업 완료
 			List Data = statisticService.krGasMonCnt(params);	//제보자 유형별 건수
 			
 			model.addAttribute("mapping", "korLx");

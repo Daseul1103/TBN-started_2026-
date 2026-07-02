@@ -21,7 +21,7 @@ public interface EventMapper{
 
 	int getAllEventListSize(EventVO paramVO);
 
-	List<EventVO> getAttendanceList(EventVO paramVO);
+	List<InfrmVO> getAttendanceList(EventVO paramVO);
 
 	List<InfrmVO> getInformerList4Event(EventVO paramVO);
 

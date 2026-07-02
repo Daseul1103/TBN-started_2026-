@@ -185,9 +185,9 @@
 					<!-- 서브메뉴 탭영역 시작 -->
 					<div class="gnb_tab">
 						<ul class="lst_tab">
-							<li><a href="javascript:changePage('select')">우수제보자 조회</a></li>
+							<li><a href="javascript:changePage('select')">우수제보자 선정</a></li>
 							<li class="ns"></li>
-							<li class="on">우수제보자 선정</li>
+							<li class="on">우수제보자 조회</li>
 							<li class="ns"></li>
 							<li><a href="javascript:changePage('standard')">선정 기준</a></li>
 						</ul>

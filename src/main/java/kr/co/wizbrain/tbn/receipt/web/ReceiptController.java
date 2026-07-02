@@ -88,6 +88,8 @@ public class ReceiptController {
 		return mv;
 	}
 	
+	
+	
 	//pickup call 테이블에 전화온것이 있을경우 조회
 	//실시간 풀링
 	@RequestMapping("/receipt/checkIfPickUpInfoExists.ajax")
@@ -99,6 +101,7 @@ public class ReceiptController {
 		mv.addObject("data", list);
 		return mv;
 	}
+	
 	
 	
 	//전화온 테이블에서 전화 받았을 시  
@@ -148,6 +151,8 @@ public class ReceiptController {
 		
 	}
 	
+	
+	
 //	@RequestMapping("/receipt/test.do")
 //	public ModelAndView subscribe(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 //		logger.debug("---------------------Subscribing---------------------");
@@ -185,6 +190,8 @@ public class ReceiptController {
 
 		return mv;
 	}
+	
+	
 	
 	//부재중 전화목록 조회
 	@RequestMapping("/receipt/missedCallList.do")

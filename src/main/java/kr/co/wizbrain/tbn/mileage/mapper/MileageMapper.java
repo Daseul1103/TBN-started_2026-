@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import egovframework.rte.psl.dataaccess.mapper.Mapper;
 import kr.co.wizbrain.tbn.award.vo.AwardVO;
+import kr.co.wizbrain.tbn.comm.RecordDto;
 import kr.co.wizbrain.tbn.mileage.vo.MileageVO;
 import kr.co.wizbrain.tbn.option.vo.OptAreaVo;
 
@@ -43,14 +44,12 @@ public interface MileageMapper {
 	void deleteAward(@Param("selection")String[] slt);
 	
 	// 우수 제보자 > 수상자 선정 엑셀 다운로드
-	List getAwardInformerList2(AwardVO paramVO);
+	List<RecordDto> getAwardInformerList2(AwardVO paramVO);
 	
 	// 우수 제보자 > 수상자 조회 엑셀 다운로드
-	List selectUserAwardList2(AwardVO paramVO);
+	List<RecordDto> selectUserAwardList2(AwardVO paramVO);
 	
 	// 최고 통신원 기본 정보 조회
 	public List<MileageVO> bestIfrmList(MileageVO MileageVO);
-	
-	// 최고 통신원 전체 제보건수 조회
-	public List<MileageVO> bestIfrmCnt(@Param("bestIfrmList") List<MileageVO> bestIfrmList);
+
 }

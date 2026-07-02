@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.wizbrain.tbn.broadcast.mapper.BroadcastMapper">
     
-    <select id="countBroadcastList" resultType="int">
+    <!-- <select id="countBroadcastList" resultType="int">
         SELECT COUNT(*) 
         	FROM (SELECT A.RECEIPT_ID
 				        , A.R_TEL
@@ -31,30 +31,46 @@
 	            		AND REGION_ID = #{AREA_CODE}
 	            	</if>
 				    AND FLAG_SEND = 'Y')
-    </select>
+    </select> -->
     
     
-    <!-- <select id="countBroadcastList" resultType="int">
-	    SELECT
-			    (SELECT COUNT(*) 
-			       FROM REPORT_RECEIPT_TODAY 
-			      WHERE RECEIPT_DAY= to_char(sysdate,'YYYYMMDD')
-			      <if test="!AREA_CODE.equals('080')">
-			          AND REGION_ID = #{AREA_CODE}
-			      </if>
+    <select id="countBroadcastList" resultType="int">
+	    SELECT COUNT(*)
+			FROM (
+			    SELECT
+			          A.RECEIPT_ID
+			        , A.FLAG_BROD
+			        , TO_CHAR(TO_DATE(A.RECEIPT_TIME,'HH24MI'),'HH24:MI') AS RECEIPT_TIME
+			        , A.REPORT_TYPE
+			        , B.BAS_NAME
+			        , C.TYPE_NAME
+			        , A.MEMO
+			        , A.RECEIPT_DAY
+			        , D.AREA_NAME
+			        , A.FLAG_IMPORTANT
+			
+			    FROM REPORT_RECEIPT_TODAY A
+			
+			    LEFT JOIN CODE_REPORT_TYPE B
+			           ON A.REPORT_TYPE = B.BAS_SCOD
+			
+			    LEFT JOIN CODE_INFORMER_TYPE C
+			           ON A.INDIVIDUAL_TYPE = C.TYPE_ID
+			
+			    LEFT JOIN CODE_AREACODE D
+			           ON A.REGION_ID = D.AREA_CODE
+			
+			    WHERE B.BAS_LCOD = '100'
+			      AND RECEIPT_DAY = TO_CHAR(SYSDATE,'YYYYMMDD')
+			
+			    <if test="!AREA_CODE.equals('080')">
+			        AND REGION_ID = #{AREA_CODE}
+			    </if>
+			
 			      AND FLAG_SEND = 'Y'
-			    )
-			  + (SELECT COUNT(*) 
-			       FROM RECEIPT_APP 
-			      WHERE RECEIPT_DAY= to_char(sysdate,'YYYYMMDD')
-			      <if test="!AREA_CODE.equals('080')">
-			          AND AREA_CODE = #{AREA_CODE}
-			      </if>
-			      AND FLAG_SEND = 'Y'
-			    )
-			  AS TOTAL_COUNT
-			FROM DUAL
-	</select> -->
+			)
+		    
+	</select>
 
     <!-- <select id="selectTodaysList" resultType="broadCastListVO">
 	    SELECT * 

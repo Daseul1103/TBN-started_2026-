@@ -5,35 +5,37 @@
  * */
 
 function stMainIdx(sessionVo){
-	//세션 체크기능 -> 향후 복구 필요
+	
+	// 페이지가 완전히 종료(unload)될 때 호출
+    // 새로고침인지 브라우저 종료인지 구분하기 위한 플래그 설정
 	window.onunload = function() {
-	   ////console.log('unload');
 	    reloadOrKill(false);
 	}
 	
+	// 페이지 최초 로드 시 실행
+    // 새로고침 여부를 판단하기 위한 초기 설정
 	$(function() {
-		//console.log("페이지 로드시 체크");
 		reloadOrKill(true);
 	});
 	
-	//세션 받아오는 꺽쇠 넣을것 향후
-	
+	// 로그인 세션 존재 여부 확인
 	if(sessionVo==''){
-		////console.log("로그인 세션X");//로그인 안되있음
-		//로그인 페이지로 이동
+		 // 세션이 없으면 로그인 화면으로 이동
 		$("#changeBody").load("/common/login.do");
 	}else{
-		//메인 화면으로 이동
+		// 세션이 있으면 메인 화면으로 이동
 		$("#changeBody").load("/common/main.do");	
 	}
 	
-	//탭이나 창 닫기시 로그아웃 처리
+	// 브라우저 종료 또는 새로고침 직전에 실행
 	$(window).bind("beforeunload", function (e){
-		//console.log("언로드됨 : "+rkFlag);
+		
+		// → 새로고침이 아닌 브라우저(탭) 종료로 판단하여 로그아웃 처리
 		//reloadOrKill(true);
-		if(!rkFlag){//false일 경우만 실행
+		if(!rkFlag){
 			$("#changeBody").load("/user/reloadOrKill.do");
 		}else{
+			// 새로고침인 경우에는 로그아웃하지 않고 플래그만 초기화
 			rkFlag=false;
 		}
 	});

@@ -390,8 +390,8 @@
 		FROM 
 		(
 		    SELECT 
-		        A.informer_id,
-		        A.act_id AS 통신원ID,
+		        NVL(TO_CHAR(A.informer_id), '정보없음') AS INFORMER_ID,
+    			NVL(A.act_id, '정보없음') AS 통신원ID,
 		        A.AREA_CODE,
 		        A.INFORMER_TYPE,
 		        NVL(A.informer_name,'미기재') AS 통신원이름,
@@ -2986,70 +2986,66 @@
 
 
 	<select id="yearReceipt" parameterType="params" resultType="java.util.HashMap">
-		SELECT 
-		    IFM.*, 
-		    NVL(STATT.JAN, 0) AS JAN,
-		    NVL(STATT.FEB, 0) AS FEB,
-		    NVL(STATT.MAR, 0) AS MAR,
-		    NVL(STATT.APR, 0) AS APR,
-		    NVL(STATT.MAY, 0) AS MAY,
-		    NVL(STATT.JUN, 0) AS JUN,
-		    NVL(STATT.JUL, 0) AS JUL,
-		    NVL(STATT.AUG, 0) AS AUG,
-		    NVL(STATT.SEP, 0) AS SEP,
-		    NVL(STATT.OCT, 0) AS OCT,
-		    NVL(STATT.NOV, 0) AS NOV,
-		    NVL(STATT.DEC, 0) AS DEC
-		FROM 
-		    (
-		        SELECT 
-		            A.informer_id,
-		            A.act_id,
-		            A.AREA_CODE,
-		            NVL(A.informer_name, '미기재') AS informer_name,
-		            NVL(A.phone_cell, '미기재') AS phone_cell,
-		            NVL(B.org_name, '정보없음') AS org_name
-		        FROM
-		            INFORMER A
-		        LEFT JOIN
-		            organization B ON A.ORG_ID = B.ORG_ID
-		            AND A.INFORMER_TYPE = B.IND_TYPE
-		            AND A.AREA_CODE = B.AREA_CODE
-		        WHERE 
-		            A.area_code = #{REGION_ID}
-		            AND A.INFORMER_TYPE in ('0','8')
-		            AND A.FLAG_ACT = 'Y'
-		    ) IFM
-		LEFT JOIN
-		    (
-		        SELECT 
-		            RPT.INDIVIDUAL_ID,
-		            RPT.REGION_ID,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '01' THEN 1 END) AS JAN,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '02' THEN 1 END) AS FEB,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '03' THEN 1 END) AS MAR,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '04' THEN 1 END) AS APR,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '05' THEN 1 END) AS MAY,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '06' THEN 1 END) AS JUN,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '07' THEN 1 END) AS JUL,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '08' THEN 1 END) AS AUG,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '09' THEN 1 END) AS SEP,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '10' THEN 1 END) AS OCT,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '11' THEN 1 END) AS NOV,
-		            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '12' THEN 1 END) AS DEC
-		        FROM 
-		            REPORT_RECEIPT RPT
-		        WHERE 
-		            RPT.region_id = #{REGION_ID}
-		            AND RPT.RECEIPT_DAY BETWEEN TO_DATE(#{start_date}, 'YY/MM/DD') AND TO_DATE(#{end_date}, 'YY/MM/DD')
-		        GROUP BY 
-		            RPT.INDIVIDUAL_ID, 
-		            RPT.REGION_ID
-		    ) STATT
-		ON 
-		    IFM.informer_id = STATT.INDIVIDUAL_ID
-		    AND IFM.AREA_CODE = STATT.REGION_ID
-		    AND STATT.INDIVIDUAL_ID IS NOT NULL
+	    SELECT
+	        IFM.*,
+	        NVL(STATT.JAN, 0) AS JAN,
+	        NVL(STATT.FEB, 0) AS FEB,
+	        NVL(STATT.MAR, 0) AS MAR,
+	        NVL(STATT.APR, 0) AS APR,
+	        NVL(STATT.MAY, 0) AS MAY,
+	        NVL(STATT.JUN, 0) AS JUN,
+	        NVL(STATT.JUL, 0) AS JUL,
+	        NVL(STATT.AUG, 0) AS AUG,
+	        NVL(STATT.SEP, 0) AS SEP,
+	        NVL(STATT.OCT, 0) AS OCT,
+	        NVL(STATT.NOV, 0) AS NOV,
+	        NVL(STATT.DEC, 0) AS DEC
+	    FROM
+	    (
+	        SELECT
+	            NVL(A.INFORMER_ID, '정보없음') AS INFORMER_ID,
+	            NVL(A.ACT_ID, '정보없음') AS ACT_ID,
+	            NVL(A.AREA_CODE, '정보없음') AS AREA_CODE,
+	            NVL(A.INFORMER_NAME, '미기재') AS INFORMER_NAME,
+	            NVL(A.PHONE_CELL, '미기재') AS PHONE_CELL,
+	            NVL(B.ORG_NAME, '정보없음') AS ORG_NAME
+	        FROM INFORMER A
+	        LEFT JOIN ORGANIZATION B
+	               ON A.ORG_ID = B.ORG_ID
+	              AND A.INFORMER_TYPE = B.IND_TYPE
+	              AND A.AREA_CODE = B.AREA_CODE
+	        WHERE A.AREA_CODE = #{REGION_ID}
+	          AND A.INFORMER_TYPE IN ('0','8')
+	          AND A.FLAG_ACT = 'Y'
+	    ) IFM
+	    LEFT JOIN
+	    (
+	        SELECT
+	            RPT.INDIVIDUAL_ID,
+	            RPT.REGION_ID,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '01' THEN 1 END) AS JAN,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '02' THEN 1 END) AS FEB,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '03' THEN 1 END) AS MAR,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '04' THEN 1 END) AS APR,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '05' THEN 1 END) AS MAY,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '06' THEN 1 END) AS JUN,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '07' THEN 1 END) AS JUL,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '08' THEN 1 END) AS AUG,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '09' THEN 1 END) AS SEP,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '10' THEN 1 END) AS OCT,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '11' THEN 1 END) AS NOV,
+	            COUNT(CASE WHEN TO_CHAR(RECEIPT_DAY, 'MM') = '12' THEN 1 END) AS DEC
+	        FROM REPORT_RECEIPT RPT
+	        WHERE RPT.REGION_ID = #{REGION_ID}
+	          AND RPT.RECEIPT_DAY BETWEEN TO_DATE(#{start_date}, 'YY/MM/DD')
+	                                  AND TO_DATE(#{end_date}, 'YY/MM/DD')
+	        GROUP BY
+	            RPT.INDIVIDUAL_ID,
+	            RPT.REGION_ID
+	    ) STATT
+	      ON IFM.INFORMER_ID = STATT.INDIVIDUAL_ID
+	     AND IFM.AREA_CODE = STATT.REGION_ID
+	     AND STATT.INDIVIDUAL_ID IS NOT NULL
 	</select>
 	
 	

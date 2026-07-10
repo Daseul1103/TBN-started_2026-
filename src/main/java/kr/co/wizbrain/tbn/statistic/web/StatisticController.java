@@ -905,15 +905,26 @@ public class StatisticController extends BaseController{
 			
 			dayReceiptList = statisticService.dayReceipt(params);
 			
-			RecordDto record = (RecordDto) dayReceiptList.get(0);
+			String orgName = "";
+
+			if (dayReceiptList != null && !dayReceiptList.isEmpty()) {
+			    RecordDto record = (RecordDto) dayReceiptList.get(0);
+			    orgName = record.getString("ORG_NAME");
+			}
+			
 			model.addAttribute("mapping", "dayReceipt");
-			model.addAttribute("fileName", record.get("ORG_NAME")+" 통신원 일자별 제보건수"+params.getString("city")+ "(" +  params.get("start_date")+").xls");
-			model.addAttribute("titleName", record.get("ORG_NAME")+" 통신원 일자별 제보건수"+params.getString("city")+".xls");
+			model.addAttribute("fileName",
+			        orgName + " 통신원 일자별 제보건수"
+			        + params.getString("city")
+			        + "(" + params.get("start_date") + ").xls");
+			model.addAttribute("titleName",
+			        orgName + " 통신원 일자별 제보건수"
+			        + params.getString("city") + ".xls");
 			model.addAttribute("sheetNames1", "일자별 제보건수");
-			//해당 부분은 위 부분과 대조하여 검토
 			model.addAttribute("dayReceiptList", dayReceiptList);
 			model.addAttribute("start_date", params.get("start_date"));
 			model.addAttribute("org_id", params.get("org_id"));
+			
 			return "hssfExcel";
 		} catch (Exception e) {// try 블록에서 발생한 모든 예외(Exception 및 하위)를 여기서 잡음
 	        e.printStackTrace();// 예외 스택트레이스를 표준에러(stderr)로 출력 (보통 톰캣 콘솔/catalina.out 쪽)

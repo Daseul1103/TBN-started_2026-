@@ -506,6 +506,7 @@
             	<form id="informerEditFrm" name="informerEditFrm" method="post" enctype="multipart/form-data">
             		<input type="hidden" id="pageDiv" name="pageDiv" value="${pageDiv}"></input>
             		<input type="hidden" id="applyId" name="applyId" value="${informerInfo.applyId}"></input>
+            		<input type="hidden" id="photoFile" name="photoFile" value="${informerInfo.localFilePath}"></input>
 	            	<!-- 통신원 등록 - 기본정보 입력란 -->
 	            	<div style="background-color: white;width: 1030px;height: 550px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
 	            		<!-- 기본정보 타이틀 -->
@@ -620,11 +621,6 @@
 								</tr>
 								
 								<tr>								
-								    <th>사진</th>								
-								    <td>
-										<input type="hidden" class="input_base" id="localFilePath" name="localFilePath" value="${informerInfo.localFilePath}" />
-                                        <input type="file" id="file" name="file" onchange="changePicture($(this));" style="width:200px;"/>
-								    </td>
 								    <th>활동 상태</th>
 								    <td>
 										<input type="text" class="input_base" id="flageAct" name="flageAct" value="신규가입" disabled />

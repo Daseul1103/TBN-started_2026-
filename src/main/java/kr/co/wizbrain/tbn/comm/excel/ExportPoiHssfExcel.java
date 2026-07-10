@@ -6844,8 +6844,24 @@ public class ExportPoiHssfExcel extends AbstractView {
     	List<AwardVO> perList = (List<AwardVO>)model.get("perList");
     	List totalList = (List) model.get("totalList");
     	
+    	int allSum = 0; // 총 건수 => 엑셀 상단에 사용
+    	int allInformer = dataList.size(); // 총 인원 수 => 엑셀 상단에 사용
+
+    	int allPer = 0; // 총점 기준 %
+    	int maxSend = 0; // 최대 제보자 건수
+
+    	Map<String, Object> total = null;
+    	AwardVO per = null;
+
+    	if (allInformer > 0) {
+    	    total = (Map<String, Object>) totalList.get(0);
+    	    per = (AwardVO) perList.get(0);
+
+    	    allPer = Integer.parseInt(per.getALL_PER());
+    	    maxSend = Integer.parseInt(total.get("TOTAL").toString());
+    	}
     	
-    	Map<String, Object> total = (Map<String, Object>) totalList.get(0);
+/*    	Map<String, Object> total = (Map<String, Object>) totalList.get(0);
     	AwardVO per = (AwardVO) perList.get(0);
     	
     	int allSum = 0; // 총 건수 => 엑셀 상단에 사용
@@ -6853,7 +6869,7 @@ public class ExportPoiHssfExcel extends AbstractView {
     	
     	int allPer = Integer.parseInt(per.getALL_PER()); // 총점 기준 %
     	int maxSend = Integer.parseInt(total.get("TOTAL").toString()); // 최대 제보자 건수
-    	
+    	*/
     	
     	int sendNsum = 0; // 제보건수
     	int sendYsum = 0; // 방송 건수
@@ -7081,199 +7097,201 @@ public class ExportPoiHssfExcel extends AbstractView {
 
 		int Mval = 0;
 		
-        for(int i = 0; i < allInformer; i++) {
-        	int infrmSend = 0; // 통신원 개인 별 제보 건수 카운터
-        	Map<String, Object> record = (Map<String, Object>) dataList.get(i);
-        	
-        	HSSFRow datarow = sheet.createRow(rowcnt); // 1. 행 생성
-        	
-        	HSSFCell id = datarow.createCell(0);
-        	id.setCellValue(record.get("ACT_ID").toString()); 
-        	id.setCellStyle(dataStyle);
-        	
-        	HSSFCell name = datarow.createCell(1);
-        	name.setCellValue(record.get("INFORMER_NAME").toString()); 
-        	name.setCellStyle(dataStyle);
-        	
-        	HSSFCell org = datarow.createCell(2);
-        	org.setCellValue(record.get("ORG_NAME").toString()); 
-        	org.setCellStyle(dataStyle);
-        	
-        	HSSFCell call = datarow.createCell(3);
-        	call.setCellValue(record.get("PHONE_CELL").toString()); 
-        	call.setCellStyle(dataStyle);
-        	
-        	// 월별 데이터 넣기
-        	HSSFCell JAN = datarow.createCell(5); //1월
-        	HSSFCell JANval = datarow.createCell(6);
-        	
-        	Mval = Integer.parseInt(record.get("JAN").toString());
-        	JAN.setCellValue(Integer.parseInt(record.get("JAN").toString()));
-        	JANval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+		
+		if (allInformer > 0) {
+			for(int i = 0; i < allInformer; i++) {
+	        	int infrmSend = 0; // 통신원 개인 별 제보 건수 카운터
+	        	Map<String, Object> record = (Map<String, Object>) dataList.get(i);
+	        	
+	        	HSSFRow datarow = sheet.createRow(rowcnt); // 1. 행 생성
+	        	
+	        	HSSFCell id = datarow.createCell(0);
+	        	id.setCellValue(record.get("ACT_ID").toString()); 
+	        	id.setCellStyle(dataStyle);
+	        	
+	        	HSSFCell name = datarow.createCell(1);
+	        	name.setCellValue(record.get("INFORMER_NAME").toString()); 
+	        	name.setCellStyle(dataStyle);
+	        	
+	        	HSSFCell org = datarow.createCell(2);
+	        	org.setCellValue(record.get("ORG_NAME").toString()); 
+	        	org.setCellStyle(dataStyle);
+	        	
+	        	HSSFCell call = datarow.createCell(3);
+	        	call.setCellValue(record.get("PHONE_CELL").toString()); 
+	        	call.setCellStyle(dataStyle);
+	        	
+	        	// 월별 데이터 넣기
+	        	HSSFCell JAN = datarow.createCell(5); //1월
+	        	HSSFCell JANval = datarow.createCell(6);
+	        	
+	        	Mval = Integer.parseInt(record.get("JAN").toString());
+	        	JAN.setCellValue(Integer.parseInt(record.get("JAN").toString()));
+	        	JANval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
 
-        	JAN.setCellStyle(dataStyle2);
-        	JANval.setCellStyle(dataStyle3);
-        	
-        	infrmSend = infrmSend + Integer.parseInt(record.get("JAN").toString());
-        	
-        	
-        	
-        	HSSFCell FEB = datarow.createCell(7); //2월
-        	HSSFCell FEBval = datarow.createCell(8);
-        	
-        	Mval = Integer.parseInt(record.get("FEB").toString());
-        	FEB.setCellValue(Integer.parseInt(record.get("FEB").toString()));
-        	FEBval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	FEB.setCellStyle(dataStyle2);
-        	FEBval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend + Integer.parseInt(record.get("FEB").toString());
-        	
-        	
-        	
-        	HSSFCell MAR = datarow.createCell(9); //3월
-        	HSSFCell MARval = datarow.createCell(10);
-        	
-        	Mval = Integer.parseInt(record.get("MAR").toString());
-        	MAR.setCellValue(Integer.parseInt(record.get("MAR").toString()));
-        	MARval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	MAR.setCellStyle(dataStyle2);
-        	MARval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend + Integer.parseInt(record.get("MAR").toString());
-        	
-        	HSSFCell APR = datarow.createCell(11); //4월
-        	HSSFCell APRval = datarow.createCell(12);
-        	
-        	Mval = Integer.parseInt(record.get("APR").toString());
-        	APR.setCellValue(Integer.parseInt(record.get("APR").toString()));
-        	APRval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	APR.setCellStyle(dataStyle2);
-        	APRval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend +Integer.parseInt(record.get("APR").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell MAY = datarow.createCell(13); //5월
-        	HSSFCell MAYval = datarow.createCell(14);
-        	
-        	Mval = Integer.parseInt(record.get("MAY").toString());
-        	MAY.setCellValue(Integer.parseInt(record.get("MAY").toString()));
-        	MAYval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	MAY.setCellStyle(dataStyle2);
-        	MAYval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend +Integer.parseInt(record.get("MAY").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell JUN = datarow.createCell(15);//6월
-        	HSSFCell JUNval = datarow.createCell(16);
-        	
-        	Mval = Integer.parseInt(record.get("JUN").toString());
-        	JUN.setCellValue(Integer.parseInt(record.get("JUN").toString()));
-        	JUNval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	JUN.setCellStyle(dataStyle2);
-        	JUNval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend + Integer.parseInt(record.get("JUN").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell JUL = datarow.createCell(17); //7월
-        	HSSFCell JULval = datarow.createCell(18);
-        	
-        	Mval = Integer.parseInt(record.get("JUL").toString());
-        	JUL.setCellValue(Integer.parseInt(record.get("JUL").toString()));
-        	JULval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	JUL.setCellStyle(dataStyle2);
-        	JULval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend + Integer.parseInt(record.get("JUL").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell AUG = datarow.createCell(19); //8월
-        	HSSFCell AUGval = datarow.createCell(20);
-        	
-        	Mval = Integer.parseInt(record.get("AUG").toString());
-        	AUG.setCellValue(Integer.parseInt(record.get("AUG").toString()));
-        	AUGval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	AUG.setCellStyle(dataStyle2);
-        	AUGval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend + Integer.parseInt(record.get("AUG").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell SEP = datarow.createCell(21); //9월
-        	HSSFCell SEPval = datarow.createCell(22);
-        	
-        	Mval = Integer.parseInt(record.get("SEP").toString());
-        	SEP.setCellValue(Integer.parseInt(record.get("SEP").toString()));
-        	SEPval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	SEP.setCellStyle(dataStyle2);
-        	SEPval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend +Integer.parseInt(record.get("SEP").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell OCT = datarow.createCell(23); //10월
-        	HSSFCell OCTval = datarow.createCell(24);
-        	
-        	Mval = Integer.parseInt(record.get("OCT").toString());
-        	OCT.setCellValue(Integer.parseInt(record.get("OCT").toString()));
-        	OCTval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	OCT.setCellStyle(dataStyle2);
-        	OCTval.setCellStyle(dataStyle3); 
-        	infrmSend = infrmSend + Integer.parseInt(record.get("OCT").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell NOV = datarow.createCell(25); //11월
-        	HSSFCell NOVval = datarow.createCell(26);
-        	
-        	Mval = Integer.parseInt(record.get("NOV").toString());
-        	NOV.setCellValue(Integer.parseInt(record.get("NOV").toString()));
-        	NOVval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	NOV.setCellStyle(dataStyle2);
-        	NOVval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend + Integer.parseInt(record.get("NOV").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell DEC = datarow.createCell(27); //12월
-        	HSSFCell DECval = datarow.createCell(28);
-        	
-        	Mval = Integer.parseInt(record.get("DEC").toString());
-        	DEC.setCellValue(Integer.parseInt(record.get("DEC").toString()));
-        	DECval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	DEC.setCellStyle(dataStyle2);
-        	DECval.setCellStyle(dataStyle3);
-        	infrmSend = infrmSend + Integer.parseInt(record.get("DEC").toString());
-        	
-        	HSSFCell allsendCell = datarow.createCell(4); // 제보건수 넣기
-        	allsendCell.setCellValue(infrmSend);
-        	allsendCell.setCellStyle(dataStyle);
-        	allSend = allSend + infrmSend; // 총 제보건수에 추가
-        	rowcnt++; // 행 카운터 증가
-        	Mval = 0;
-        }
-     	
-        
+	        	JAN.setCellStyle(dataStyle2);
+	        	JANval.setCellStyle(dataStyle3);
+	        	
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("JAN").toString());
+	        	
+	        	
+	        	
+	        	HSSFCell FEB = datarow.createCell(7); //2월
+	        	HSSFCell FEBval = datarow.createCell(8);
+	        	
+	        	Mval = Integer.parseInt(record.get("FEB").toString());
+	        	FEB.setCellValue(Integer.parseInt(record.get("FEB").toString()));
+	        	FEBval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	FEB.setCellStyle(dataStyle2);
+	        	FEBval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("FEB").toString());
+	        	
+	        	
+	        	
+	        	HSSFCell MAR = datarow.createCell(9); //3월
+	        	HSSFCell MARval = datarow.createCell(10);
+	        	
+	        	Mval = Integer.parseInt(record.get("MAR").toString());
+	        	MAR.setCellValue(Integer.parseInt(record.get("MAR").toString()));
+	        	MARval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	MAR.setCellStyle(dataStyle2);
+	        	MARval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("MAR").toString());
+	        	
+	        	HSSFCell APR = datarow.createCell(11); //4월
+	        	HSSFCell APRval = datarow.createCell(12);
+	        	
+	        	Mval = Integer.parseInt(record.get("APR").toString());
+	        	APR.setCellValue(Integer.parseInt(record.get("APR").toString()));
+	        	APRval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	APR.setCellStyle(dataStyle2);
+	        	APRval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend +Integer.parseInt(record.get("APR").toString());
+	        	
+	        	
+	        	
+	        	
+	        	HSSFCell MAY = datarow.createCell(13); //5월
+	        	HSSFCell MAYval = datarow.createCell(14);
+	        	
+	        	Mval = Integer.parseInt(record.get("MAY").toString());
+	        	MAY.setCellValue(Integer.parseInt(record.get("MAY").toString()));
+	        	MAYval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	MAY.setCellStyle(dataStyle2);
+	        	MAYval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend +Integer.parseInt(record.get("MAY").toString());
+	        	
+	        	
+	        	
+	        	
+	        	HSSFCell JUN = datarow.createCell(15);//6월
+	        	HSSFCell JUNval = datarow.createCell(16);
+	        	
+	        	Mval = Integer.parseInt(record.get("JUN").toString());
+	        	JUN.setCellValue(Integer.parseInt(record.get("JUN").toString()));
+	        	JUNval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	JUN.setCellStyle(dataStyle2);
+	        	JUNval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("JUN").toString());
+	        	
+	        	
+	        	
+	        	
+	        	HSSFCell JUL = datarow.createCell(17); //7월
+	        	HSSFCell JULval = datarow.createCell(18);
+	        	
+	        	Mval = Integer.parseInt(record.get("JUL").toString());
+	        	JUL.setCellValue(Integer.parseInt(record.get("JUL").toString()));
+	        	JULval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	JUL.setCellStyle(dataStyle2);
+	        	JULval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("JUL").toString());
+	        	
+	        	
+	        	
+	        	
+	        	HSSFCell AUG = datarow.createCell(19); //8월
+	        	HSSFCell AUGval = datarow.createCell(20);
+	        	
+	        	Mval = Integer.parseInt(record.get("AUG").toString());
+	        	AUG.setCellValue(Integer.parseInt(record.get("AUG").toString()));
+	        	AUGval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	AUG.setCellStyle(dataStyle2);
+	        	AUGval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("AUG").toString());
+	        	
+	        	
+	        	
+	        	
+	        	HSSFCell SEP = datarow.createCell(21); //9월
+	        	HSSFCell SEPval = datarow.createCell(22);
+	        	
+	        	Mval = Integer.parseInt(record.get("SEP").toString());
+	        	SEP.setCellValue(Integer.parseInt(record.get("SEP").toString()));
+	        	SEPval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	SEP.setCellStyle(dataStyle2);
+	        	SEPval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend +Integer.parseInt(record.get("SEP").toString());
+	        	
+	        	
+	        	
+	        	
+	        	HSSFCell OCT = datarow.createCell(23); //10월
+	        	HSSFCell OCTval = datarow.createCell(24);
+	        	
+	        	Mval = Integer.parseInt(record.get("OCT").toString());
+	        	OCT.setCellValue(Integer.parseInt(record.get("OCT").toString()));
+	        	OCTval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	OCT.setCellStyle(dataStyle2);
+	        	OCTval.setCellStyle(dataStyle3); 
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("OCT").toString());
+	        	
+	        	
+	        	
+	        	
+	        	HSSFCell NOV = datarow.createCell(25); //11월
+	        	HSSFCell NOVval = datarow.createCell(26);
+	        	
+	        	Mval = Integer.parseInt(record.get("NOV").toString());
+	        	NOV.setCellValue(Integer.parseInt(record.get("NOV").toString()));
+	        	NOVval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	NOV.setCellStyle(dataStyle2);
+	        	NOVval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("NOV").toString());
+	        	
+	        	
+	        	
+	        	
+	        	HSSFCell DEC = datarow.createCell(27); //12월
+	        	HSSFCell DECval = datarow.createCell(28);
+	        	
+	        	Mval = Integer.parseInt(record.get("DEC").toString());
+	        	DEC.setCellValue(Integer.parseInt(record.get("DEC").toString()));
+	        	DECval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+	        	
+	        	DEC.setCellStyle(dataStyle2);
+	        	DECval.setCellStyle(dataStyle3);
+	        	infrmSend = infrmSend + Integer.parseInt(record.get("DEC").toString());
+	        	
+	        	HSSFCell allsendCell = datarow.createCell(4); // 제보건수 넣기
+	        	allsendCell.setCellValue(infrmSend);
+	        	allsendCell.setCellStyle(dataStyle);
+	        	allSend = allSend + infrmSend; // 총 제보건수에 추가
+	        	rowcnt++; // 행 카운터 증가
+	        	Mval = 0;
+	        }
+		} 
+
         CellStyle infoStyle = wb.createCellStyle();
         infoStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER); // 중앙 정렬 (세로 기준)
 		
@@ -7308,16 +7326,23 @@ public class ExportPoiHssfExcel extends AbstractView {
     	List totalList = (List) model.get("totalList");
     	
     	
-    	Map<String, Object> total = (Map<String, Object>) totalList.get(0);
-    	AwardVO per = (AwardVO) perList.get(0);
-    	
     	int allSum = 0; // 총 건수 => 엑셀 상단에 사용
     	int allInformer = dataList.size(); // 총 인원 수 => 엑셀 상단에 사용
-    	
-    	int allPer = Integer.parseInt(per.getALL_PER()); // 총점 기준 %
-    	int maxSend = Integer.parseInt(total.get("TOTAL").toString()); // 최대 제보자 건수
 
-    	
+    	int allPer = 0; // 총점 기준 %
+    	int maxSend = 0; // 최대 제보자 건수
+
+    	Map<String, Object> total = null;
+    	AwardVO per = null;
+
+    	if (allInformer > 0) {
+    	    total = (Map<String, Object>) totalList.get(0);
+    	    per = (AwardVO) perList.get(0);
+
+    	    allPer = Integer.parseInt(per.getALL_PER());
+    	    maxSend = Integer.parseInt(total.get("TOTAL").toString());
+    	}
+ 
     	// sheet 생성 및 이름 저장
     	HSSFSheet sheet = wb.createSheet("연간 제보자별 제보현황");
     	
@@ -7525,192 +7550,194 @@ public class ExportPoiHssfExcel extends AbstractView {
         int rowcnt = 8; //행 카운터
         int Mval = 0;
         
-        
-        // 받아온 데이터 넣기
-        for(int i=0; i < allInformer; i++) {
-        	int monthSum = 0;
-        	Map<String, Object> record = (Map<String, Object>) dataList.get(i);
-        	
-        	HSSFRow datarow = sheet.createRow(rowcnt); // 1. 행 생성
-        	
-        	HSSFCell org = datarow.createCell(0);
-        	org.setCellValue(record.get("ORG_NAME").toString()); 
-        	org.setCellStyle(dataStyle);
-        	
-        	// 월별 데이터 넣기
-        	HSSFCell JAN = datarow.createCell(2); //1월
-        	HSSFCell JANval = datarow.createCell(3);
-        	
-        	Mval = Integer.parseInt(record.get("JAN").toString());
-        	JAN.setCellValue(Integer.parseInt(record.get("JAN").toString()));
-        	JANval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+        if (allInformer > 0) {
+        	// 받아온 데이터 넣기
+            for(int i=0; i < allInformer; i++) {
+            	int monthSum = 0;
+            	Map<String, Object> record = (Map<String, Object>) dataList.get(i);
+            	
+            	HSSFRow datarow = sheet.createRow(rowcnt); // 1. 행 생성
+            	
+            	HSSFCell org = datarow.createCell(0);
+            	org.setCellValue(record.get("ORG_NAME").toString()); 
+            	org.setCellStyle(dataStyle);
+            	
+            	// 월별 데이터 넣기
+            	HSSFCell JAN = datarow.createCell(2); //1월
+            	HSSFCell JANval = datarow.createCell(3);
+            	
+            	Mval = Integer.parseInt(record.get("JAN").toString());
+            	JAN.setCellValue(Integer.parseInt(record.get("JAN").toString()));
+            	JANval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
 
-        	JAN.setCellStyle(dataStyle2);
-        	JANval.setCellStyle(dataStyle3);
-        	
-        	monthSum = monthSum + Integer.parseInt(record.get("JAN").toString());
-        	
-        	
-        	
-        	HSSFCell FEB = datarow.createCell(4); //2월
-        	HSSFCell FEBval = datarow.createCell(5);
-        	
-        	Mval = Integer.parseInt(record.get("FEB").toString());
-        	FEB.setCellValue(Integer.parseInt(record.get("FEB").toString()));
-        	FEBval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	FEB.setCellStyle(dataStyle2);
-        	FEBval.setCellStyle(dataStyle3);
-        	monthSum = monthSum + Integer.parseInt(record.get("FEB").toString());
-        	
-        	
-        	
-        	HSSFCell MAR = datarow.createCell(6); //3월
-        	HSSFCell MARval = datarow.createCell(7);
-        	
-        	Mval = Integer.parseInt(record.get("MAR").toString());
-        	MAR.setCellValue(Integer.parseInt(record.get("MAR").toString()));
-        	MARval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	MAR.setCellStyle(dataStyle2);
-        	MARval.setCellStyle(dataStyle3);
-        	monthSum = monthSum + Integer.parseInt(record.get("MAR").toString());
-        	
-        	HSSFCell APR = datarow.createCell(8); //4월
-        	HSSFCell APRval = datarow.createCell(9);
-        	
-        	Mval = Integer.parseInt(record.get("APR").toString());
-        	APR.setCellValue(Integer.parseInt(record.get("APR").toString()));
-        	APRval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	APR.setCellStyle(dataStyle2);
-        	APRval.setCellStyle(dataStyle3);
-        	monthSum = monthSum +Integer.parseInt(record.get("APR").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell MAY = datarow.createCell(10); //5월
-        	HSSFCell MAYval = datarow.createCell(11);
-        	
-        	Mval = Integer.parseInt(record.get("MAY").toString());
-        	MAY.setCellValue(Integer.parseInt(record.get("MAY").toString()));
-        	MAYval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	MAY.setCellStyle(dataStyle2);
-        	MAYval.setCellStyle(dataStyle3);
-        	monthSum = monthSum +Integer.parseInt(record.get("MAY").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell JUN = datarow.createCell(12);//6월
-        	HSSFCell JUNval = datarow.createCell(13);
-        	
-        	Mval = Integer.parseInt(record.get("JUN").toString());
-        	JUN.setCellValue(Integer.parseInt(record.get("JUN").toString()));
-        	JUNval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	JUN.setCellStyle(dataStyle2);
-        	JUNval.setCellStyle(dataStyle3);
-        	monthSum = monthSum + Integer.parseInt(record.get("JUN").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell JUL = datarow.createCell(14); //7월
-        	HSSFCell JULval = datarow.createCell(15);
-        	
-        	Mval = Integer.parseInt(record.get("JUL").toString());
-        	JUL.setCellValue(Integer.parseInt(record.get("JUL").toString()));
-        	JULval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	JUL.setCellStyle(dataStyle2);
-        	JULval.setCellStyle(dataStyle3);
-        	monthSum = monthSum + Integer.parseInt(record.get("JUL").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell AUG = datarow.createCell(16); //8월
-        	HSSFCell AUGval = datarow.createCell(17);
-        	
-        	Mval = Integer.parseInt(record.get("AUG").toString());
-        	AUG.setCellValue(Integer.parseInt(record.get("AUG").toString()));
-        	AUGval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	AUG.setCellStyle(dataStyle2);
-        	AUGval.setCellStyle(dataStyle3);
-        	monthSum = monthSum + Integer.parseInt(record.get("AUG").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell SEP = datarow.createCell(18); //9월
-        	HSSFCell SEPval = datarow.createCell(19);
-        	
-        	Mval = Integer.parseInt(record.get("SEP").toString());
-        	SEP.setCellValue(Integer.parseInt(record.get("SEP").toString()));
-        	SEPval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	SEP.setCellStyle(dataStyle2);
-        	SEPval.setCellStyle(dataStyle3);
-        	monthSum = monthSum +Integer.parseInt(record.get("SEP").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell OCT = datarow.createCell(20); //10월
-        	HSSFCell OCTval = datarow.createCell(21);
-        	
-        	Mval = Integer.parseInt(record.get("OCT").toString());
-        	OCT.setCellValue(Integer.parseInt(record.get("OCT").toString()));
-        	OCTval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	OCT.setCellStyle(dataStyle2);
-        	OCTval.setCellStyle(dataStyle3); 
-        	monthSum = monthSum + Integer.parseInt(record.get("OCT").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell NOV = datarow.createCell(22); //11월
-        	HSSFCell NOVval = datarow.createCell(23);
-        	
-        	Mval = Integer.parseInt(record.get("NOV").toString());
-        	NOV.setCellValue(Integer.parseInt(record.get("NOV").toString()));
-        	NOVval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	NOV.setCellStyle(dataStyle2);
-        	NOVval.setCellStyle(dataStyle3);
-        	monthSum = monthSum + Integer.parseInt(record.get("NOV").toString());
-        	
-        	
-        	
-        	
-        	HSSFCell DEC = datarow.createCell(24); //12월
-        	HSSFCell DECval = datarow.createCell(25);
-        	
-        	Mval = Integer.parseInt(record.get("DEC").toString());
-        	DEC.setCellValue(Integer.parseInt(record.get("DEC").toString()));
-        	DECval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
-        	
-        	DEC.setCellStyle(dataStyle2);
-        	DECval.setCellStyle(dataStyle3);
-        	monthSum = monthSum + Integer.parseInt(record.get("DEC").toString());
-        	
-        	
-        	
-        	HSSFCell allsendCell = datarow.createCell(1); // 제보건수 넣기
-        	allsendCell.setCellValue(monthSum);
-        	allsendCell.setCellStyle(dataStyle);
-        	// 마지막 최종 제보 건수 구하기
-        	allSum = allSum + monthSum;
-        	rowcnt++; // 행 카운터 증가
-        	Mval = 0;
-        	
-        	
+            	JAN.setCellStyle(dataStyle2);
+            	JANval.setCellStyle(dataStyle3);
+            	
+            	monthSum = monthSum + Integer.parseInt(record.get("JAN").toString());
+            	
+            	
+            	
+            	HSSFCell FEB = datarow.createCell(4); //2월
+            	HSSFCell FEBval = datarow.createCell(5);
+            	
+            	Mval = Integer.parseInt(record.get("FEB").toString());
+            	FEB.setCellValue(Integer.parseInt(record.get("FEB").toString()));
+            	FEBval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	FEB.setCellStyle(dataStyle2);
+            	FEBval.setCellStyle(dataStyle3);
+            	monthSum = monthSum + Integer.parseInt(record.get("FEB").toString());
+            	
+            	
+            	
+            	HSSFCell MAR = datarow.createCell(6); //3월
+            	HSSFCell MARval = datarow.createCell(7);
+            	
+            	Mval = Integer.parseInt(record.get("MAR").toString());
+            	MAR.setCellValue(Integer.parseInt(record.get("MAR").toString()));
+            	MARval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	MAR.setCellStyle(dataStyle2);
+            	MARval.setCellStyle(dataStyle3);
+            	monthSum = monthSum + Integer.parseInt(record.get("MAR").toString());
+            	
+            	HSSFCell APR = datarow.createCell(8); //4월
+            	HSSFCell APRval = datarow.createCell(9);
+            	
+            	Mval = Integer.parseInt(record.get("APR").toString());
+            	APR.setCellValue(Integer.parseInt(record.get("APR").toString()));
+            	APRval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	APR.setCellStyle(dataStyle2);
+            	APRval.setCellStyle(dataStyle3);
+            	monthSum = monthSum +Integer.parseInt(record.get("APR").toString());
+            	
+            	
+            	
+            	
+            	HSSFCell MAY = datarow.createCell(10); //5월
+            	HSSFCell MAYval = datarow.createCell(11);
+            	
+            	Mval = Integer.parseInt(record.get("MAY").toString());
+            	MAY.setCellValue(Integer.parseInt(record.get("MAY").toString()));
+            	MAYval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	MAY.setCellStyle(dataStyle2);
+            	MAYval.setCellStyle(dataStyle3);
+            	monthSum = monthSum +Integer.parseInt(record.get("MAY").toString());
+            	
+            	
+            	
+            	
+            	HSSFCell JUN = datarow.createCell(12);//6월
+            	HSSFCell JUNval = datarow.createCell(13);
+            	
+            	Mval = Integer.parseInt(record.get("JUN").toString());
+            	JUN.setCellValue(Integer.parseInt(record.get("JUN").toString()));
+            	JUNval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	JUN.setCellStyle(dataStyle2);
+            	JUNval.setCellStyle(dataStyle3);
+            	monthSum = monthSum + Integer.parseInt(record.get("JUN").toString());
+            	
+            	
+            	
+            	
+            	HSSFCell JUL = datarow.createCell(14); //7월
+            	HSSFCell JULval = datarow.createCell(15);
+            	
+            	Mval = Integer.parseInt(record.get("JUL").toString());
+            	JUL.setCellValue(Integer.parseInt(record.get("JUL").toString()));
+            	JULval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	JUL.setCellStyle(dataStyle2);
+            	JULval.setCellStyle(dataStyle3);
+            	monthSum = monthSum + Integer.parseInt(record.get("JUL").toString());
+            	
+            	
+            	
+            	
+            	HSSFCell AUG = datarow.createCell(16); //8월
+            	HSSFCell AUGval = datarow.createCell(17);
+            	
+            	Mval = Integer.parseInt(record.get("AUG").toString());
+            	AUG.setCellValue(Integer.parseInt(record.get("AUG").toString()));
+            	AUGval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	AUG.setCellStyle(dataStyle2);
+            	AUGval.setCellStyle(dataStyle3);
+            	monthSum = monthSum + Integer.parseInt(record.get("AUG").toString());
+            	
+            	
+            	
+            	
+            	HSSFCell SEP = datarow.createCell(18); //9월
+            	HSSFCell SEPval = datarow.createCell(19);
+            	
+            	Mval = Integer.parseInt(record.get("SEP").toString());
+            	SEP.setCellValue(Integer.parseInt(record.get("SEP").toString()));
+            	SEPval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	SEP.setCellStyle(dataStyle2);
+            	SEPval.setCellStyle(dataStyle3);
+            	monthSum = monthSum +Integer.parseInt(record.get("SEP").toString());
+            	
+            	
+            	
+            	
+            	HSSFCell OCT = datarow.createCell(20); //10월
+            	HSSFCell OCTval = datarow.createCell(21);
+            	
+            	Mval = Integer.parseInt(record.get("OCT").toString());
+            	OCT.setCellValue(Integer.parseInt(record.get("OCT").toString()));
+            	OCTval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	OCT.setCellStyle(dataStyle2);
+            	OCTval.setCellStyle(dataStyle3); 
+            	monthSum = monthSum + Integer.parseInt(record.get("OCT").toString());
+            	
+            	
+            	
+            	
+            	HSSFCell NOV = datarow.createCell(22); //11월
+            	HSSFCell NOVval = datarow.createCell(23);
+            	
+            	Mval = Integer.parseInt(record.get("NOV").toString());
+            	NOV.setCellValue(Integer.parseInt(record.get("NOV").toString()));
+            	NOVval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	NOV.setCellStyle(dataStyle2);
+            	NOVval.setCellStyle(dataStyle3);
+            	monthSum = monthSum + Integer.parseInt(record.get("NOV").toString());
+            	
+            	
+            	
+            	
+            	HSSFCell DEC = datarow.createCell(24); //12월
+            	HSSFCell DECval = datarow.createCell(25);
+            	
+            	Mval = Integer.parseInt(record.get("DEC").toString());
+            	DEC.setCellValue(Integer.parseInt(record.get("DEC").toString()));
+            	DECval.setCellValue(Math.round(((double) Mval / maxSend) * allPer * 100) / 100.0);
+            	
+            	DEC.setCellStyle(dataStyle2);
+            	DECval.setCellStyle(dataStyle3);
+            	monthSum = monthSum + Integer.parseInt(record.get("DEC").toString());
+            	
+            	
+            	
+            	HSSFCell allsendCell = datarow.createCell(1); // 제보건수 넣기
+            	allsendCell.setCellValue(monthSum);
+            	allsendCell.setCellStyle(dataStyle);
+            	// 마지막 최종 제보 건수 구하기
+            	allSum = allSum + monthSum;
+            	rowcnt++; // 행 카운터 증가
+            	Mval = 0;
+            	
+            	
+            }
         }
+        
         
         CellStyle infoStyle = wb.createCellStyle();
         infoStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER); // 중앙 정렬 (세로 기준)

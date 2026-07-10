@@ -117,7 +117,7 @@ public class InfrmVO extends BaseVO{
 	private String downFlag;
 	
 	
-	private String appFlag; // app,web 통신원 구분 flag
+	private String flagApp; // app,web 통신원 구분 flag
 	
 	// 26-06-16 : app 통신원 가입 신청 현황 전용 컬럼 생성
 	private String applyDate;  // 가입 신청일
@@ -130,11 +130,12 @@ public class InfrmVO extends BaseVO{
 	private String hamNo; // 무선 HAM (APP 전용)
 	
 	
-	public String getAppFlag() {
-		return appFlag;
+
+	public String getFlagApp() {
+		return flagApp;
 	}
-	public void setAppFlag(String appFlag) {
-		this.appFlag = appFlag;
+	public void setFlagApp(String flagApp) {
+		this.flagApp = flagApp;
 	}
 	public String getHamNo() {
 		return hamNo;

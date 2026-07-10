@@ -60,6 +60,7 @@
 		<result property="hamNo" column="HAM_NO"/>
 		<result property="driverGroup" column="DRIVER_GROUP"/>
 		<result property="applyId" column="APPLY_ID"/>
+		<result property="flagApp" column="FLAG_APP"/>
 	</resultMap>
 	
 	
@@ -124,7 +125,7 @@
 		<result property="statusId" column="STATUS_ID"/>
 		<result property="statusName" column="STATUS_NAME"/>
 		<result property="hamNo" column="HAM_NO"/>
-		<result property="appFlag" column="APP_FLAG"/>
+		<result property="flagApp" column="FLAG_APP"/>
 	</resultMap>
 	
 	
@@ -614,7 +615,8 @@
 		    A.FLAG_BROAD,
 		    A.HAM_NO,
 		    A.DRIVER_GROUP,
-		    A.APPLY_ID
+		    A.APPLY_ID,
+		    A.FLAG_APP
 		FROM INFORMER A
 		LEFT JOIN CODE_AREACODE B
 		    ON A.AREA_CODE = B.AREA_CODE
@@ -652,7 +654,8 @@
 		A.TRS_NO,
 		A.ZIPCODE,
 		B.AREA_NAME,
-		D.ORG_NAME
+		D.ORG_NAME,
+		A.PHOTO_FILE
 		FROM INFORMER_APP A
 		LEFT JOIN CODE_AREACODE B
 		    ON A.AREA_CODE = B.AREA_CODE
@@ -806,9 +809,7 @@
 				,CAR_NUM
 				,REG_DATE
 				,UPD_DATE
-				<if test='localFilePath !=null and localFilePath neq ""'>
 				,PHOTO_FILE
-				</if>
 				,CAR_TYPE
 				,TRS_NO
 				,HAM_NO
@@ -856,9 +857,7 @@
 			,#{carNum}
 			,TO_CHAR(SYSDATE, 'YYYY-MM-DD')
 			,TO_CHAR(SYSDATE, 'YYYY-MM-DD')
-			<if test='localFilePath !=null and localFilePath neq ""'>
-			,#{localFilePath}
-			</if>
+			,#{photoFile}
 			,#{carType}
 			,#{trsNo}
 			,#{hamNo}

@@ -569,21 +569,39 @@
             
             	<div style="background-color: white;width: 1030px;height: 140px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex;">
             		<div id="pictureDiv" style="margin-left: 25px;">
-            			 <c:choose>
-						    <c:when test="${empty informerInfo.localFilePath}">
-						        <img src="<c:url value='/images/noPicture.svg'/>"
-						             alt="사진"
-						             style="width: 95px; height: 110px; border: 1px solid #ddd; margin-top: 14.5px; border-radius: 5px;" />
-						    </c:when>
-						    <c:otherwise>
-						        <img src="<c:url value='/picture/${informerInfo.informerId}/${informerInfo.localFilePath}'/>"
-							     alt="사진"
-							     style="width:95px; height:110px; border: 1px solid #ddd; margin-top: 14.5px; border-radius: 5px;"
-							     onerror="this.onerror=null;  this.style.width='95px';
-              this.style.height='110px'; this.style.objectFit='contain'; this.src='<c:url value="/images/noRoadPicture.svg"/>';" />
-						    </c:otherwise>
-						</c:choose>
-	                </div>
+					    <c:choose>
+					        <c:when test="${empty informerInfo.localFilePath}">
+					            <img src="<c:url value='/images/noPicture.svg'/>"
+					                 alt="사진"
+					                 style="width:95px; height:110px; border:1px solid #ddd; margin-top:14.5px; border-radius:5px;" />
+					        </c:when>
+					        <c:otherwise>
+					            <c:choose>
+					                <c:when test="${informerInfo.flagApp eq 'Y'}">
+					                    <img src="https://radio.tbn.or.kr:7979/api/tbn/files/${informerInfo.localFilePath}"
+					                         alt="사진"
+					                         style="width:95px; height:110px; border:1px solid #ddd; margin-top:14.5px; border-radius:5px;"
+					                         onerror="this.onerror=null;
+					                                  this.style.width='95px';
+					                                  this.style.height='110px';
+					                                  this.style.objectFit='contain';
+					                                  this.src='<c:url value="/images/noRoadPicture.svg"/>';" />
+					                </c:when>
+					                <c:otherwise>
+					                    <img src="<c:url value='/picture/${informerInfo.informerId}/${informerInfo.localFilePath}'/>"
+					                         alt="사진"
+					                         style="width:95px; height:110px; border:1px solid #ddd; margin-top:14.5px; border-radius:5px;"
+					                         onerror="this.onerror=null;
+					                                  this.style.width='95px';
+					                                  this.style.height='110px';
+					                                  this.style.objectFit='contain';
+					                                  this.src='<c:url value="/images/noRoadPicture.svg"/>';" />
+					                </c:otherwise>
+					
+					            </c:choose>
+					        </c:otherwise>
+					    </c:choose>
+					</div>
             		<div style="width :907px;">
             			<div style="display:flex;">
             				<div class="name-wrapper">

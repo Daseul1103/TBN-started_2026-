@@ -290,7 +290,7 @@ public class InfrmController implements ApplicationContextAware {
 		    UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
 
 		    // 최초 진입 시 사용자 지역코드 자동 설정
-		    if (vo.getSearchValue() == null || "".equals(vo.getSearchValue())) {
+		    if (vo.getAreaCode() == null || vo.getAreaCode().trim().isEmpty()) {
 		        vo.setAreaCode(nlVo.getRegionId());
 		    }
 
@@ -485,9 +485,7 @@ public class InfrmController implements ApplicationContextAware {
 			
 			List<InfrmVO> informerHistoryList = infrmService.getInformerHistory(ifmVO);	// 변경 내역 정보
 			mv.addObject("informerHistoryList", informerHistoryList);
-			
-//			List<StatisticVO> receiptCntList = statisticService.getReceiptCntList(stvo);		// 월별 건수 정보
-//			mv.addObject("receiptCntList", receiptCntList);
+
 		}
 		
 		return mv;
@@ -515,13 +513,7 @@ public class InfrmController implements ApplicationContextAware {
 		List<OptInftVo> t1List = new ArrayList<>();//통신원유형
 		List<OptInftVo> t2List = new ArrayList<OptInftVo>();//기관
 		List<OptInftVo> t3List = new ArrayList<OptInftVo>();//세부기관
-		
-/*		//관리자 제외 지역코드 삽입
-		if(!(nlVo.getAuthCode().equals("999"))) {//999 관리자 권한
-			areaVo.setAreaCode(nlVo.getRegionId());
-			thvo.setAreaCode(nlVo.getRegionId());
-			iTypeVo.setAreaCode(nlVo.getRegionId());
-		}*/
+	
 
 		aList=areaOptService.selectAreaOpt1(areaVo);
 		//통신원유형
@@ -566,7 +558,7 @@ public class InfrmController implements ApplicationContextAware {
 				iTypeVo.setIfmId2(t2List.get(0).getIfmId2());
 			}
 			t3List=infrmOptService.selectInft3(iTypeVo);//세부기관
-/*			thvo.setAreaCode(aList.get(0).getAreaCode());*/
+
 			/*26-04-16 : 본부 요청으로 진입 시 자동으로 id 생성*/
 			thvo.setActId(infrmService.creActId(thvo));
 		}

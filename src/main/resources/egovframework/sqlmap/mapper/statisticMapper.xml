@@ -1712,12 +1712,15 @@
 		    group by regexp_replace(r.phone_cell, '[^0-9]', '')
 		),
 		send_agg as (
-		    select 
+		    select
 		        regexp_replace(r_tel, '[^0-9]', '') as phone,
 		        count(*) as send_cnt
 		    from report_receipt
 		    where flag_send = 'Y'
 		      and reporter_type = 7
+		      and area_code = #{REGION_ID}
+		      and receipt_day <![CDATA[>=]]> to_date(#{start_date}, 'YY/MM/DD')
+		      and receipt_day <![CDATA[<=]]> to_date(#{end_date}, 'YY/MM/DD')
 		    group by regexp_replace(r_tel, '[^0-9]', '')
 		)
 		

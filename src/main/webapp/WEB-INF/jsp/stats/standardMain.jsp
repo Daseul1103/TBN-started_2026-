@@ -229,9 +229,10 @@ $('#areaOptSel').on("click", function() {
 function downloadAllExcel() {
 
     let urls = [];
+    const isRange = document.getElementById('rangeDate').classList.contains('stat_now_btn');
 
-    // 👉 urls만 분기
-    if (document.getElementById('rangeDate').classList.contains('stat_now_btn')) {
+    // URL 분기
+    if (isRange) {
         urls = [
             'stats/receiptBroad.do',
             'stats/receiptBroadTime.do',
@@ -241,22 +242,21 @@ function downloadAllExcel() {
             'stats/orgOrgSub.do',
             'stats/informerReceipt.do',
             'stats/yearReceipt.do',
-           	'stats/yearOrgStat.do',
+            'stats/yearOrgStat.do',
             'stats/volunteer.do',
             'stats/receiptAppStat.do'
         ];
     } else {
-        
-    	urls = [
-    	    'stats/muInformer.do',
-    	    'stats/receiptInformer.do',
-    	    'stats/incidentStats.do',
-    	    'stats/muInformer2.do',
-    	    'stats/informerStats.do',
-    	    'stats/krGas.do',
-    	    'stats/korLx.do',
-    	    'stats/dayReceipt.do'
-    	];
+        urls = [
+            'stats/muInformer.do',
+            'stats/receiptInformer.do',
+            'stats/incidentStats.do',
+            'stats/muInformer2.do',
+            'stats/informerStats.do',
+            'stats/krGas.do',
+            'stats/korLx.do',
+            'stats/dayReceipt.do'
+        ];
     }
 
     let i = 0;
@@ -264,10 +264,11 @@ function downloadAllExcel() {
     function downloadNext() {
         if (i >= urls.length) return;
 
-        goStats('range', urls[i]);
+        // 기간별 / 월별 분기
+        goStats(isRange ? 'range' : 'month', urls[i]);
         i++;
 
-        setTimeout(downloadNext, 2000);
+        setTimeout(downloadNext, 7000);
     }
 
     downloadNext();

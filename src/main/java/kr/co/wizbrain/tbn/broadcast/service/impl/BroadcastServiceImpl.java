@@ -29,6 +29,11 @@ public class BroadcastServiceImpl implements BroadcastService{
 	public int updateBroadFlagTo(List<BroadcastVO> blist) throws Exception {
 		return broadcastMapper.updateBroadFlagTo(blist);
 	}
+	
+	@Override
+	public int updateBroadFlagToAPP(List<BroadcastVO> blist) throws Exception {
+		return broadcastMapper.updateBroadFlagToAPP(blist);
+	}
 
 	@Override
 	public List<BroadCastListVO> selectTodaysList(CriteriaVO cri) throws Exception {

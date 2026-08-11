@@ -680,14 +680,18 @@
     <update id="updateBroadFlagTo" parameterType="java.util.List">
         DECLARE BEGIN
         <foreach collection="list" item="item" separator=";">
-	        <choose>
-	            <when test="item.UPDATE_TABLE == 'RECEIPT_APP'">
-	                UPDATE RECEIPT_APP
-	            </when>
-	            <otherwise>
-	                UPDATE REPORT_RECEIPT_TODAY
-	            </otherwise>
-	        </choose>
+	        UPDATE REPORT_RECEIPT_TODAY
+	        SET FLAG_BROD = #{item.FLAG_BROAD}
+	        WHERE RECEIPT_ID = #{item.RECEIPT_ID}
+        </foreach>   
+	    ; END;
+    </update>
+    
+    
+    <update id="updateBroadFlagToAPP" parameterType="java.util.List">
+        DECLARE BEGIN
+        <foreach collection="list" item="item" separator=";">
+	        UPDATE RECEIPT_APP
 	        SET FLAG_BROD = #{item.FLAG_BROAD}
 	        WHERE RECEIPT_ID = #{item.RECEIPT_ID}
         </foreach>   

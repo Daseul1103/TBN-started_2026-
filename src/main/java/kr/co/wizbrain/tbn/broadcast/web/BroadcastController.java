@@ -229,7 +229,7 @@ public class BroadcastController {
 		List<ReportTypeVO> reportFirstList = receiptService.firstReportType();
 		mv.addObject("reportFirstList", reportFirstList);
 		
-		//selectBox - 접수방송국
+		//selectBox - 접수방송국0
 		List<AreaCodeVO> areaCodeList = receiptService.selectAreaCode();
 		mv.addObject("areaCodeList", areaCodeList);
 		
@@ -273,6 +273,7 @@ public class BroadcastController {
 		ModelAndView mv = new ModelAndView("jsonView");
 		//String[] receiptIdArry = idList.split(",");
 		List<BroadcastVO> blist = new ArrayList<BroadcastVO>();
+		List<BroadcastVO> blist2 = new ArrayList<BroadcastVO>();
 		int resultTotal = 0;
 		
 		/*for(int i=0; i<idList.length; i++) {
@@ -288,12 +289,12 @@ public class BroadcastController {
 		    broadCastVO.setFLAG_BROAD(FLAG_BROD);
 
 		    if(idList[i] != null && idList[i].startsWith("APP")) {
-		        broadCastVO.setUPDATE_TABLE("RECEIPT_APP");
+		        blist2.add(broadCastVO);
+		        int result2 = broadcastService.updateBroadFlagToAPP(blist2);
+		        blist.add(broadCastVO);
 		    } else {
-		    	broadCastVO.setUPDATE_TABLE("REPORT_RECEIPT_TODAY");
+		    	blist.add(broadCastVO);
 		    }
-
-		    blist.add(broadCastVO);
 		}
 		
 		int result = broadcastService.updateBroadFlagTo(blist);

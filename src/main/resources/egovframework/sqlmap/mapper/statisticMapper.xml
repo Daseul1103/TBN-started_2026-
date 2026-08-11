@@ -1718,7 +1718,7 @@
 		    from report_receipt
 		    where flag_send = 'Y'
 		      and reporter_type = 7
-		      and area_code = #{REGION_ID}
+		      and region_id = #{REGION_ID}
 		      and receipt_day <![CDATA[>=]]> to_date(#{start_date}, 'YY/MM/DD')
 		      and receipt_day <![CDATA[<=]]> to_date(#{end_date}, 'YY/MM/DD')
 		    group by regexp_replace(r_tel, '[^0-9]', '')

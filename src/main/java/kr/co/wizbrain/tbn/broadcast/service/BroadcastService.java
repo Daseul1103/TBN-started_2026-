@@ -16,4 +16,5 @@ public interface BroadcastService {
 	public String checkBroadTime(BroadcastVO vo) throws Exception;
 	public int updateBroadTime(List<BroadcastVO> blist) throws Exception;
 	public int updateBroadFlagTo(List<BroadcastVO> blist) throws Exception;
+	public int updateBroadFlagToAPP(List<BroadcastVO> blist) throws Exception;
 }

@@ -7872,7 +7872,7 @@ public class ExportPoiHssfExcel extends AbstractView {
 		dataStyleF.setFontName("굴림체");
 		dataStyle.setFont(dataStyleF); // 폰트 스타일을 셀 스타일에 적용 
 		
-        if(mileList != null) {
+        /*if(mileList != null) {
         	for(int i = 0; i < mileList.size(); i++) {
                 HSSFRow dataRow = sheet.createRow(2+i);
                 Map<String, Object> record = (Map<String, Object>) mileList.get(i);
@@ -7923,7 +7923,95 @@ public class ExportPoiHssfExcel extends AbstractView {
             	dataCell9.setCellValue(videoPoint);
             	dataCell9.setCellStyle(dataStyle);
         	}
-        } 
+        } */
+		
+		if (mileList != null) {
+		    for (int i = 0; i < mileList.size(); i++) {
+
+		        HSSFRow dataRow = sheet.createRow(2 + i);
+		        Map<String, Object> record = (Map<String, Object>) mileList.get(i);
+
+		        HSSFCell dataCell = dataRow.createCell(0);
+		        dataCell.setCellValue(
+		                record.get("RANKING") == null
+		                        ? "정보 없음"
+		                        : record.get("RANKING").toString()
+		        );
+		        dataCell.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell1 = dataRow.createCell(1);
+		        dataCell1.setCellValue(
+		                record.get("ACT_ID") == null
+		                        ? "정보 없음"
+		                        : record.get("ACT_ID").toString()
+		        );
+		        dataCell1.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell2 = dataRow.createCell(2);
+		        dataCell2.setCellValue(
+		                record.get("INFORMER_NAME") == null
+		                        ? "정보 없음"
+		                        : record.get("INFORMER_NAME").toString()
+		        );
+		        dataCell2.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell3 = dataRow.createCell(3);
+		        dataCell3.setCellValue(
+		                record.get("PHONE_CELL") == null
+		                        ? "정보 없음"
+		                        : record.get("PHONE_CELL").toString()
+		        );
+		        dataCell3.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell4 = dataRow.createCell(4);
+		        dataCell4.setCellValue(
+		                record.get("ORG_NAME") == null
+		                        ? "정보 없음"
+		                        : record.get("ORG_NAME").toString()
+		        );
+		        dataCell4.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell5 = dataRow.createCell(5);
+		        dataCell5.setCellValue(
+		                record.get("ALL_POINT") == null
+		                        ? "정보 없음"
+		                        : record.get("ALL_POINT").toString()
+		        );
+		        dataCell5.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell6 = dataRow.createCell(6);
+		        dataCell6.setCellValue(
+		                record.get("RECEIPT_POINT") == null
+		                        ? "정보 없음"
+		                        : record.get("RECEIPT_POINT").toString()
+		        );
+		        dataCell6.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell7 = dataRow.createCell(7);
+		        dataCell7.setCellValue(
+		                record.get("BEFORE_POINT") == null
+		                        ? "정보 없음"
+		                        : record.get("BEFORE_POINT").toString()
+		        );
+		        dataCell7.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell8 = dataRow.createCell(8);
+		        dataCell8.setCellValue(
+		                record.get("DISASTOR_POINT") == null
+		                        ? "정보 없음"
+		                        : record.get("DISASTOR_POINT").toString()
+		        );
+		        dataCell8.setCellStyle(dataStyle);
+
+		        HSSFCell dataCell9 = dataRow.createCell(9);
+		        dataCell9.setCellValue(
+		                record.get("VIDEO_POINT") == null
+		                        ? "정보 없음"
+		                        : record.get("VIDEO_POINT").toString()
+		        );
+		        dataCell9.setCellStyle(dataStyle);
+		    }
+		}
         
         sheet.setColumnWidth(0, 4000);
         sheet.setColumnWidth(1, 4000);

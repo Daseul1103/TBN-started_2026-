@@ -17,24 +17,26 @@ function isProperInput(form){
 	}
 	
 	for(var i=0; i<form.length; i++){
-		if(form[i].name == "ARTERY_NAME"){
-			var objName = "도로명을";
-			if(isBlank(form[i], objName)) return;
-		}
-		
-		if(form[i].name == "F_NODE_NAME"){
-			var objName = "시작지점을";
-			//2209 지역취합 : 돌발유형 제외 좌표,시작끝점 안찍게
-			if(xyOk!=1){//돌발유형 제외하고 좌표체크
+		if(authCode != '5') {
+			if(form[i].name == "ARTERY_NAME"){
+				var objName = "도로명을";
 				if(isBlank(form[i], objName)) return;
 			}
-		}
-		
-		if(form[i].name == "T_NODE_NAME"){
-			var objName = "종료지점을";
-			//2209 지역취합 : 돌발유형 제외 좌표,시작끝점 안찍게
-			if(xyOk!=1){//돌발유형 제외하고 좌표체크
-				if(isBlank(form[i], objName)) return;
+			
+			if(form[i].name == "F_NODE_NAME"){
+				var objName = "시작지점을";
+				//2209 지역취합 : 돌발유형 제외 좌표,시작끝점 안찍게
+				if(xyOk!=1){//돌발유형 제외하고 좌표체크
+					if(isBlank(form[i], objName)) return;
+				}
+			}
+			
+			if(form[i].name == "T_NODE_NAME"){
+				var objName = "종료지점을";
+				//2209 지역취합 : 돌발유형 제외 좌표,시작끝점 안찍게
+				if(xyOk!=1){//돌발유형 제외하고 좌표체크
+					if(isBlank(form[i], objName)) return;
+				}
 			}
 		}
 		
@@ -47,27 +49,30 @@ function isProperInput(form){
 			var objName = "제보유형(중)을";
 			if(notSelected(form[i], objName)) return;
 		}
-		if($("#INFORMER_NONE").is(":checked")==false){//시민제보자 아닐경우
-			if(form[i].name == "R_TEL" || form[i].name =="PHONE_CELL"){
-				var objName = "통신원정보(연락처)를";
-				if(isBlank(form[i], objName)) return;
-			}
-		}else{//시민제보자일경우
-			if(form[i].name == "R_TEL"){
-				var objName = "연락처를";
-				if(isBlank(form[i], objName)) return;
-			}
-		}
 		
-		
-		if(form[i].name == "X_COORDINATE" || form[i].name =="Y_COORDINATE"){
-			var objName = "좌표를";
-			//220608 충북 : 원활만 지도안찍게
-			//2209 지역취합 : 돌발유형 제외 좌표,시작끝점 안찍게
-			if(xyOk!=1){//돌발유형 제외하고 좌표체크
-				if(isBlank(form[i], objName)) return;
+		if(authCode != '5') {
+			if($("#INFORMER_NONE").is(":checked")==false){//시민제보자 아닐경우
+				if(form[i].name == "R_TEL" || form[i].name =="PHONE_CELL"){
+					var objName = "통신원정보(연락처)를";
+					if(isBlank(form[i], objName)) return;
+				}
+			}else{//시민제보자일경우
+				if(form[i].name == "R_TEL"){
+					var objName = "연락처를";
+					if(isBlank(form[i], objName)) return;
+				}
 			}
-		}
+			
+			
+			if(form[i].name == "X_COORDINATE" || form[i].name =="Y_COORDINATE"){
+				var objName = "좌표를";
+				//220608 충북 : 원활만 지도안찍게
+				//2209 지역취합 : 돌발유형 제외 좌표,시작끝점 안찍게
+				if(xyOk!=1){//돌발유형 제외하고 좌표체크
+					if(isBlank(form[i], objName)) return;
+				}
+			}
+		}		
 		
 		if(form[i].name == "STARTTIMEHH"){
 			startHour = form[i].value;

@@ -32,11 +32,15 @@
 				//좌표값 생성
 				coordX = latlng.getLat();
 				coordY = latlng.getLng();
-				
-				var coordXEl = document.getElementById('X_COORDINATE');
-				var coordYEl = document.getElementById('Y_COORDINATE');
-				coordXEl.value = coordX;
-				coordYEl.value = coordY;
+
+				if(authCode == "5"){
+			        return false;
+			    } else {
+					var coordXEl = document.getElementById('X_COORDINATE');
+					var coordYEl = document.getElementById('Y_COORDINATE');
+					coordXEl.value = coordX;
+					coordYEl.value = coordY;
+			    }
 			});
 			
 			//중심좌표 변경,Zoom Event

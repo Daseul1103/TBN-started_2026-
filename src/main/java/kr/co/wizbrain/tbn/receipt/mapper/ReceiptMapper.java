@@ -33,8 +33,15 @@ public interface ReceiptMapper{
 	
 	public int selectBestIfrm(ReceiptVO ReceiptVO) throws Exception;
 	
-	//제보접수 등록
+	// 제보접수 등록
 	public int insertReceipt(ReceiptVO ReceiptVO) throws Exception;
+	
+	// 26-18-19 : 소방청 접수 등록
+	public int insertReceipt119(ReceiptVO ReceiptVO) throws Exception;
+	
+	// 소방청 등록 시 통계용 통신원 연결
+	public ReceiptVO select119(ReceiptVO ReceiptVO) throws Exception;
+	
 	public int updateMonthlyStat(ReceiptVO vo) throws Exception;
 
 	//25-05-15 : 우수 통신원, 최고 통신원 조회

@@ -45,12 +45,25 @@
 		document.onkeyup=function(e){
 			if(e.which == 17) isCtrl = false;
 		}
+		
+		
 		//폴링 부분
 		//제보접수-통신원정보
-		pollingForCall = setInterval(() => checkIfPickUpInfoExists(), 2000);
+		
+		// 26-08-19 : 소방청 신규 계정 및 권한 생성에 따른 분기 처리
+		if(authCode != '5') {
+			pollingForCall = setInterval(() => checkIfPickUpInfoExists(), 2000);
+		} 
+		
+		
 		//수신전화 목록
-		pollingForPickup = setInterval(() => startPickupCallPolling(), 5000);
+		// 26-08-19 : 소방청 신규 계정 및 권한 생성에 따른 분기 처리
+		if(authCode != '5') {
+			pollingForPickup = setInterval(() => startPickupCallPolling(), 5000);
+		} 		
 		//pollingForMissedCall = setInterval(() => startMissedCallPolling(), 1000);
+		
+		
 		
 		$(".callmenu").on("click",function(){
 			callMenu=$(this).attr("id");
@@ -61,27 +74,35 @@
 				$("#missedCallList").show();
 				$("#pickMenu").css("color","black");
 				$("#missMenu").css("color","blue");
-				if(isMiss){
-					clearInterval(pollingForPickup);
-					isMiss=false;
-					isPick=true;
-					pollingForMissedCall = setInterval(() => startMissedCallPolling(), 5000);
-					$("#missedCallList").load("/receipt/missedCallList.do?AREA_CODE="+lgnArea);
+				
+				// 소방청 신규 계정 및 권한 생성에 따른 분기 처리
+				if(authCode != '5') {
+					if(isMiss){
+						clearInterval(pollingForPickup);
+						isMiss=false;
+						isPick=true;
+						pollingForMissedCall = setInterval(() => startMissedCallPolling(), 5000);
+						$("#missedCallList").load("/receipt/missedCallList.do?AREA_CODE="+lgnArea);
+					}
 				}
+				
 			}else{
 				//console.log("수신0");
 				$("#missedCallList").hide();
 				$("#pickupCallList").show();
 				$("#missMenu").css("color","black");
 				$("#pickMenu").css("color","blue");
-				if(isPick){
-					isMiss=true;
-					isPick=false;
-					clearInterval(pollingForMissedCall);
-					pollingForPickup = setInterval(() => startPickupCallPolling(), 5000);
-					$("#pickupCallList").load("/receipt/pickupCallList.do?AREA_CODE="+lgnArea+"&INTEL_NUM="+inTelNum);
-				}
 				
+				// 소방청 신규 계정 및 권한 생성에 따른 분기 처리
+				if(authCode != '5') {
+					if(isPick){
+						isMiss=true;
+						isPick=false;
+						clearInterval(pollingForMissedCall);
+						pollingForPickup = setInterval(() => startPickupCallPolling(), 5000);
+						$("#pickupCallList").load("/receipt/pickupCallList.do?AREA_CODE="+lgnArea+"&INTEL_NUM="+inTelNum);
+					}
+				}
 			}
 		});
 		

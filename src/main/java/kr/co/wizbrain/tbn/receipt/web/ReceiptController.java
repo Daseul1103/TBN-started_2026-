@@ -276,16 +276,29 @@ public class ReceiptController {
 		
 		// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
 		UserVO reqLoginVo = (UserVO) request.getSession().getAttribute("login");
-		if(!reqLoginVo.getAuthCode().equals("2")) {
-			mv.addObject("msg", "제보등록은 접수자만 가능합니다");
-			return mv;
+		if (!"2".equals(reqLoginVo.getAuthCode()) && !"5".equals(reqLoginVo.getAuthCode())) {
+		    mv.addObject("msg", "제보등록은 접수자만 가능합니다");
+		    return mv;
 		}
 		vo.setMEMO(vo.getMEMO().replaceAll("&lt;", "<").replaceAll("&gt;", ">"));
 		
 		String ifrmType = vo.getINDIVIDUAL_TYPE();
 		
 		// 제보 접수 등록
-		int result = receiptService.insertReceipt(vo);
+		// 26-08-19 : 소방청 신규 계정 및 권한 생성에 따른 분기 처리
+		int result;
+		
+		if("5".equals(reqLoginVo.getAuthCode())) {
+			ReceiptVO vo2 = receiptService.select119(vo);
+			
+			// 소방청 계정으로 접수 시 해당 방송국 통계용 통신원과 연결 작업
+			vo.setINDIVIDUAL_ID(vo2.getINFORMER_ID());
+		    vo.setINDIVIDUAL_NAME(vo2.getINFORMER_NAME());
+			
+			result = receiptService.insertReceipt119(vo);
+		} else {
+			result = receiptService.insertReceipt(vo);
+		}
 		
 		System.out.println("vo: " + vo.toString());
 		System.out.println("insertRecipt result: "+result);

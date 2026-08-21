@@ -63,6 +63,11 @@
 		    $('#mApp').show();
 		}
 		
+		
+		
+		
+		
+		
 		/* 22.03.15 충북요청사항 */
 		$("#fsSlt").on("change",function(){
 			console.log("폰트사이즈 체인지");
@@ -86,6 +91,26 @@
 				$("#INFORMER_NAME").prop('readonly',true);
 			}
 		});
+		
+		
+		// 26-08-19 : 소방청 신규 계정 및 권한 생성에 따른 기본 설정 - 제보 유형 대/중 분류 기본 선택
+		if(authCode == "5"){
+			
+			// 기본 제보 유형 선택 > 응급119 > 응급 119
+		    $("#REPORT_TYPE").val("A09").trigger("change");
+		    $("#REPORT_TYPE2").val("B03").trigger("change");
+		    
+		    
+		    // select type 선택 방지
+		    $("#REPORT_TYPE, #REPORT_TYPE2, #REPORTMEAN_TYPE, #AREA_CODE, #AREA_CODE_SUB").on("mousedown keydown", function(e){
+		        e.preventDefault();
+		        return false;
+		    });
+		    
+		    // text type 입력 방지
+		    $("#ARTERY_NAME, #LANE, #F_NODE_NAME, #T_NODE_NAME, #REPORT_TYPE3")
+	        .prop("readonly", true);
+		}
 	});
 </script>
 
@@ -136,16 +161,70 @@
 							    	<input type="hidden" id="RECEPTION_ID" name="RECEPTION_ID" value="${login.userId}" readonly/>
 							    	<input type="hidden" id="RECEPTION_NAME" name="RECEPTION_NAME" value="${login.userName}" readonly/>
 							    </td>
-								<td id="chk_top" class="txt_leftb" style="width: 400px;padding-left: 56px;" colspan="2">
+								<!-- <td id="chk_top" class="txt_leftb" style="width: 400px;padding-left: 56px;" colspan="2">
 									<input type="checkbox" name="FLAG_STT" id="FLAG_STT" value="Y" style="display:none;"/>
 									<input type="hidden" id="MISSED_CALL_ID" name="MISSED_CALL_ID" />
 				                	<input type="checkbox" name="FLAG_DISASTOR" id="FLAG_DISASTOR" value="Y" /> 재난제보
 				                	<input type="checkbox" name="FLAG_IMPORTANT" id="FLAG_EMERGENCY" value="Y" /> 긴급접수
 									<input type="checkbox" name="FLAG_SEND" id="FLAG_REQUEST" value="Y" checked/> 방송요청
+									<input type="checkbox" name="FLAG_FIRE" id="FLAG_FIRE" value="Y" checked/> 소방청접수
 									<br>
 									<input type="checkbox" name="DLS_TEXT" id="DLS_TEXT" value="Y"/> 문자제보
 									<input type="checkbox" name="FLAG_DMB_SEND" id="FLAG_DMB_SEND" value="Y"/> 사진/영상
 									<input type="checkbox" name="FLAG_WEB" id="FLAG_WEB" value="Y" checked/> 홈페이지 게시
+								</td> -->
+								
+								<td id="chk_top" class="txt_leftb" style="width: 400px; padding-left: 56px;" colspan="2">
+								    <input type="checkbox" name="FLAG_STT" id="FLAG_STT" value="Y" style="display:none;" />
+								    <input type="hidden" id="MISSED_CALL_ID" name="MISSED_CALL_ID" />
+
+								    <c:if test="${login.authCode ne '5'}">
+								        <input type="checkbox" name="FLAG_DISASTOR" id="FLAG_DISASTOR" value="Y" /> 재난제보
+								        <input type="checkbox" name="FLAG_IMPORTANT" id="FLAG_EMERGENCY" value="Y" /> 긴급접수
+								    </c:if>
+								
+								    <input type="checkbox"
+								           name="FLAG_SEND"
+								           id="FLAG_REQUEST"
+								           value="Y"
+								           checked
+								           ${login.authCode eq '5' ? 'onclick="return false;"' : ''} />
+								    방송요청
+
+								    <c:if test="${login.authCode eq '5'}">
+								        <input type="checkbox"
+								               name="FLAG_FIRE"
+								               id="FLAG_FIRE"
+								               value="Y"
+								               checked
+								               onclick="return false;" />
+								        소방청접수
+								    </c:if>
+								
+								    <br>
+								
+								    <input type="checkbox"
+								           name="DLS_TEXT"
+								           id="DLS_TEXT"
+								           value="Y"
+								           ${login.authCode eq '5' ? 'onclick="return false;"' : ''} />
+								    문자제보
+								
+								    <input type="checkbox"
+								           name="FLAG_DMB_SEND"
+								           id="FLAG_DMB_SEND"
+								           value="Y"
+								           ${login.authCode eq '5' ? 'onclick="return false;"' : ''} />
+								    사진/영상
+								
+								    <input type="checkbox"
+								           name="FLAG_WEB"
+								           id="FLAG_WEB"
+								           value="Y"
+								           checked
+								           ${login.authCode eq '5' ? 'onclick="return false;"' : ''} />
+								    홈페이지 게시
+								
 								</td>
 							</tr>
 							<tr>

@@ -46,15 +46,16 @@ function receivedStatus() {
 		left += window.screenLeft;
 	var top = (document.body.offsetHeight/2) - (popupH/2);
 
-	popObj = window
-			.open(
-				url,
-				windowName,
-					'width='+ popupW
-				+ ', height='+ popupH
-				+ ', left=' + left
-				+ ', top=' + top
-				+ ', toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no');
+		popObj = window
+		.open(
+			url,
+			windowName,
+				'width='+ popupW
+			+ ', height='+ popupH
+			+ ', left=' + left
+			+ ', top=' + top
+			+ ', toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no');
+
 }
 
 //제보접수 - 시작,종료시간
@@ -467,10 +468,29 @@ function memoAddSentnece() {
 
 
 function saveReceipt(){
-	if(authCode != '2'){
-		alert("권한이 없습니다.");
-		return;
+	if(authCode != '2' && authCode != '5'){
+	    alert("권한이 없습니다.");
+	    return;
 	}
+	
+	// 소방청 계정은 STAT 값이 없거나 비어 있으면 0으로 설정
+    if(authCode == '5'){
+        ["STAT1", "STAT2", "STAT3"].forEach(function(id){
+            var input = $("#" + id);
+
+            if(input.length > 0){
+                input.val("0");
+            }else{
+                $("<input>", {
+                    type: "hidden",
+                    id: id,
+                    name: id,
+                    value: "0"
+                }).appendTo("#receiptFrm");
+            }
+        });
+    }
+    
 	console.log("saveReceipt");
 
 	var form = document.getElementById("receiptFrm");

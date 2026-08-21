@@ -58,7 +58,7 @@ function getLocationFromCenter(result, status) {
 설 명 : 장소검색
 인 자 : 
 ************************************************************************/
-function searchPlaces(artreyVal){
+/*function searchPlaces(artreyVal){
 	//22.06.09 충북요청사항 : 도로 클릭시 맵이동
 	console.log("클릭한 도로값 : "+artreyVal);
 	if(typeof artreyVal !== "undefined"){
@@ -72,7 +72,151 @@ function searchPlaces(artreyVal){
 	    ps.keywordSearch(text_search, placesSearchCB); 
 	}
 	
+}*/
+
+
+//좌표 검색 마커
+var coordinateMarker = null;
+
+// 좌표 → 주소 변환 객체
+var geocoder = new kakao.maps.services.Geocoder();
+
+
+function searchPlaces(artreyVal) {
+
+    // 22.06.09 충북요청사항 : 도로 클릭 시 맵 이동
+    /*console.log("클릭한 도로값 : " + artreyVal);*/
+
+    if (typeof artreyVal !== "undefined") {
+
+        // 기존 도로명 검색
+        ps.keywordSearch(artreyVal, artReyMap);
+
+    } else {
+
+        var text_search =
+            document.getElementById('text_search').value;
+
+        // 앞뒤 공백 제거
+        text_search = text_search.replace(/^\s+|\s+$/g, '');
+
+        if (!text_search) {
+            alert('키워드 또는 좌표를 입력해주세요!');
+            return false;
+        }
+
+        /*
+         * 쉼표 또는 공백으로 분리
+         *
+         * 예시
+         * 37.334565005581894,127.97595043666223
+         * 37.334565005581894 127.97595043666223
+         */
+        var coordinateArray = text_search.split(/[,\s]+/);
+
+        // 값이 2개인 경우 좌표인지 확인
+        if (coordinateArray.length === 2) {
+
+            var firstValue = Number(coordinateArray[0]);
+            var secondValue = Number(coordinateArray[1]);
+
+            // 두 값이 모두 숫자인 경우
+            if (!isNaN(firstValue) && !isNaN(secondValue)) {
+
+                var latitude;
+                var longitude;
+
+                /*
+                 * 127.9759, 37.3345로 입력한 경우
+                 * 경도(X), 위도(Y)
+                 */
+                if (Math.abs(firstValue) > 90) {
+                    longitude = firstValue;
+                    latitude = secondValue;
+
+                /*
+                 * 37.3345, 127.9759로 입력한 경우
+                 * 위도(Y), 경도(X)
+                 */
+                } else {
+                    latitude = firstValue;
+                    longitude = secondValue;
+                }
+
+                // 좌표 범위 검사
+                if (
+                    latitude >= -90 &&
+                    latitude <= 90 &&
+                    longitude >= -180 &&
+                    longitude <= 180
+                ) {
+                    searchByCoordinate(latitude, longitude);
+                    return;
+                }
+
+                alert('올바른 좌표값을 입력해주세요.');
+                return false;
+            }
+        }
+
+        // 좌표가 아니면 기존 장소명·주소 검색
+        ps.keywordSearch(text_search, placesSearchCB);
+    }
 }
+
+
+/**
+ * 좌표 검색 처리
+ */
+function searchByCoordinate(latitude, longitude) {
+
+    var position =
+        new kakao.maps.LatLng(latitude, longitude);
+
+    // 검색한 좌표로 지도 이동
+    map.setCenter(position);
+    map.setLevel(3);
+
+    // 이전 좌표 검색 마커 삭제
+    if (coordinateMarker !== null) {
+        coordinateMarker.setMap(null);
+    }
+
+    // 검색한 좌표에 마커 생성
+    coordinateMarker = new kakao.maps.Marker({
+        map: map,
+        position: position
+    });
+
+    // 좌표를 주소로 변환
+    // coord2Address에는 경도(X), 위도(Y) 순서로 전달
+    geocoder.coord2Address(
+        longitude,
+        latitude,
+        function (result, status) {
+
+            if (status === kakao.maps.services.Status.OK) {
+
+                var address = '';
+
+                // 도로명 주소가 있는 경우
+                if (result[0].road_address) {
+                    address =
+                        result[0].road_address.address_name;
+
+                // 도로명 주소가 없으면 지번 주소 사용
+                } else if (result[0].address) {
+                    address =
+                        result[0].address.address_name;
+                }
+
+            } else {
+                console.log('좌표에 해당하는 주소가 없습니다.');
+            }
+        }
+    );
+}
+
 /************************************************************************
 함수명 : placesSearchCB - 장소검색
 설 명 : 장소검색 완료 후 호출되는 콜백함수
@@ -134,13 +278,19 @@ function createResultMarker(obj, i, totalBounds) {
 	(function(resultMarker, title) {
 		//marker click Event
 		kakao.maps.event.addListener(resultMarker, 'click', function() {
-			var coordXEl = document.getElementById('X_COORDINATE');
-			var coordYEl = document.getElementById('Y_COORDINATE');
-			coordXEl.value = obj.y;
-			coordYEl.value = obj.x;
-			if(marker != undefined){
-				marker.setMap(null);
-			}
+			
+			// 26-08-19 : 소방청 신규 계정 및 권한 생성에 따른 분기 처리
+			if(authCode == "5"){
+		        return false;
+		    } else {
+				var coordXEl = document.getElementById('X_COORDINATE');
+				var coordYEl = document.getElementById('Y_COORDINATE');
+				coordXEl.value = obj.y;
+				coordYEl.value = obj.x;
+				if(marker != undefined){
+					marker.setMap(null);
+				}
+		    }
 		});
 		//marker mouseOver Event
 		kakao.maps.event.addListener(resultMarker, 'mouseover', function() {

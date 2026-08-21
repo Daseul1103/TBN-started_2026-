@@ -76,25 +76,32 @@ function listUpArtery(){
 }
 
 function listUpNodeLink(arteryId, areaCode, arteryName){
-	//appendClassOn(this);
-	//clickMenu("artery");
-	$("#F_NODE_NAME").val("");
-	$("#T_NODE_NAME").val("");
-	$("#ARTERY_NAME").val(arteryName);
-	$("#ARTERY_ID").val(arteryId);
-	$("#nodeLinkTb").empty();
-	var ordered = $("#orderBy option:selected").val();
-	var nodeLinkList = ajaxMethod("/receipt/listUpNodeLink.ajax", {ARTERY_ID : arteryId, AREA_CODE : areaCode, ordered:ordered}).nodeLinkList;
-		
-	var nodeLinkTb = $("#nodeLinkTb");
-	for(var i=0; i<nodeLinkList.length; i++){
-		nodeLinkTb.append('<li onClick="getNodeValue(\'' + nodeLinkList[i].l_NODE_NAME +'\', \'' + nodeLinkList[i].nodelink_ID + '\')">' 
-				+ '<span>'+ nodeLinkList[i].num + '</span>'
-				+ '<span>' + nodeLinkList[i].l_NODE_NAME + '</span></li>');
+	
+	// 26-08-19 : 소방청 신규 계정 및 권한 생성에 따른 분기 처리
+	if(authCode != '5'){
+		//appendClassOn(this);
+		//clickMenu("artery");
+		$("#F_NODE_NAME").val("");
+		$("#T_NODE_NAME").val("");
+		$("#ARTERY_NAME").val(arteryName);
+		$("#ARTERY_ID").val(arteryId);
+		$("#nodeLinkTb").empty();
+		var ordered = $("#orderBy option:selected").val();
+		var nodeLinkList = ajaxMethod("/receipt/listUpNodeLink.ajax", {ARTERY_ID : arteryId, AREA_CODE : areaCode, ordered:ordered}).nodeLinkList;
+			
+		var nodeLinkTb = $("#nodeLinkTb");
+		for(var i=0; i<nodeLinkList.length; i++){
+			nodeLinkTb.append('<li onClick="getNodeValue(\'' + nodeLinkList[i].l_NODE_NAME +'\', \'' + nodeLinkList[i].nodelink_ID + '\')">' 
+					+ '<span>'+ nodeLinkList[i].num + '</span>'
+					+ '<span>' + nodeLinkList[i].l_NODE_NAME + '</span></li>');
+		}
+		//22.06.09 충북요청사항 : 도로 클릭시 맵이동
+		//console.log("도로선택시 맵이동 : "+arteryName);
+		searchPlaces(arteryName);
+	} else {
+		alert("해당 계정은 사용할 수 없는 기능 입니다.");
 	}
-	//22.06.09 충북요청사항 : 도로 클릭시 맵이동
-	//console.log("도로선택시 맵이동 : "+arteryName);
-	searchPlaces(arteryName);
+	
 }
 
 function getNodeValue(nodeName, nodeId){
@@ -219,7 +226,9 @@ function searchInformer(idx){
 	var left = Math.ceil((window.screen.width - popupW) / 2);
 	var top = Math.ceil((window.screen.height - popupH) / 2);
 	
-	var popObj = window
+	// 26-08-19 : 소방청 신규 계정 및 권한 생성에 따른 분기 처리
+	if(authCode != '5') {
+		var popObj = window
 		.open(
 				url,
 				windowName,
@@ -232,6 +241,10 @@ function searchInformer(idx){
 						+ ', top='
 						+ top
 						+ ', toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no');
+	} else {
+		alert("해당 계정은 권한이 없습니다.");
+	}
+	
 }
 
 function appendInformerResultList(){

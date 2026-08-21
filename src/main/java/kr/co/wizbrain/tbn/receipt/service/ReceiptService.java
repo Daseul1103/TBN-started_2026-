@@ -45,6 +45,13 @@ public interface ReceiptService {
 	
 	//제보접수 등록
 	public int insertReceipt(ReceiptVO ReceiptVO) throws Exception;
+	
+	// 소방청 접수 등록
+	public int insertReceipt119(ReceiptVO ReceiptVO) throws Exception;
+	
+	// 소방청 등록 시 통계용 통신원 연결
+	public ReceiptVO select119(ReceiptVO ReceiptVO) throws Exception;
+	
 	public int updateMonthlyStat(ReceiptVO vo) throws Exception;
 	
 	// 최고 통신원, 우수 통신원 조회

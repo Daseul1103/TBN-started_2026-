@@ -7,6 +7,7 @@ public class ReceivedStatusVO {
 	private String FLAG_SEND; //
 	private String FLAG_BROD; //
 	private String FLAG_CHK;
+	private String FLAG_FIRE;
 	
 	private String FLAG_MAP; //
 	private String RECEIPT_TIME; //
@@ -64,6 +65,14 @@ public class ReceivedStatusVO {
 	
 	
 	
+	public String getFLAG_FIRE() {
+		return FLAG_FIRE;
+	}
+
+	public void setFLAG_FIRE(String fLAG_FIRE) {
+		FLAG_FIRE = fLAG_FIRE;
+	}
+
 	public String getPHONE_CELL() {
 		return PHONE_CELL;
 	}

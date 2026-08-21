@@ -108,6 +108,74 @@
 		, #{DLS_TEXT}
 		)
 	</insert>
+	
+	
+	<insert id="insertReceipt119" parameterType="receiptVO">
+		<selectKey keyProperty="RECEIPT_ID" resultType="string"
+			order="BEFORE">
+			SELECT (TO_CHAR(SYSDATE , 'YYYYMMDD') || TO_CHAR(SEQ_RECEIPT_TODAY.NEXTVAL,
+			'FM0000009')) FROM DUAL
+		</selectKey>
+		INSERT INTO REPORT_RECEIPT_TODAY(
+		RECEIPT_ID
+		, RECEIPT_DAY
+		, RECEIPT_TIME
+		, INDIVIDUAL_ID
+		, INDIVIDUAL_NAME
+		, INDIVIDUAL_TYPE
+		, RECEPTION_ID
+		, RECEPTION_NAME
+		, REGION_ID
+		, START_DAY
+		, START_TIME
+		, END_DAY
+		, END_TIME
+		, REPORT_TYPE
+		, REPORTER_TYPE
+		, FLAG_SEND
+		, REPORT_TYPE2
+		, AREA_ID
+		, FLAG_WEB
+		, FLAG_FIRE
+		, MEMO
+		)
+		VALUES(
+		#{RECEIPT_ID}
+		, TO_CHAR(SYSDATE,'YYYYMMDD')
+		, TO_CHAR(SYSDATE,'HH24MI')
+		, #{INDIVIDUAL_ID}
+		, #{INDIVIDUAL_NAME}
+		, '0'
+		, #{RECEPTION_ID}
+		, #{RECEPTION_NAME}
+		, #{REGION_ID}
+
+		, REPLACE(#{START_DAY}, '-', '')
+		, #{STARTTIMEHH} || #{STARTTIMEMI}
+		, REPLACE(#{END_DAY}, '-', '')
+		, #{ENDTIMEHH} || #{ENDTIMEMI}
+
+		, #{REPORT_TYPE}
+		, #{REPORTER_TYPE}
+		, #{FLAG_SEND}
+		, #{REPORT_TYPE2}
+		, #{AREA_ID}
+		<!-- TBN 공식홈페이지 문자돌발정보 db 전송여부 -->
+		, #{FLAG_WEB}
+		, 'Y'
+		, #{MEMO}
+		)
+	</insert>
+	
+	<select id="select119" parameterType="receiptVO" resultType="receiptVO">
+	    SELECT INFORMER_ID,
+	           INFORMER_NAME
+	    FROM INFORMER
+	    WHERE AREA_CODE = #{REGION_ID}
+	      AND ACT_ID = #{REGION_ID} || '119'
+	</select>
+	
+	
 
 	<select id="getMissedCallInfoById" resultType="missedCallVO">
 		SELECT * FROM MISSED_CALL WHERE MISSED_CALL_ID = #{MISSED_CALL_ID}
@@ -842,6 +910,7 @@
 		                 , A.FLAG_IMPORTANT
 		                 , A.FLAG_DISASTOR
 		                 , TO_CHAR(TO_DATE(A.BROAD_TIME,'YYYYMMDDHH24MISS'),'HH24:MI') AS BROAD_TIME
+		                 , FLAG_FIRE
 		            FROM REPORT_RECEIPT_TODAY A
 		            LEFT OUTER JOIN CODE_INFORMER_TYPE B
 		                ON A.INDIVIDUAL_TYPE = B.TYPE_ID

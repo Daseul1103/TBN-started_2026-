@@ -36,9 +36,19 @@ public class ReceiptServiceImpl implements ReceiptService{
 	@Resource(name="receiptMapper")
 	private ReceiptMapper receiptMapper;
 	
-	//제보접수 등록
+	// 제보접수 등록
 	public int insertReceipt(ReceiptVO ReceiptVO) throws Exception {
 		return receiptMapper.insertReceipt(ReceiptVO);
+	}
+	
+	// 26-08-19 : 소방청 접수 등록
+	public int insertReceipt119(ReceiptVO ReceiptVO) throws Exception {
+		return receiptMapper.insertReceipt119(ReceiptVO);
+	}
+	
+	// 소방청 등록 시 통계용 통신원 연결
+	public ReceiptVO select119(ReceiptVO ReceiptVO) throws Exception {
+		return receiptMapper.select119(ReceiptVO);
 	}
 	
 	// 25-05-15 : 최고 통신원, 우수 통신원 조회

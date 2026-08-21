@@ -644,10 +644,6 @@ public class InfrmController implements ApplicationContextAware {
 		List<OptInftVo> t2List = new ArrayList<OptInftVo>();//기관
 		List<OptInftVo> t3List = new ArrayList<OptInftVo>();//세부기관
 
-		aList=areaOptService.selectAreaOpt1(areaVo);
-		//통신원유형
-		t1List = infrmOptService.selectInft1(new OptInftVo());
-
 			mv.setViewName("/informer/appIfrmApply");
 			
 			mv.addObject("pageDiv", "new");
@@ -655,12 +651,12 @@ public class InfrmController implements ApplicationContextAware {
 			thvo.setApplyId(request.getParameter("pr1"));
 			thvo=infrmService.detailApplyIfrm(thvo);
 			
-			
-			/*26-04-13 : 현재 로그인 된 사용자의 소속에 따라 소속 기관, 소속기관(세부) 드롭박스 오류 해결*/
-			iTypeVo.setAreaCode(nlVo.getRegionId());
-			areaVo.setAreaCode(nlVo.getRegionId());
-/*			thvo.setAreaCode(nlVo.getRegionId());*/
-			
+			aList=areaOptService.selectAreaOpt1(areaVo);
+			t1List = infrmOptService.selectInft1(new OptInftVo());
+
+			iTypeVo.setAreaCode(thvo.getAreaCode());
+			areaVo.setAreaCode(thvo.getAreaCode());
+
 			iTypeVo.setIfmId1(t1List.get(0).getIfmId1());
 			t2List=infrmOptService.selectInft2(iTypeVo);//기관
 			

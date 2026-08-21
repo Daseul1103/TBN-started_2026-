@@ -927,13 +927,14 @@ $(document).ready(function(){
     });
     
     const fullUrl = window.location.href;
-    console.log(fullUrl);
-    var loginArea = '${login.regionId}';
+
     console.log("loginArea"+loginArea);
     if (fullUrl.indexOf("pr1") == -1) {
         console.log("신규등록");
     }
-    document.getElementById("areaCodeSel").value =loginArea;
+    
+   /*  var loginArea = '${login.regionId}';
+    document.getElementById("areaCodeSel").value =loginArea; */
   	//자식 iframe으로부터 받은 리스너
 	/* window.addEventListener('message', function(e) {
 		 //console.log(e.data); // { hello: 'parent' }

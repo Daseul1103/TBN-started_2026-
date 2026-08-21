@@ -67,15 +67,22 @@
 		<span style="width:120px;">${toadysListVO.INDIVIDUAL_NAME }</span>
 		<span style="width:40px;">${toadysListVO.TYPE_NAME }</span>
 		<span style="width:80px;">${toadysListVO.RECEPTION_NAME }</span>
-		<!-- 긴급제보의 경우 노란바탕에 빨간글씨 -->
+		<!-- 긴급제보의 경우 노란바탕에 빨간글씨 -->	
+		<!-- 26-08-19 : 소방청 신규 계정 및 권한 추가 -->
 		<c:choose>
-   	   		<c:when test="${fn:contains(toadysListVO.FLAG_IMPORTANT, 'Y')  && toadysListVO.FLAG_BROD == 'N'}">
-   				<span style="width:481px;font-weight:700;color:#FF0000;background-color:#FFFF00;">${toadysListVO.MEMO }</span>
-   	   		</c:when>
-   	   		<c:otherwise>
-   	   			<span style="width:481px;">${toadysListVO.MEMO }</span>
-   	   		</c:otherwise>
-   		</c:choose>
+		    <c:when test="${(fn:contains(toadysListVO.FLAG_IMPORTANT, 'Y') && toadysListVO.FLAG_BROD eq 'N')
+		                    || toadysListVO.FLAG_FIRE eq 'Y'}">
+		        <span style="width:481px; font-weight:700; color:#FF0000; background-color:#FFFF00;">
+		            ${toadysListVO.MEMO}
+		        </span>
+		    </c:when>
+		
+		    <c:otherwise>
+		        <span style="width:481px;">
+		            ${toadysListVO.MEMO}
+		        </span>
+		    </c:otherwise>
+		</c:choose>
 		
 		<span style="width:60px;">${toadysListVO.REPORTER_TYPE }</span>
 		<span>${toadysListVO.REGION_NAME }</span>

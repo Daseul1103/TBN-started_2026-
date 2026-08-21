@@ -223,7 +223,6 @@ $(function () {
         const row = window.dt.row(this).data();
 
         if (row) {
-            console.log(row.applyId);
             editApply(row.applyId);
         }
     });
@@ -545,9 +544,7 @@ function changePage(url){
 <script>
 
 $(document).ready(function(){
-	console.log("app 가입신청 현황.jsp 진입");
-                                                                          
-	
+
 	/* init(); */
 	
 	
@@ -555,8 +552,7 @@ $(document).ready(function(){
 	fromDate = getFormatDate(fromDate);
 	var toDate = getFormatDate(new Date());
 	
-	console.log("fromDate :" + fromDate);
-	console.log("toDate :" + toDate);
+
 	//var infrmCalender = dateFunc("dateText","dateText1","dateText2",search,fromDate,toDate);
 	dateFunc('sDate','eDate',fromDate,toDate);
 	
@@ -659,8 +655,7 @@ function editApply(str){
     if(str != null && str != "" && str != "undefined"){
         param = "?pr1=" + str;
     }
-    console.log("변수 :" + param);
-    
+
     var url = "/informer/editApply.do" + param;
     var windowName = "APP 통신원등록";
     var left = Math.ceil((window.screen.width - popupW)/2);

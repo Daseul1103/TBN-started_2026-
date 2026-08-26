@@ -60,6 +60,8 @@ public interface InfrmMapper{
 	public void getAppUpdateCode(InfrmVO paramVO);
 
 	public int deleteInformer(InfrmVO paramVO);
+	
+	public int deleteAppInformer(InfrmVO paramVO);
 
 	public List<InfrmVO> getInformerHistory(InfrmVO ifmVO);
 
@@ -91,6 +93,9 @@ public interface InfrmMapper{
 	
 	// 26-06-22 : APP 통신원 가입 현황 > 통신원 등록 > 통신원 중복 등록 검사
 	public int chkDupInfrm(String phoneCell) throws Exception;
+	
+	// 26-08-25 : APP 통신원 등록 거절
+	public int insertCancle(String applyId) throws Exception;
 	
 	public void goCancle (String applyId) throws Exception;
 	

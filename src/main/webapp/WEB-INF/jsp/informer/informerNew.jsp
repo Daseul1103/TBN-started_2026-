@@ -1035,6 +1035,8 @@
             	<form id="informerEditFrm" name="informerEditFrm" method="post" enctype="multipart/form-data">
             		<input type="hidden" id="pageDiv" name="pageDiv" value="${pageDiv}"></input>
             		<input type="hidden" id="informerId" name="informerId" value="${informerInfo.informerId}"></input>
+            		<input type="hidden" id="flagApp" name="flagApp" value="${informerInfo.flagApp}"></input>
+            		<input type="hidden" id="applyId" name="applyId" value="${informerInfo.applyId}"></input>
 	            	<!-- 통신원 등록 - 기본정보 입력란 -->
 	            	<div style="background-color: white;width: 1030px;height: 560px;margin-left: 20px;margin-top: 15px;border-radius: 10px; display: flex; flex-direction: column;">
 	            		<!-- 기본정보 타이틀 -->
@@ -1772,6 +1774,8 @@ function delInformer(){
             type:"post",
             data: {
                 informerId:   $('#informerId').val()
+                ,flagApp : $('#flagApp').val()
+                ,applyId : $('#applyId').val()
             },
             dataType: "json",
             async : false,

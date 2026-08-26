@@ -490,6 +490,10 @@
 					        취소
 					    </button>
 					    
+					    <button class="btn btn-secondary" onclick="insertCancle();">
+					       등록 거절
+					    </button>
+					    
 					    <button class="btn btn-secondary" onclick="chkDupInfrm();">
 					        	중복 등록 검사
 					    </button>
@@ -1320,10 +1324,39 @@ function changePicture(obj){
 }
 
 
+// 26-08-24 : 퍼스널 AI 요청 > 통신원 등록 거절 기능 생성
+function insertCancle() {
+	console.log("통신원 거절 기능 진입");
+	
+	var chk = confirm("해당 통신원을 등록 거절하시겠습니까?");
+	
+	if(chk){
+		alert("해당 통신원이 가입신청 현황에서 삭제됩니다.");
+		
+		// ajax 요청 보내기
+		$.ajax({
+			url : '/infrm/insertCancle.do',
+			data : { "applyId" : $('#applyId').val() },
+			type : 'post',
+			success : function(data) {
+				alert("성공적으로 처리 완료되었습니다.");
+				opener.search();
+	            self.close();
+				
+			}, error : function() {
+				console.log("데이터 전송에 오류 발생");
+			}
+		});
+	} else {
+		alert("통신원 등록 거절이 취소되었습니다.");
+	}
+}
+
+
+
 // 26-06-22 : 중복 등록 검사 기능
 function chkDupInfrm() {
-	console.log("중복 등록 검사 기능 진입");
-	
+
 	var phoneCellSend = $('#phoneCell').val();
 	chkDupleFlag = true;
 	

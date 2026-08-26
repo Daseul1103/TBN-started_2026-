@@ -120,7 +120,7 @@
 		    window.open(
 		        "/receipt/appStatus.do",  
 		        "popupWindow",      
-		        "width=1500,height=845,toolbar=no,menubar=no,scrollbars=yes,resizable=no"
+		        "width=1800,height=845,toolbar=no,menubar=no,scrollbars=yes,resizable=no"
 		    );
 		}
 	});

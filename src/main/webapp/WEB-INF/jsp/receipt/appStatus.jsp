@@ -547,11 +547,11 @@ $(document).ready(function() {
 	<input type="hidden" name="CONTENTS" id="CONTENTS" />
 
 	<div id="container">
-		<div id="topWrap">
+		<div id="topWrap" style="width:1700px;">
 			<!-- bodyWrap -->
-			<div id="bodyWrap">
+			<div id="bodyWrap" style="width:1700px;">
 				<!-- contentWrap -->
-				<div id="contentWrap" style="width:1400px;">
+				<div id="contentWrap" style="width:1700px;">
 
 					<!-- contents -->
 					<div id="conteknts">
@@ -572,7 +572,7 @@ $(document).ready(function() {
 						</div> -->
 						
 	<!-- board_list -->
-	<div class="board_list2" style="width:1400px;">
+	<div class="board_list2" style="width:1700px;">
 		<!-- 옵션 + 자동검색 영역 시작 -->
 		<div class="searchwrap">
 	             	<div>
@@ -602,10 +602,10 @@ $(document).ready(function() {
 			</div> -->
 		</div>		
 		<!-- 방송리스트 header 시작 -->
-		<div style="width: 1400px;">
+		<div style="width: 1700px;">
 			
 			<ul id="broadcastListHead"
-			    style="width:1400px;
+			    style="width:1700px;
 			           background:#ffffff;
 			           border-radius:16px 16px 0 0;
 			           overflow:hidden;
@@ -624,14 +624,15 @@ $(document).ready(function() {
 			               color:#4a5568;">
 			
 			        <span style="width:60px; text-align:center;">선택</span>
-			        <span style="width:60px; text-align:center;">번호</span>
-			        <span style="width:100px; text-align:center;">일자</span>
+			        <span style="width:70px; text-align:center;">번호</span>
+			        <span style="width:110px; text-align:center;">일자</span>
 			        <span style="width:100px; text-align:center;">제보시간</span>
-			        <span style="width:100px; text-align:center;">전화번호</span>
+			        <span style="width:110px; text-align:center;">전화번호</span>
 			        <span style="width:100px; text-align:center;">유형(대)</span>
-			        <span style="width:150px; text-align:center;">제보자</span>
-			        <span style="width:516px; text-align:center;">내용</span>
-			        <span style="width:80px; text-align:center;">제보처</span>
+			        <span style="width:160px; text-align:center;">제보자</span>
+			        <span style="width:160px; text-align:center;">좌표(X,Y)</span>
+			        <span style="width:610px; text-align:center;">내용</span>
+			        <span style="width:70px; text-align:center;">제보처</span>
 			        <span style="flex:1; text-align:center;">교통방송</span>
 			
 			    </li>
@@ -640,7 +641,7 @@ $(document).ready(function() {
 		<!-- 방송리스트 header 끝 -->
 		<!-- 검색결과 시작 -->
 		<form id="listFrm" name="listFrm">
-			<div id="TodayList" class="receivedList" style="border-bottom:1px solid #b7b7b7;">
+			<div id="TodayList" class="receivedList" style="width:1700px; border-bottom:1px solid #b7b7b7;">
 				<div>
 					<ul id="broadcastList"  class="receiptPopList">
 						<li style="padding-top: 15px;">결과를 불러오는 중입니다.</li>

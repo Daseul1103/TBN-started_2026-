@@ -27,25 +27,26 @@
 		        </c:otherwise>
 		    </c:choose>
 		</span>
-		<span style="width:60px;">${toadysListVO.RNUM }</span>
-		<span style="width:100px;">${toadysListVO.RECEIPT_DAY }</span>
+		<span style="width:70px;">${toadysListVO.RNUM }</span>
+		<span style="width:110px;">${toadysListVO.RECEIPT_DAY }</span>
 		<span style="width:100px;">${toadysListVO.RECEIPT_TIME }</span>
-		<span style="width:100px;">${toadysListVO.PHONE_CELL }</span>
+		<span style="width:110px;">${toadysListVO.PHONE_CELL }</span>
 		<span style="width:100px;">${toadysListVO.REPORT_TYPE}</span>
-		<span style="width:150px;">${toadysListVO.INDIVIDUAL_NAME }</span>
+		<span style="width:160px;">${toadysListVO.INDIVIDUAL_NAME }</span>
+		<span style="width:160px;">${toadysListVO.x_COORDINATE} , ${toadysListVO.y_COORDINATE}</span>
 		<c:choose>
         	<c:when test="${toadysListVO.FLAG_SITU_ED eq '3'}">
-				<span style="width:516px;">
+				<span style="width:610px;">
 					<div style="display : flex; justify-content: center;">
 						[오류제보]<p style="color :lightgray;">${fn:replace(toadysListVO.MEMO, '[오류제보]', '')}</p>
 					</div>		
 				</span>	
 			</c:when>	
 			<c:otherwise>
-				<span style="width:516px;">${toadysListVO.MEMO }</span>	
+				<span style="width:610px;">${toadysListVO.MEMO }</span>	
 			</c:otherwise>			
 		</c:choose>
-		<span style="width:80px;">${toadysListVO.REPORTER_TYPE }</span>
+		<span style="width:70px;">${toadysListVO.REPORTER_TYPE }</span>
 		<span>${toadysListVO.REGION_NAME }</span>
 	</li>
 </c:forEach>

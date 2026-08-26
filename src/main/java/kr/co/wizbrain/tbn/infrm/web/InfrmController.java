@@ -698,10 +698,18 @@ public class InfrmController implements ApplicationContextAware {
 		return mav;
 	}
 	
+	
 		
+	@RequestMapping(value="/infrm/insertCancle.do")
+	public ModelAndView insertCancle(@RequestParam("applyId")String applyId) throws Exception {	
+		ModelAndView mav = new ModelAndView("jsonView");
 		
-		
+		int dupChk = infrmService.insertCancle(applyId);		
 
+		return mav;
+	}	
+
+	
 	@RequestMapping(value="/infrm/goCancle.do")
 	public ModelAndView goCancle(@RequestParam("applyId")String applyId) throws Exception {
 		infrmService.goCancle(applyId);
@@ -989,6 +997,13 @@ public class InfrmController implements ApplicationContextAware {
 		ModelAndView mv = new ModelAndView("jsonView");
 		
 		if(paramVO.getInformerId() != null && !paramVO.getInformerId().equals("")){
+			
+			// APP 가입 통신원인지 확인
+			if(paramVO.getFlagApp().equals("Y")) {
+				// APP 가입 통신원이라면 전용 delete문 한번 더 실행
+				int cnt = infrmService.deleteAppInformer(paramVO);
+			}
+			
 			int cnt = infrmService.deleteInformer(paramVO);
 			
 			mv.addObject("cnt", cnt);

@@ -33,6 +33,10 @@ public class ReceivedStatusVO {
 	
 	private String PHONE_CELL; // 전화번호
 	
+	private String X_COORDINATE; // x좌표
+	private String Y_COORDINATE; // y좌표
+	
+	
 	public ReceivedStatusVO() {}
 
 	public ReceivedStatusVO(String rNUM, String rECEIPT_ID, String rECEIPT_DAY, String fLAG_SEND, String fLAG_BROD,
@@ -65,6 +69,22 @@ public class ReceivedStatusVO {
 	
 	
 	
+	public String getX_COORDINATE() {
+		return X_COORDINATE;
+	}
+
+	public void setX_COORDINATE(String x_COORDINATE) {
+		X_COORDINATE = x_COORDINATE;
+	}
+
+	public String getY_COORDINATE() {
+		return Y_COORDINATE;
+	}
+
+	public void setY_COORDINATE(String y_COORDINATE) {
+		Y_COORDINATE = y_COORDINATE;
+	}
+
 	public String getFLAG_FIRE() {
 		return FLAG_FIRE;
 	}

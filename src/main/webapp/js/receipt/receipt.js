@@ -769,7 +769,7 @@ function openAppreceipt() {
 		window.open(
 		        "/receipt/appStatus.do",  
 		        "popupWindow",      
-		        "width=1500,height=845,toolbar=no,menubar=no,scrollbars=yes,resizable=no"
+		        "width=1800,height=845,toolbar=no,menubar=no,scrollbars=yes,resizable=no"
 		    );
 	} else {
 		alert("현재는 관리자 및 접수자만 열람할 수 있습니다.");

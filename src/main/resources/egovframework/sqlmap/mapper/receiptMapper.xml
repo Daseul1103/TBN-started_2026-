@@ -965,6 +965,8 @@
 	                    , A.FLAG_CHK
 	                    , A.FLAG_SITU_ED
 	                    , A.PHONE_CELL
+	                    , A.X_COORDINATE
+	                    , A.Y_COORDINATE
 		            FROM RECEIPT_APP A
 		            LEFT OUTER JOIN (SELECT * FROM CODE_REPORT_TYPE
 		                        WHERE BAS_LCOD='100') C

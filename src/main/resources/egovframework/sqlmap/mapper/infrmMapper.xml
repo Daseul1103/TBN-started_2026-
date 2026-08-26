@@ -1103,12 +1103,22 @@
     </delete>
     
     
+    <!-- APP 가입신청 현황 > APP 통신원 삭제 -->
+    <delete id="deleteAppInformer" parameterType="infrmVO">
+    	delete from INFORMER_APP WHERE APPLY_ID = #{applyId}
+    </delete>
     
     <select id="chkDupInfrm" resultType="java.lang.Integer">
     	SELECT COUNT(*) FROM INFORMER
     	WHERE 1=1
     	AND PHONE_CELL = #{phoneCell}
     </select>
+    
+    
+    <delete id="insertCancle">
+    	DELETE FROM INFORMER_APP
+    	WHERE APPLY_ID = #{applyId}
+    </delete>
     
     
     

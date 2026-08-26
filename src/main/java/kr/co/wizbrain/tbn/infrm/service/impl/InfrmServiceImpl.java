@@ -142,8 +142,19 @@ public class InfrmServiceImpl implements InfrmService{
 	}
 	
 	@Override
+	public int deleteAppInformer(InfrmVO paramVO) {
+		return infrmMapper.deleteAppInformer(paramVO);
+	}
+	
+	@Override
 	public int chkDupInfrm(String phoneCell) throws Exception {
 		return infrmMapper.chkDupInfrm(phoneCell);
+	}
+	
+	
+	@Override
+	public int insertCancle(String applyId) throws Exception {
+		return infrmMapper.insertCancle(applyId);
 	}
 	
 	@Override

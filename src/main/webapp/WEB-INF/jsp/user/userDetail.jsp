@@ -175,7 +175,7 @@ function deleteUser(){
                 }
             } ,
             error: function(res,error){
-            	//alert("에러가 발생했습니다."+error);
+            	alert("에러가 발생했습니다."+error);
             }
     };
 	if(confirm('삭제 하시겠습니까?')){

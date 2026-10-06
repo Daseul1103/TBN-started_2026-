@@ -2,6 +2,8 @@ package kr.co.wizbrain.tbn.main.web;
 
 import org.springframework.ui.Model;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -71,9 +73,11 @@ public class MainController {
 		String springVersion = org.springframework.core.SpringVersion.getVersion();
 //		System.out.println("스프링 프레임워크 버전 : " + springVersion);
 //		logger.debug("▶▶▶▶▶▶▶.보내려는 url : "+url);
+
 		return url;
 	}
 
+	
 	//로그인한 사용자 권한에 따라 메인화면 분기
 	@RequestMapping(value="/common/firstView.do")
 	public ModelAndView firstView(HttpSession httpSession, HttpServletRequest request,Model model) throws Exception{
@@ -92,6 +96,36 @@ public class MainController {
 		return mav;
 	}
 	
+	
+	
+	// 26-09-23 : 비밀번호 90일 이상 미변경시 변경
+	@RequestMapping(value="/user/changePassword.ajax")
+	public ModelAndView changePwChk(HttpSession httpSession, HttpServletRequest request,Model model, @RequestParam("newPassword") String newPw) throws Exception{
+		ModelAndView mav = new ModelAndView("jsonView");
+		logger.debug("▶▶▶▶▶▶▶ 비밀번호 90일 변경 확인 진입 httpSession : "+httpSession);
+
+		// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
+		UserVO reqLoginVo = (UserVO) request.getSession().getAttribute("login");
+
+		// 새로운 비밀번호 넣기
+		
+		// 해시로 저장 후 넣어야 함
+		String hashedPw = BCrypt.hashpw(newPw, BCrypt.gensalt());
+		reqLoginVo.setUserPw(hashedPw);		
+		
+		// 비밀번호 변경 기능 실행 (비밀번호, 비밀번호 마지막 변경일자 수정)
+		userService.changePw(reqLoginVo);
+		
+		// 비밀번호 변경에 따른 로그 생성
+		userService.changePwLog(reqLoginVo);
+		
+		// DB 저장이 모두 성공한 뒤 세션의 날짜 갱신
+		reqLoginVo.setPwChangedt(LocalDate.now().toString()); // 예: 2026-09-29
+		
+		mav.addObject("success", true);
+		return mav;
+	}
+
 	
 	//새로고침 / 창 닫기 분기 
 	@RequestMapping(value = "/user/reloadOrKill.do")

@@ -32,6 +32,16 @@ public class UserServiceImpl implements UserService{
 	@Resource(name="userMapper")
 	private UserMapper userMapper;
 	
+	// 90일 비밀번호 변경
+	public void changePw(UserVO userVO) throws Exception {
+		userMapper.changePw(userVO);
+	}
+	
+	// 90일 비밀번호 변경 로그
+	public void changePwLog(UserVO userVO) throws Exception {
+		userMapper.changePwLog(userVO);
+	}
+	
 	//전체 회원정보 조회
 	public List<UserVO> selectUserList(UserVO userVO) throws Exception{
 		return userMapper.selectUser(userVO);
@@ -52,6 +62,17 @@ public class UserServiceImpl implements UserService{
 	public void updateUser(UserVO uvo) {
 		userMapper.updateUser(uvo);
 	}
+	
+	//사용자 비밀번호 변경 시 업데이트 날짜 변경
+	public void updatePwDate(UserVO uvo) {
+		userMapper.updatePwDate(uvo);
+	}
+	
+	//사용자 비밀번호 변경 시 로그 테이블에 데이터 삽입
+	public void updatePwLog(UserVO uvo) {
+		userMapper.updatePwLog(uvo);
+	}
+	
 
 	//사용자 삭제
 	public void deleteUser(UserVO uvo) {

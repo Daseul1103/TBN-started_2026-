@@ -12,6 +12,107 @@
 	    color: blue;
 	    cursor: pointer;
 	}
+	
+	
+	#passwordChangeScreen {
+	    min-height: 100vh;
+	    align-items: center;
+	    justify-content: center;
+	    background-color: #f4f6f8;
+	    font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+	    color: #222;
+	}
+	
+	#passwordChangeScreen .password-change-box {
+	    box-sizing: border-box;
+	    width: 100%;
+	    max-width: 430px;
+	    padding: 40px;
+	    margin: 20px;
+	    background-color: #fff;
+	    border: 1px solid #e2e6ea;
+	    border-radius: 10px;
+	    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+	}
+	
+	#passwordChangeScreen .password-change-box h1 {
+	    margin: 0 0 12px;
+	    font-size: 26px;
+	    text-align: center;
+	}
+	
+	#passwordChangeScreen .description {
+	    margin: 0 0 30px;
+	    color: #666;
+	    font-size: 14px;
+	    line-height: 1.6;
+	    text-align: center;
+	}
+	
+	#passwordChangeScreen #passwordChangeForm,
+	#passwordChangeScreen .input-group {
+	    width: 100%;
+	}
+	
+	#passwordChangeScreen .input-group {
+	    margin-bottom: 20px;
+	}
+	
+	#passwordChangeScreen .input-group label {
+	    display: block;
+	    margin-bottom: 8px;
+	    font-size: 14px;
+	    font-weight: 600;
+	}
+	
+	#passwordChangeScreen .input-group input[type="password"] {
+	    display: block;
+	    box-sizing: border-box;
+	    width: 100% !important;
+	    height: 48px;
+	    padding: 0 14px;
+	    border: 1px solid #cfd5dc;
+	    border-radius: 6px;
+	    font-size: 15px;
+	    outline: none;
+	}
+	
+	#passwordChangeScreen .input-group input[type="password"]:focus {
+	    border-color: #2563eb;
+	    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+	}
+	
+	#passwordChangeScreen .password-rule {
+	    margin: 8px 0 0;
+	    color: #666;
+	    font-size: 13px;
+	    line-height: 1.5;
+	}
+	
+	#passwordChangeScreen .error-message {
+	    min-height: 20px;
+	    margin: -8px 0 14px;
+	    color: #dc2626;
+	    font-size: 13px;
+	}
+	
+	#passwordChangeScreen .change-button {
+	    width: 100%;
+	    height: 50px;
+	    border: 0;
+	    border-radius: 6px;
+	    background-color: #2563eb;
+	    color: #fff;
+	    font-size: 16px;
+	    font-weight: 700;
+	    cursor: pointer;
+	}
+	
+	#passwordChangeScreen .change-button:hover {
+	    background-color: #1d4ed8;
+	}
+}
+
 </style>
 </head>
 	<script>
@@ -98,7 +199,7 @@
 	    userName = '${login.userName}';
 	    userId = '${login.userId}';
 	    authCode = '${login.authCode}';
-	    
+	    changeDate = '${login.pwChangedt}';
 	    
 	    
 	    // 22.10.15 수정전
@@ -107,53 +208,134 @@
 	    // console.log("메 인 화 면 : " + inTelNum);
 	    $("#menu").load("/common/menu.do");
 
-	    // 로그인 성공 시 사용자 권한에 따라 화면 분기
-	    goMenuSite("/common/firstView.do");
+	    // 로그인 전 비밀번호 변경 기능 생성
+	    var changeDivVal =  chkChangePw(changeDate);   
+	    
+	    if(changeDivVal) {
+	    	alert("비밀번호를 변경한지 90일이 지났습니다. 비밀번호 변경 화면으로 이동합니다.");
+	    } else {
+	    	
+	    	showMainAfterPasswordCheck(); 
+	    }
+	    
+	    // 비밀번호 변경 버튼을 눌렀을 경우 실행 함수
+	    $('.change-button').on('click', function() {
+	    	
+	    	
+	    	var newPw = $('#newPassword').val();
+	    	var newPwChk = $('#passwordConfirm').val();
+	    	
+	    	// 비밀번호 입력 정규식 검사
+	    	if(newPw == ''){
+	    		// 비밀번호입력란에 빈값이 들어왔을 때
+	    		alert("새로운 비밀번호를 입력해 주세요.");
+	    	} else if(newPwChk == '') {
+	    		// 비밀번호 확인 입력란에 빈 값이 들어왔을 때
+	    		alert("비밀번호 확인에 새로운 비밀번호를 입력해 주세요.");
+	    	} else if(newPw != newPwChk) {
+	    		// 비밀번호와 비밀번호 확인이 일치하지 않을 때
+	    		alert("입력하신 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+	    	} else {
+	    		// 모든 조건을 만족할 때
+	    		var pwRegex = /^[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{9,15}$/; // 영문/숫자/특수 포함 9~15자
 
-	    // 자식 iframe으로부터 받은 리스너
-	    /*
-	    window.addEventListener('message', function(e) {
-	        console.log("From Iframe: " + e.data);
-	        $("#X_COORDINATE").val(e.data.xCh);
-	        $("#Y_COORDINATE").val(e.data.yCh);
+	    		if (!pwRegex.test(newPw)) {
+	    		    alert("비밀번호는 9~15자로 입력하고, 영문·숫자·허용된 특수문자만 사용해 주세요.");
+	    		} else {
+	    		    // 비밀번호 변경 요청
+	    		    $.ajax({
+	    		        url: '/user/changePassword.ajax', // 실제 컨트롤러 매핑 주소로 변경
+	    		        type: 'POST',
+	    		        data: {
+	    		            newPassword: newPw
+	    		        },
+	    		        success: function (data) {
+	    		            if (data.success) {
+	    		                alert('비밀번호가 변경되었습니다.');
 
-	        if (typeof e.origin !== 'undefined') {
-	            console.log("e.origin : " + e.origin);
-	        }
+	    		                showMainAfterPasswordCheck(); 
+	    		            } else {
+	    		                alert('비밀번호 변경에 실패했습니다.');
+	    		            }
+	    		        },
+	    		        error: function (xhr, status, error) {
+	    		            console.error('비밀번호 변경 요청 실패:', error);
+	    		            alert('비밀번호 변경 중 오류가 발생했습니다.');
+	    		        }
+	    		    });
+	    		}
+	    	}
 	    });
-	    */
+	    
+	    
+	    function chkChangePw(changeDate) {
+	    	console.log("chkChangePw 진입");
+	    	console.log("changeDate 값 : " + changeDate);
+	    	
+	    	const [year, month, day] = changeDate.split('-').map(Number);
+
+	        const passwordChangeDate = new Date(year, month - 1, day);
+	        const expiryDate = new Date(passwordChangeDate);
+	        expiryDate.setDate(expiryDate.getDate() + 90);
+
+	        const today = new Date();
+	        today.setHours(0, 0, 0, 0);
+
+	        if (today >= expiryDate) {
+	        	console.log("비밀번호 90일 지남");
+	        	
+	            $('#container').hide();
+	            $('#passwordChangeScreen').css('display', 'flex');
+	            
+	            return true;
+	        } else {
+	        	console.log("비밀번호 90일 안지남");
 	        
-	    
-	   // function NoticeSelect() {
-	    	var date = new Date();
-			var today = ("0" + date.getFullYear()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+	            $('#passwordChangeScreen').hide();
+	            $('#container').show();
+	            
+	            return false;
+	        }
+	    }
+	   
+	});
+	
+	
+	
+	// 90일 비밀번호 변경 성공 후 또는 90일 비밀번호 변경 해당하지 않는 경우 실행
+	function showMainAfterPasswordCheck() {
+		$('#passwordChangeScreen').hide();
+		$('#container').show();
 
+		// 여기부터 기존 else 안에 있던 코드
+		goMenuSite("/common/firstView.do");
+		 
+		var date = new Date();
+		var today = ("0" + date.getFullYear()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+	
+        $.ajax({
+            url: "/common/selectNotice.ajax",
+            data: { 'today': today },
+            type: "POST",
+            success: function(data) {
+                appendNotice(data);
 
-		  	
-	        $.ajax({
-	            url: "/common/selectNotice.ajax",
-	            data: { 'today': today },
-	            type: "POST",
-	            success: function(data) {
-	                appendNotice(data);
-
-	                var nCount = data.moreCount;
-	                
-	                if(nCount > 0){
-	                	$('#goNotice').text(">> " + nCount +"개의 공지사항이 더 있습니다. (보러가기)");
-	 	                $('#moreNotice').show();
-	                } else {
-	                	return false;
-	                }
-	               
-	            },
-	            error: function(xhr, status, error) {
-	                console.log('공지사항 불러오기 ajax 요청에 문제가 있습니다.');
-	            }
-	        });
-	   // }
-	    
-	   // 더 많은 공지사항 보러가기 기능
+                var nCount = data.moreCount;
+                
+                if(nCount > 0){
+                	$('#goNotice').text(">> " + nCount +"개의 공지사항이 더 있습니다. (보러가기)");
+ 	                $('#moreNotice').show();
+                } else {
+                	return false;
+                }
+               
+            },
+            error: function(xhr, status, error) {
+                console.log('공지사항 불러오기 ajax 요청에 문제가 있습니다.');
+            }
+        });
+	
+        // 더 많은 공지사항 보러가기 기능
 	    $('#goNotice').on('click', function() {
 	    	$(".notice_container").hide();
 	    	
@@ -198,9 +380,9 @@
         	
 
         }
-        
-	    var toggleMainPopup = function() {
-	  
+	
+        var toggleMainPopup = function() {
+  		  
 	        // 쿠키 제어 함수
 	        var handleCookie = {
 	            // 쿠키 쓰기
@@ -223,8 +405,6 @@
 	            $(".notice_container").show(); // 쿠키가 없으면 팝업 보이기
 	        }
 
-	        
-	        
 	    }
 	    
 	 	// 오늘 하루 보지 않기 버튼 클릭 시 실행되는 함수
@@ -255,10 +435,9 @@
 	            $(".notice_container").hide(); // 팝업 숨기기
 	        }
         });
-	   
-	});
 	
 	
+	}
 </script>
 </head>
 <body>
@@ -325,6 +504,48 @@
 		<div id="mainDiv" class="mainDiv">
 			
 		</div>
+	</div>
+	
+
+	<div id="passwordChangeScreen" style="display: none;">
+	    <div class="password-change-box">
+	        <h1>비밀번호 변경</h1>
+	        <p class="description">
+	            비밀번호를 변경한 지 90일이 지났습니다.<br>
+	            새로운 비밀번호를 입력해 주세요.
+	        </p>
+	
+	        <form id="passwordChangeForm" method="post">
+	            <div class="input-group">
+	                <label for="newPassword">변경 비밀번호</label>
+	                <input type="password"
+	                       id="newPassword"
+	                       name="newPassword"
+	                       autocomplete="new-password"
+	                       minlength="9"
+	                       maxlength="15"
+	                       aria-describedby="passwordRule"
+	                       required>
+	                <p id="passwordRule" class="password-rule">
+	                    영문, 숫자, 특수문자를 사용하여 9~15자로 입력해 주세요.
+	                </p>
+	            </div>
+	
+	            <div class="input-group">
+	                <label for="passwordConfirm">변경 비밀번호 확인</label>
+	                <input type="password"
+	                       id="passwordConfirm"
+	                       name="passwordConfirm"
+	                       minlength="9"
+	                       maxlength="15"
+	                       autocomplete="new-password"
+	                       required>
+	            </div>
+	
+	            <p id="errorMessage" class="error-message" aria-live="polite"></p>
+	            <button type="button" class="change-button">비밀번호 변경</button>
+	        </form>
+	    </div>
 	</div>
 </body>
 </html>

@@ -26,13 +26,33 @@
 		<result property="stDt"			column=	"ST"			/>
 		<result property="fnDt"			column=	"FN"			/>
 		<result property="cnYn"			column=	"CN_YN"			/>
+		<result property="pwChangedt"	column=	"PW_CHANGE_DT"			/>
 	</resultMap>
+	
+	
+	<!-- 90일 비밀번호 변경 -->
+	<update id="changePw" parameterType="userVO">
+		UPDATE SYS_USER
+		SET USER_PW = #{userPw},
+		PW_CHANGE_DT = SYSDATE
+		WHERE USER_ID =	#{userId}
+	</update>
+	
+	
+	<!-- 90일 비밀번호 변경 로그 -->
+	<insert id="changePwLog" parameterType="userVO">
+		INSERT INTO LOG_PASSWORD_CHANGE(CHANGE_DT,CHANGE_USER_ID,LOG_ID,USER_ID) 
+		VALUES(SYSDATE,#{userId},SEQ_PASSWORD_CHANGE_LOG.NEXTVAL,#{userId})
+	</insert>
+	
+	
 	<select id="selectUser" parameterType="userVO" resultMap="selectUser">
 	   SELECT
 				A.USER_ID
 				,A.USER_PW
 				,A.USER_NAME
 				,A.REGION_ID
+				,TO_CHAR(A.PW_CHANGE_DT, 'YYYY-MM-DD') AS PW_CHANGE_DT
                 ,C.AREA_NAME AS REGION_NAME
                 ,B.AUTH_NAME
 				,A.USER_TEL
@@ -156,6 +176,20 @@
 			,MEMO     = #{memo}
 		WHERE USER_ID=#{userId} 
 	</update>
+	
+	
+	<!-- 비밀번호 변경 시 비밀번호 변경 일자 컬럼 업데이트 -->
+	<update id="updatePwDate" parameterType="userVO">
+	    UPDATE SYS_USER
+	    SET PW_CHANGE_DT = SYSDATE
+	    WHERE USER_ID = #{userId}
+	</update>
+	
+	<!-- 비밀번호 변경 시 비밀번호 변경 로그 테이블에 데이터 삽입 -->
+	<insert id="updatePwLog" parameterType="userVO">
+		INSERT INTO LOG_PASSWORD_CHANGE (CHANGE_DT, CHANGE_USER_ID, OG_ID, USER_ID)
+		VALUES(SYSDATE, #{changeUserid},SEQ_PASSWORD_CHANGE_LOG.NEXTVAL ,#{userId})
+	</insert>
 	
 	<!-- 사용자 삭제 -->
 	<delete id="deleteUser" parameterType="userVO">

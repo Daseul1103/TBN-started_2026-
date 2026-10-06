@@ -20,7 +20,12 @@ import kr.co.wizbrain.tbn.user.vo.UserVO;
  */
 
 public interface UserService {
-
+	// 90일 비밀번호 변경
+	public void changePw(UserVO userVO) throws Exception;
+	
+	// 90일 비밀번호 변경 로그
+	public void changePwLog(UserVO userVO) throws Exception;
+	
 	//전체 사용자 조회
 	public List<UserVO> selectUserList(UserVO userVO) throws Exception;
 	
@@ -32,7 +37,13 @@ public interface UserService {
 
 	//사용자 정보 수정
 	public void updateUser(UserVO uvo);
-
+	
+	//사용자 비밀번호 변경 시 업데이트 날짜 변경
+	public void updatePwDate(UserVO uvo);
+	
+	//사용자 비밀번호 변경 시 로그 테이블에 데이터 삽입
+	public void updatePwLog(UserVO uvo);
+	
 	//사용자 삭제
 	public void deleteUser(UserVO uvo);
 	

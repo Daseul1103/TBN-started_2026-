@@ -44,6 +44,26 @@ public class UserVO {
 	public String sDate;
 	//검색 종료 시간
 	public String eDate;
+	
+	
+	// 비밀번호 마지막 변경일자
+	public String pwChangedt;
+	// 비밀번호 변경한 실 사용자
+	public String changeUserid;
+	
+	
+	public String getChangeUserid() {
+		return changeUserid;
+	}
+	public void setChangeUserid(String changeUserid) {
+		this.changeUserid = changeUserid;
+	}
+	public String getPwChangedt() {
+		return pwChangedt;
+	}
+	public void setPwChangedt(String pwChangedt) {
+		this.pwChangedt = pwChangedt;
+	}
 	public String getUserId() {
 		return userId;
 	}

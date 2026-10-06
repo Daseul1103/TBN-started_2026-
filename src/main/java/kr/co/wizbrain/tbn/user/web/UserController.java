@@ -1,5 +1,7 @@
 package kr.co.wizbrain.tbn.user.web;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,14 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import kr.co.wizbrain.tbn.comm.util.PasswordPolicy;
 import kr.co.wizbrain.tbn.option.service.AreaOptService;
 import kr.co.wizbrain.tbn.option.service.AuthService;
 import kr.co.wizbrain.tbn.option.vo.AuthVo;
 import kr.co.wizbrain.tbn.option.vo.OptAreaVo;
 import kr.co.wizbrain.tbn.user.service.UserService;
 import kr.co.wizbrain.tbn.user.vo.UserVO;
-import kr.co.wizbrain.tbn.comm.util.PasswordPolicy;
-import kr.co.wizbrain.tbn.infrm.vo.InfrmVO;
 
 /**
  * 사용자 컨트롤러 클래스
@@ -231,6 +232,16 @@ public class UserController {
 	        userVO.setUserPw(hashedPw);
 
 	        userService.insertUser(userVO);
+	        
+	        // 비밀번호 변경 일자 업데이트 및 비밀번호 변경 로그 테이블에 등록
+            
+            // 현재 사용자의 ID 값 넣기
+            UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+            userVO.setChangeUserid(nlVo.getUserId());
+            
+            userService.updatePwDate(userVO);
+            userService.updatePwLog(userVO);
+            
 	        mav.addObject("cnt", 1);
 	        return mav;
 
@@ -329,6 +340,16 @@ public class UserController {
 	            // 해시 처리
 	            String hashedPw = BCrypt.hashpw(pw, BCrypt.gensalt());
 	            userVO.setUserPw(hashedPw);
+	            
+	            
+	            // 비밀번호 변경 일자 업데이트 및 비밀번호 변경 로그 테이블에 등록
+	            
+	            // 현재 사용자의 ID 값 넣기
+	            UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+	            userVO.setChangeUserid(nlVo.getUserId());
+	            
+	            userService.updatePwDate(userVO);
+	            userService.updatePwLog(userVO);
 
 	        } else {
 	            // 비번 변경 의도 없음 → 업데이트 쿼리에서 비번 컬럼이 건드려지지 않게 해야 함

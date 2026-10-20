@@ -20,6 +20,11 @@
 			}
 		});
 		
+		
+		if (authCode === "999") {    
+			$('[id="/user/lockedAccounts.do"]').show();
+		}
+		
 	});
 </script>
 	<ul>
@@ -32,7 +37,7 @@
 		<li>
 			<a id="/caster/caster.do" class="goUrlMenu">캐스터지원</a>
 		</li>
-		<li><a id="/stats/standard.do"  class="goUrlMenu">통계 관리</a>
+		<li><a id="/stats/standard.do" class="goUrlMenu">통계 관리</a>
 			<ul class="submenu">
 				
 				<!-- <li id="/stats/receipt.do" class="goUrlMenu"><a>제보접수현황</a></li> -->
@@ -48,6 +53,7 @@
 			<ul class="submenu">
 				<li id="/user/userMain.do" class="goUrlMenu"><a>사용자관리</a></li>
 				<li id="/user/historyMain.do" class="goUrlMenu"><a>사용이력관리</a></li>
+				<li id="/user/lockedAccounts.do" class="goUrlMenu" style="display: none;"><a>계정잠금관리</a></li>
 			</ul>
 		</li>
 		<li><a id="/informer/first.do" class="goUrlMenu">통신원관리</a>

@@ -30,6 +30,15 @@ public interface UserMapper{
 	//전체 회원정보 조회
 	public List<UserVO> selectUser(UserVO userVO) throws Exception;
 	
+	// 계정 잠금 사용자 조회
+	public List<UserVO> lockSelectUser(UserVO userVO) throws Exception;
+	
+	public void unlockAccount(List<String> userIds) throws Exception;
+	
+	public void updateLoginFailure(UserVO userVO) throws Exception;
+	
+	int resetLoginFailCount(UserVO userVO) throws Exception;
+	
 	//사용자 등록
 	public void insertUser(UserVO userVO) throws Exception;
 	

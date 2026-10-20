@@ -544,7 +544,7 @@
             			<p style="font-size:15px;"><span style="color: rgba(47, 46, 47, 0.77);">통신원 관리 ></span> 상세 정보</p>
             		</div>
             		<div class="button-group">
-						<c:choose>
+						<%-- <c:choose>
 						    <c:when test="${informerInfo.flagAct eq 'Y'}">
 						        <button type="button" class="btn btn-secondary" onclick="changeAct('N');">
 						            <img src="/images/notuseInformer.svg" class="btn-icon"/>
@@ -559,10 +559,15 @@
 						        </button>
 						    </c:otherwise>
 						</c:choose>
-					    <button class="btn btn-danger" onclick="delInformer();">
+ --%>
+						<button type="button" class="btn btn-secondary" onclick="changeAct('N');">
+						   <img src="/images/notuseInformer.svg" class="btn-icon"/>
+						   해촉
+						</button>						
+					    <!-- <button class="btn btn-danger" onclick="delInformer();">
 					        <img src="/images/deleteInformer.svg" class="btn-icon"/>
 					        삭제
-					    </button>
+					    </button> -->
 					                                
 					    <button class="btn btn-secondary" onclick="self.close();">
 					        <img src="/images/cancleInformer.svg" class="btn-icon"/>

@@ -47,6 +47,16 @@ public class UserServiceImpl implements UserService{
 		return userMapper.selectUser(userVO);
 	}
 
+	
+	// 계정 잠금 사용자 조회
+	public List<UserVO> lockSelectUser(UserVO userVO) throws Exception {
+		return userMapper.lockSelectUser(userVO);
+	}
+	
+	public void unlockAccount(List<String> userIds) throws Exception {
+		userMapper.unlockAccount(userIds);
+	}
+	
 	//사용자 등록
 	public void insertUser(UserVO userVO) throws Exception {
 		userMapper.insertUser(userVO);
@@ -56,6 +66,16 @@ public class UserServiceImpl implements UserService{
 	public UserVO selectUser(UserVO userVO) throws Exception {
 		UserVO uvo = (UserVO) userMapper.selectUser(userVO).get(0);
 		return uvo;
+	}
+	
+	
+	public void updateLoginFailure(UserVO userVO) throws Exception {
+		userMapper.updateLoginFailure(userVO);
+	}
+	
+	
+	public int resetLoginFailCount(UserVO userVO) throws Exception {
+		return userMapper.resetLoginFailCount(userVO);
 	}
 
 	//사용자 정보 수정

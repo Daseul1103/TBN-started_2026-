@@ -51,7 +51,34 @@ public class UserVO {
 	// 비밀번호 변경한 실 사용자
 	public String changeUserid;
 	
+	// 26-10-19 : 일정 횟수 로그인 실패 시 계정 잠금용 컬럼 추가
+	public int loginFailCount; // 로그인 실패 카운트
 	
+	public String accountLockYn; // 계정 잠금 여부
+	
+	public String accountLockDt; // 계정 잠금 일시
+	
+	
+	
+	
+	public int getLoginFailCount() {
+		return loginFailCount;
+	}
+	public void setLoginFailCount(int loginFailCount) {
+		this.loginFailCount = loginFailCount;
+	}
+	public String getAccountLockYn() {
+		return accountLockYn;
+	}
+	public void setAccountLockYn(String accountLockYn) {
+		this.accountLockYn = accountLockYn;
+	}
+	public String getAccountLockDt() {
+		return accountLockDt;
+	}
+	public void setAccountLockDt(String accountLockDt) {
+		this.accountLockDt = accountLockDt;
+	}
 	public String getChangeUserid() {
 		return changeUserid;
 	}

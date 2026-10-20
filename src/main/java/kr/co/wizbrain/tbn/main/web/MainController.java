@@ -172,6 +172,144 @@ public class MainController {
 		try {
 			userVo = userService.selectUser(inputVo);
 			
+			// 1. 등록되지 않은 계정
+		    if (userVo == null) {
+		        msg = "가입되지 않은 사용자이거나 정보를 잘못 입력하셨습니다";
+
+		    // 2. 이미 잠긴 계정 → 비밀번호 검증 없이 차단
+		    } else if ("Y".equals(userVo.getAccountLockYn())) {
+		        msg = "로그인 실패 5회로 잠긴 계정입니다. 담당자에게 문의해 주세요.";
+		        userVo = null;
+
+		    // 3. 비밀번호 불일치 → 실패 횟수 증가
+		    } else if (!BCrypt.checkpw(inputVo.getUserPw(), userVo.getUserPw())) {
+		        userService.updateLoginFailure(userVo);
+
+		        msg = "가입되지 않은 사용자이거나 정보를 잘못 입력하셨습니다";
+		        userVo = null;
+
+			//유효한 계정 및 비밀번호 입력 시	
+			}else {
+                //기존 세션이 존재(중복로그인)
+                if(SessionListener.getInstance().isUsing(inputVo.getUserId())) {
+                	String relgn = request.getParameter("relgn");
+                	//중복로그인
+                	if(relgn == null || relgn.equals("") || relgn.equals("null")) {
+                		logger.debug("▶▶▶▶▶▶▶.이미 로그인 중인 사용자입니다.");
+                    	msg="중복로그인";
+                    	mav.addObject("msg", msg);
+                    	return mav;
+                    //클라이언트 불완전 종료로 인한 재 로그인 처리
+                	}else {
+                    	logger.debug("▶▶▶▶▶▶▶.기존 세션을 삭제하고 재생성");
+                		SessionListener.getInstance().removeSessionById(inputVo.getUserId());
+                		userService.logoutUpdate(inputVo);
+                	}
+                }
+                //통신원일 경우 내선번호 입력 확인
+                //통신원일 경우 내선번호 미입력시
+    			if(userVo.getAuthCode().equals("2")&&(inputVo.getInTel()==null||inputVo.getInTel().equals(""))) {
+    				msg = "제보접수자의 경우 내선번호를 입력해주셔야 합니다";
+    				userVo =null;
+    			}else{//통신원 : 내선번호 존재 시 || 다른 사용자
+    				//통신원일 경우
+    				if(userVo.getAuthCode().equals("2")) {
+    					IntelVO itvo = new IntelVO();
+        				// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
+        				if(!(userVo.getAuthCode().equals("999"))) {//999 관리자 권한
+        					itvo.setAreaCode(userVo.getRegionId());
+        				}
+        				itvo.setInTel(inputVo.getInTel());
+        				List<IntelVO> itList = intelService.selectIntel(itvo);
+        				//올바르지 않은 내선번호일경우
+    	    			if(itList.size()==0){
+    	    				msg = "할당된 내선번호를 입력해 주세요";
+    	    				userVo =null;
+    	    			}else{
+    	    				//다른 사용자가 사용하는 내선번호일경우
+    	    				List<UserVO> nowList = SessionListener.getInstance().getNowVOList();
+    	    				for (UserVO nvo : nowList) {
+								if(nvo.getInTel().equals(inputVo.getInTel())) {
+									userVo.setInTel(inputVo.getInTel());
+								}
+							}
+    	    				if(userVo.getInTel()!=null&&!(userVo.getInTel().equals(""))) {
+    	    					msg = "현재 사용중인 내선번호입니다";
+        	    				userVo =null;
+    	    				}else {
+    	    					//로그인 성공!
+    	    					userService.resetLoginFailCount(userVo);  // 로그인 실패 카운트 초기화
+    	    					
+                				//입력한 내선번호 등록
+            					userVo.setInTel(inputVo.getInTel());
+                				HttpSession loginSession = request.getSession(true);
+                				
+            	                //세션시간 설정 24*60*60 24시간 (시간/분/초 단위 : 초)
+            	                loginSession.setMaxInactiveInterval(24*60*60);
+            	                logger.debug("로그인vo 세션시간 : "+loginSession.getMaxInactiveInterval());
+            	                //세션에 값 주입
+            	                httpSession.setAttribute("login", inputVo);
+            	                //세션 + 시간 해쉬맵에 로그인 세션과 현 시간을 저장
+            	                SessionListener.getInstance().setSession(loginSession, userVo.getUserId());
+            	                //${}세션
+            	    			model.addAttribute("user",userVo);
+            	    			mav.addObject("uvo", userVo);
+    	    				}
+    	    			}
+    	    		//통신원 이외의 다른 사용자	
+    				}else {
+        				//로그인 성공!
+        				//입력한 내선번호 등록
+    					//userVo.setInTel(inputVo.getInTel());
+    					
+    					userService.resetLoginFailCount(userVo);  // 로그인 실패 카운트 초기화
+    					
+    					//통신원 이외의 사용자는 내선번호 삭제
+    					userVo.setInTel("");
+    					inputVo.setInTel("");
+    					
+        				HttpSession loginSession = request.getSession(true);
+        				
+    	                //세션시간 설정 24*60*60 24시간 (시간/분/초 단위 : 초)
+    	                loginSession.setMaxInactiveInterval(24*60*60);
+    	                logger.debug("로그인vo 세션시간 : "+loginSession.getMaxInactiveInterval());
+    	                //세션에 값 주입
+    	                httpSession.setAttribute("login", inputVo);
+    	                //세션 + 시간 해쉬맵에 로그인 세션과 현 시간을 저장
+    	                SessionListener.getInstance().setSession(loginSession, userVo.getUserId());
+    	                //${}세션
+    	    			model.addAttribute("user",userVo);
+    	    			mav.addObject("uvo", userVo);
+    				}
+				}
+			}
+			
+		} catch (Exception e) {
+			msg="가입되지 않은 사용자이거나 정보를 잘못 입력하셨습니다";
+			userVo=null;
+			logger.debug("▶▶▶▶▶▶▶.캐치 에러 : "+e);
+		} finally {
+			mav.addObject("msg", msg);
+		}
+		return mav;
+	}
+	
+	
+	
+	
+	/*@RequestMapping("/login/login.do")
+	public @ResponseBody ModelAndView loginPost(@ModelAttribute UserVO inputVo,HttpSession httpSession
+	,HttpServletRequest request,Model model) throws Exception{
+		logger.debug("▶▶▶▶▶▶▶.loginPost 진입 세션 : "+httpSession);
+		logger.debug("▶▶▶▶▶▶▶.받아온 loginVo 값 : "+inputVo.toString());
+		
+		String msg="";
+		UserVO userVo = new UserVO();
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+		try {
+			userVo = userService.selectUser(inputVo);
+			
 			//등록되지 않은 사용자 또는 사용자 입력 오류
 			if(userVo ==null || !(BCrypt.checkpw(inputVo.getUserPw(), userVo.getUserPw()))) {
 				logger.debug("▶▶▶▶▶▶▶.가입되지 않은 사용자이거나 정보를 잘못 입력하셨습니다");
@@ -277,7 +415,7 @@ public class MainController {
 			mav.addObject("msg", msg);
 		}
 		return mav;
-	}
+	}*/
 	
 
 	//로그아웃 처리

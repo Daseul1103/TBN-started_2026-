@@ -27,9 +27,41 @@
 		<result property="fnDt"			column=	"FN"			/>
 		<result property="cnYn"			column=	"CN_YN"			/>
 		<result property="pwChangedt"	column=	"PW_CHANGE_DT"			/>
+		<result property="loginFailCount" column="LOGIN_FAIL_COUNT"/>
+		<result property="accountLockYn" column="ACCOUNT_LOCK_YN"/>
+		<result property="accountLockDt" column="ACCOUNT_LOCK_DT"/>
 	</resultMap>
 	
+
+
+
+
+	<!-- 로그인 실패 횟수 카운트 및 계정 잠금 업데이트 -->
+	<update id="updateLoginFailure" parameterType="userVO">
+	    UPDATE SYS_USER
+	    SET LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1,
+	        ACCOUNT_LOCK_YN =
+	            CASE
+	                WHEN LOGIN_FAIL_COUNT + 1 >= 5 THEN 'Y'
+	                ELSE 'N'
+	            END,
+	        ACCOUNT_LOCK_DT =
+	            CASE
+	                WHEN LOGIN_FAIL_COUNT + 1 >= 5 THEN SYSDATE
+	                ELSE ACCOUNT_LOCK_DT
+	            END
+	    WHERE USER_ID = #{userId}
+	      AND ACCOUNT_LOCK_YN = 'N'
+	</update>
 	
+	
+	<update id="resetLoginFailCount" parameterType="userVO">
+	    UPDATE SYS_USER
+	    SET LOGIN_FAIL_COUNT = 0
+	    WHERE USER_ID = #{userId}
+	      AND ACCOUNT_LOCK_YN = 'N'
+	</update>
+
 	<!-- 90일 비밀번호 변경 -->
 	<update id="changePw" parameterType="userVO">
 		UPDATE SYS_USER
@@ -46,10 +78,108 @@
 	</insert>
 	
 	
+	<select id="lockSelectUser" parameterType="userVO" resultMap="selectUser">
+	    SELECT
+	         A.USER_ID
+	        ,A.USER_PW
+	        ,A.LOGIN_FAIL_COUNT
+	        ,A.ACCOUNT_LOCK_YN
+	        ,A.ACCOUNT_LOCK_DT
+	        ,A.USER_NAME
+	        ,A.REGION_ID
+	        ,TO_CHAR(A.PW_CHANGE_DT, 'YYYY-MM-DD') AS PW_CHANGE_DT
+	        ,C.AREA_NAME AS REGION_NAME
+	        ,B.AUTH_NAME
+	        ,A.USER_TEL
+	        ,A.AUTH_CODE
+	        ,A.FLAG_USE
+	        ,A.MEMO
+	        ,A.IN_TEL
+	        ,TO_CHAR(A.REG_DT,'YYYY-MM-DD') AS REG_DT
+	        ,D.ST
+	        ,D.FN
+	        ,DECODE(D.DF1,'접속중','접속중','미접속') AS CN_YN
+	    FROM
+	        SYS_USER A
+	
+	    LEFT JOIN SYS_AUTH B
+	        ON A.AUTH_CODE = B.AUTH_CODE
+	
+	    LEFT JOIN CODE_AREACODE C
+	        ON A.REGION_ID = C.AREA_CODE
+	
+	    LEFT JOIN (
+	        SELECT T1.*
+	            ,CASE WHEN DF > 0 THEN '미접속'
+	                  ELSE '접속중' END AS DF1
+	        FROM (
+	            SELECT
+	                 USER_ID
+	                ,TO_CHAR(MAX(ST_TIME), 'YYYY-MM-DD HH24:MI:SS') ST
+	                ,TO_CHAR(MAX(FN_TIME), 'YYYY-MM-DD HH24:MI:SS') FN
+	
+	                <!--,SIGN(ROUND((
+	                    MAX(FN_TIME) - MAX(ST_TIME)
+	                ) * 24 * 60 * 60)) DF-->
+	
+	                ,SIGN(ROUND((
+	                    CAST(MAX(FN_TIME) AS DATE) - CAST(MAX(ST_TIME) AS DATE)
+	                ) * 24 * 60 * 60)) DF
+	
+	            FROM LOGIN_HISTORY
+	            WHERE ST_TIME > SYSDATE - 2
+	            GROUP BY USER_ID
+	        ) T1
+	    ) D
+	        ON A.USER_ID = D.USER_ID
+	
+	    WHERE 1=1
+		AND A.ACCOUNT_LOCK_YN = 'Y'
+	    <if test="userId !=null and userId neq ''">
+	        AND A.USER_ID=#{userId}
+	    </if>
+	    <if test="userName !=null and userName neq ''">
+	        AND A.USER_NAME=#{userName}
+	    </if>
+	    <if test="regionId !=null and regionId neq ''">
+	        AND A.REGION_ID=#{regionId}
+	    </if>
+	    <if test="authCode !=null and authCode neq ''">
+	        <!-- 사용자 목록 조회에서 임시 코드를 부여하여 로그인 화면과 별도 처리 -->
+	        <!-- 지역관리자가 관리자 정보를 조회하지 못하도록 -->
+	        <choose>
+	            <when test="authCode eq '998'">
+	                AND A.AUTH_CODE NOT IN('999')
+	            </when>
+	            <otherwise>
+	                AND A.AUTH_CODE=#{authCode}
+	            </otherwise>
+	        </choose>
+	    </if>
+	    <if test="searchValue !=null and searchValue neq ''">
+	        <choose>
+	            <when test="searchType eq 'userId'">
+	                AND A.USER_ID LIKE '%'||#{searchValue}||'%'
+	            </when>
+	            <otherwise>
+	                AND A.USER_NAME LIKE '%'||#{searchValue}||'%'
+	            </otherwise>
+	        </choose>
+	    </if>
+	    <if test="sDate !=null and eDate !=null">
+	        AND A.ACCOUNT_LOCK_DT BETWEEN #{sDate} AND #{eDate}
+	    </if>
+	
+	    ORDER BY A.ACCOUNT_LOCK_DT DESC
+	</select>
+	
 	<select id="selectUser" parameterType="userVO" resultMap="selectUser">
 	   SELECT
 				A.USER_ID
 				,A.USER_PW
+				,A.LOGIN_FAIL_COUNT
+			    ,A.ACCOUNT_LOCK_YN
+			    ,A.ACCOUNT_LOCK_DT
 				,A.USER_NAME
 				,A.REGION_ID
 				,TO_CHAR(A.PW_CHANGE_DT, 'YYYY-MM-DD') AS PW_CHANGE_DT
@@ -136,6 +266,22 @@
 	</select>
 	
 	
+	<update id="unlockAccount">
+	    UPDATE SYS_USER
+	    SET LOGIN_FAIL_COUNT = 0,
+	        ACCOUNT_LOCK_YN = 'N',
+	        ACCOUNT_LOCK_DT = NULL
+	    WHERE ACCOUNT_LOCK_YN = 'Y'
+	      AND USER_ID IN
+	      <foreach collection="list"
+	               item="userId"
+	               open="("
+	               separator=","
+	               close=")">
+	          #{userId}
+	      </foreach>
+	</update>
+
 	<!-- 사용자 등록 -->
 	<insert id="insertUser" parameterType="userVO">
 		INSERT INTO SYS_USER(

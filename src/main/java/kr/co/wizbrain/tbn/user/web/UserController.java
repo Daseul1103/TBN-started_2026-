@@ -1,7 +1,5 @@
 package kr.co.wizbrain.tbn.user.web;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -119,6 +118,69 @@ public class UserController {
 		return mav;
 	}
 	
+	
+	
+	
+	// 계정잠금관리 화면 첫 진입
+	@RequestMapping(value= {"/user/lockedAccounts.do"})
+	public ModelAndView lockAccountMain(HttpServletRequest request) throws Exception {
+		logger.debug("▶▶▶▶▶▶▶.user 계정잠금 컨트롤러 진입  ");
+		
+		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
+		ModelAndView mav = new ModelAndView(url);
+		// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
+		UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+		AuthVo authVo = new AuthVo();
+		authVo.setAuthCode(nlVo.getAuthCode());
+		List<AuthVo> authList= null;
+		authList = authService.selectAuthType(authVo);
+		mav.addObject("authList", authList);
+		return mav;
+	}
+	
+	
+	
+	
+	// 계정잠금 사용자 목록 조회
+	@RequestMapping(value="/user/lockUserList.do")
+	public @ResponseBody ModelAndView lockUserList( @ModelAttribute("userVO") UserVO userVO,HttpServletRequest request) throws Exception{
+		logger.debug("▶▶▶▶▶▶▶.계정 잠금 회원정보 조회 목록!!!!!!!!!!!!!!!!");
+			
+		UserVO uvo = new UserVO();
+		//url로 h,g 판별하여 해당하는 값만 조회
+		ModelAndView mav = new ModelAndView("jsonView");
+		List<UserVO> userList= null;
+		try {
+			// 현재 세션에 대해 로그인한 사용자 정보를 가져옴
+			UserVO nlVo = (UserVO) request.getSession().getAttribute("login");
+			if(userVO.getSearchValue()!=null) {
+				uvo=userVO;
+			}
+			
+			userList = userService.lockSelectUser(uvo);
+			
+			mav.setViewName("/user/lockUserList");
+			mav.addObject("userList", userList);
+		} catch (Exception e) {
+			logger.debug("에러메시지 : "+e.toString());
+		}
+		return mav;
+	}
+		
+	
+	
+	@RequestMapping(value = "/user/unlockAccounts.do", method = RequestMethod.POST)
+	public ModelAndView unlockAccounts(@RequestParam("userIds[]") List<String> userIds) throws Exception {
+
+	    ModelAndView mav = new ModelAndView("jsonView");
+
+	    // 예외처리 추가
+	    
+	    // 여기에 담당자 권한 확인 및 잠금 해제 처리 추가
+	    userService.unlockAccount(userIds);
+	    
+	    return mav;
+	}
 	
 	//사용자 목록 조회
 	@RequestMapping(value="/user/userList.do")

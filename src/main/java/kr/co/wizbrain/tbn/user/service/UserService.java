@@ -29,11 +29,21 @@ public interface UserService {
 	//전체 사용자 조회
 	public List<UserVO> selectUserList(UserVO userVO) throws Exception;
 	
+	// 계정 잠금 사용자 조회
+	public List<UserVO> lockSelectUser(UserVO userVO) throws Exception;
+	
+	
+	public void unlockAccount(List<String> userIds) throws Exception;
+	
 	//사용자 등록
 	public void insertUser(UserVO userVO) throws Exception;
 	
 	//특정 사용자 조회
 	public UserVO selectUser(UserVO userVO) throws Exception;
+	
+	public void updateLoginFailure(UserVO userVO) throws Exception;
+	
+	int resetLoginFailCount(UserVO userVo) throws Exception;
 
 	//사용자 정보 수정
 	public void updateUser(UserVO uvo);
